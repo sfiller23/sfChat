@@ -9,3 +9,12 @@
 .loader {
   width: 10%;
 }
+
+.profile-image-loader {
+  width: 100px;
+  height: 100px;
+}
+
+.profile-image-loader .loader {
+  width: 70%;
+}

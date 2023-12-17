@@ -2,12 +2,9 @@
   border: 1px solid white;
   border-radius: 10px;
   width: 85%;
-  min-width: 630px;
+  min-width: 400px;
   max-width: 800px;
   overflow: hidden;
-}
-
-.upload-label {
 }
 
 .upload-icon {
@@ -15,9 +12,15 @@
 }
 
 .user-header {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  max-width: 200px;
+  flex-wrap: wrap;
   background-color: #2f2d52;
   border: none;
   padding: 10px;
+  color: white;
 }
 
 .chat-container {
@@ -42,6 +45,7 @@
 }
 
 .search-input {
+  width: 100%;
   background-color: transparent;
   border: none;
   border-bottom: 1px solid #a5a5a5;
@@ -50,6 +54,7 @@
 /* .search-input-container {
 } */
 .logout-button {
+  cursor: pointer;
   background: #5d5b8d;
   color: #ddddf7;
   border: none;
@@ -110,4 +115,36 @@
 
 .send-icon {
   transform: rotate(140deg);
+}
+
+.user-img {
+  object-fit: cover;
+  width: 60px;
+  height: 60px;
+  border-radius: 30px;
+}
+
+.user-img-container h3 {
+  color: white;
+}
+
+.user-img-container input {
+  margin-bottom: 10px;
+  max-width: 180px;
+}
+
+.user-img-container {
+  gap: 5px;
+  flex-direction: column;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.no-image {
+  flex-direction: column;
+}
+
+.email-container h3 {
+  margin: 0px;
 }

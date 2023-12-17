@@ -1,28 +1,29 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Card from "../../UI/card/Card";
 import "./auth.css";
-import { BaseSyntheticEvent, useContext, useState } from "react";
+import { BaseSyntheticEvent, useContext } from "react";
 import { auth } from "../../App";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-import { RiImageAddFill } from "react-icons/ri";
 import { uploadAvatar } from "../../api/firebase/api";
 import Loader from "../../UI/loader/Loader";
 import {
   AuthContext,
   AuthStateActions,
 } from "../../context/authContext/AuthContext";
+import {
+  AppContext,
+  AppStateActions,
+} from "../../context/appContext/AppContext";
+import ImgPreviewButton from "../../components/imgPreviewButton/ImgPreviewButton";
 
 const Auth = () => {
   const authContext = useContext(AuthContext);
+  const appContext = useContext(AppContext);
 
   const location = useLocation();
-
-  const [picture, setPicture] = useState(null);
-  const [imgData, setImgData] = useState<string | ArrayBuffer | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (
     e: BaseSyntheticEvent | Event,
@@ -31,49 +32,55 @@ const Auth = () => {
     e.preventDefault();
     const email = e.target[0].value;
     const password = e.target[1].value;
+    const repeatPassword = e.target[2].value;
+
+    if (repeatPassword) {
+      if (password !== repeatPassword) {
+        alert("Passwordes don't match");
+        return;
+      }
+    }
 
     try {
       let credentials: any = {};
-      setIsLoading(true);
+      appContext?.dispatch({
+        type: AppStateActions.SET_LOADING,
+        payload: true,
+      });
 
       if (location === "/login") {
         credentials = await signInWithEmailAndPassword(auth, email, password);
+        console.log(credentials, "from auth");
       } else if (location === "/register") {
-        setIsLoading(true);
-        const file = e.target[4].files[0];
-        if (file) {
-          await uploadAvatar(e as Event, file);
-        }
         credentials = await createUserWithEmailAndPassword(
           auth,
           email,
           password
         );
+
+        const file = e.target[4].files[0];
+        const uid = credentials.user.uid;
+        if (file) {
+          await uploadAvatar(e as Event, file, uid);
+        }
       }
-      setIsLoading(false);
       authContext?.dispatch({
         type: AuthStateActions.LOGIN,
         payload: credentials.user,
       });
     } catch (error) {
-      setIsLoading(false);
       alert(error);
+    } finally {
+      appContext?.dispatch({
+        type: AppStateActions.SET_LOADING,
+        payload: false,
+      });
     }
   };
 
-  const handleImgPick = (e: BaseSyntheticEvent | Event) => {
-    if (e.target.files[0]) {
-      setPicture(e.target.files[0]);
-      const reader = new FileReader();
-      reader.addEventListener("load", () => {
-        setImgData(reader.result);
-      });
-      reader.readAsDataURL(e.target.files[0]);
-    }
-  };
   const authUrl = location.pathname;
 
-  return isLoading ? (
+  return appContext?.state.isLoading ? (
     <Loader />
   ) : (
     <Card classNames={["auth-card"]}>
@@ -112,29 +119,7 @@ const Auth = () => {
               required
             />
             <br />
-            <input
-              type="file"
-              name="avatar"
-              id="avatar"
-              style={{ display: `${!picture ? "none" : "block"}` }}
-              onChange={(e) => {
-                e.preventDefault();
-                handleImgPick(e);
-              }}
-            />
-            {!picture && (
-              <label className="avatar-label" htmlFor="avatar">
-                <RiImageAddFill size={20} />
-                <span>Add an Avatar</span>
-              </label>
-            )}
-            {imgData && (
-              <img
-                className="img-preview"
-                src={imgData as string}
-                alt="Image Preview"
-              />
-            )}
+            <ImgPreviewButton />
           </>
         )}
         <button type="submit" className="auth-button">
@@ -152,6 +137,12 @@ const Auth = () => {
       </form>
     </Card>
   );
+  // (
+  //   <label onClick={uploadAvatar} className="avatar-upload" htmlFor="avatar">
+  //     <HiOutlineCloudUpload size={20} />
+  //     <span>Upload</span>
+  //   </label>
+  // );
 };
 
 export default Auth;

@@ -8,9 +8,15 @@ import {
 } from "../../context/authContext/AuthContext";
 import { PiNavigationArrowThin } from "react-icons/pi";
 import { uploadDocument } from "../../api/firebase/api";
+import { AppContext } from "../../context/appContext/AppContext";
+import Loader from "../../UI/loader/Loader";
+import ImgPreviewButton, {
+  PreviewState,
+} from "../../components/imgPreviewButton/ImgPreviewButton";
 
 const Home = () => {
   const authContext = useContext(AuthContext);
+  const appContext = useContext(AppContext);
 
   useEffect(() => {
     //const uid = localStorage.getItem("uid");
@@ -41,14 +47,33 @@ const Home = () => {
   return (
     <Card classNames={["chat-card"]}>
       <span className="users-container">
-        <div className="user-header">
-          <span className="user-img-container">
-            <img
-              className="user-img"
-              src={authContext?.state.user?.photoURL as string}
-              alt={authContext?.state.user?.email as string}
-            />
-          </span>
+        <div
+          className={`user-header ${
+            !!appContext?.state.imgProfileUrl && "no-image"
+          }`}
+        >
+          {appContext?.state.isLoading ? (
+            <Loader className="profile-image-loader" />
+          ) : (
+            <span className="user-img-container">
+              {!!appContext?.state.imgProfileUrl && (
+                <img
+                  className="user-img"
+                  src={appContext?.state.imgProfileUrl}
+                  alt="Profile Image"
+                />
+              )}
+              <ImgPreviewButton
+                action={
+                  !!appContext?.state.imgProfileUrl
+                    ? PreviewState.EDIT
+                    : PreviewState.ADD
+                }
+                inForm={false}
+              />
+            </span>
+          )}
+
           <span className="logout-button-container">
             <button
               type="button"
@@ -58,7 +83,11 @@ const Home = () => {
               Logout
             </button>
           </span>
+          <div className="email-container">
+            <h3>{authContext?.state.user?.email}</h3>
+          </div>
         </div>
+
         <div className="search-input-container">
           <input
             className="search-input"

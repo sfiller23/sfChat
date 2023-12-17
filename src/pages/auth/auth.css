@@ -64,19 +64,3 @@ p {
   font-size: 12px;
   align-self: center;
 }
-
-.avatar-label {
-  color: var(--primary);
-  display: flex;
-  gap: 10px;
-  margin-bottom: 15px;
-}
-
-.img-preview {
-  display: flex;
-  align-self: center;
-  object-fit: cover;
-  width: 100px;
-  height: 100px;
-  margin: 10px;
-}

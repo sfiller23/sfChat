@@ -11,19 +11,19 @@ import { firebaseConfig } from "../config";
 import Auth from "./pages/auth/Auth";
 import { getStorage, ref } from "firebase/storage";
 
-initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
 
-export const auth = getAuth();
-export const storage = getStorage();
+export const auth = getAuth(app);
+export const storage = getStorage(app);
 
 // onAuthStateChanged(auth, () => {
 //   console.log(auth, "change");
 // });
 
-if (window.location.hostname === "localhost") {
-  connectAuthEmulator(auth, "https://");
-  //connectStorageEmulator(storage, "127.0.0.1", 9199);
-}
+// if (window.location.hostname === "localhost") {
+//   connectAuthEmulator(auth, "https://");
+//   //connectStorageEmulator(storage, "127.0.0.1", 9199);
+// }
 
 export const storageRef = ref(storage);
 

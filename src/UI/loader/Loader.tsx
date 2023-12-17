@@ -1,11 +1,12 @@
 import "./loader.css";
 
-const Loader = () => {
+const Loader = (props) => {
+  const { className } = props;
   return (
-    <div className="loader-container">
+    <div className={`loader-container ${className}`}>
       <img
         className="loader"
-        src="../../../public/assets/gifs/loader.webp"
+        src="../../assets/gifs/loader.webp"
         alt="Loader"
       />
     </div>

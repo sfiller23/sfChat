@@ -45,6 +45,7 @@ const reducer = (state: AuthState, action: ReducerAction): AuthState => {
       localStorage.setItem("uid", JSON.stringify(action.payload?.uid));
       return {
         ...state,
+        user: action.payload as User,
         logedIn: true,
         accessToken: action.payload?.accessToken,
       };
