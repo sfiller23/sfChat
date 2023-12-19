@@ -111,7 +111,7 @@ export const AppProvider = ({ children }: ChildrenType): ReactElement => {
     };
     getProfileUrl();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [authContext?.state.logedIn, state.imgProfileChange, uid]);
+  }, [authContext?.state.loggedIn, state.imgProfileChange, uid]);
 
   return (
     <AppContext.Provider value={{ state, dispatch }}>

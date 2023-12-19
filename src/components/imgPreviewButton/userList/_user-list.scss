@@ -1,0 +1,24 @@
+.is-loggedin-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid black;
+}
+
+.logged-out {
+  background-color: red;
+}
+
+.logged-in {
+  background-color: green;
+}
+
+.list-item {
+  display: flex;
+  gap: 0.4rem;
+  padding: 0.2rem 0.5rem;
+}
+
+.user-list {
+  padding: 0;
+}

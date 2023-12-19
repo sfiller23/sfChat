@@ -10,11 +10,13 @@ import Home from "./pages/home/Home";
 import { firebaseConfig } from "../config";
 import Auth from "./pages/auth/Auth";
 import { getStorage, ref } from "firebase/storage";
+import { getFirestore } from "firebase/firestore";
 
 const app = initializeApp(firebaseConfig);
 
-export const auth = getAuth(app);
-export const storage = getStorage(app);
+export const auth = getAuth();
+export const storage = getStorage();
+export const db = getFirestore(app);
 
 // onAuthStateChanged(auth, () => {
 //   console.log(auth, "change");

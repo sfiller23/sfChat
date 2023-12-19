@@ -1,11 +1,12 @@
 import { User, onAuthStateChanged, signOut } from "firebase/auth";
 import { createContext, useReducer, ReactElement, useEffect } from "react";
-import { auth } from "../../App";
+import { auth, db } from "../../App";
 import { useNavigate } from "react-router-dom";
+import { doc, updateDoc } from "firebase/firestore";
 
 export interface AuthState {
   user: User | null;
-  logedIn: boolean;
+  loggedIn: boolean;
   accessToken?: string;
   error: string;
 }
@@ -18,7 +19,7 @@ export enum AuthStateActions {
 
 const initialState: AuthState = {
   user: null,
-  logedIn: false,
+  loggedIn: false,
   accessToken: "",
   error: "",
 };
@@ -46,7 +47,7 @@ const reducer = (state: AuthState, action: ReducerAction): AuthState => {
       return {
         ...state,
         user: action.payload as User,
-        logedIn: true,
+        loggedIn: true,
         accessToken: action.payload?.accessToken,
       };
 
@@ -54,7 +55,7 @@ const reducer = (state: AuthState, action: ReducerAction): AuthState => {
       signOut(auth);
       localStorage.removeItem("accessToken");
       localStorage.removeItem("uid");
-      return { ...state, logedIn: false, user: null, accessToken: "" };
+      return { ...state, loggedIn: false, user: null, accessToken: "" };
 
     case AuthStateActions.REFRESH:
       return { ...state, user: action.payload as User };
@@ -79,6 +80,22 @@ export const AuthProvider = ({ children }: ChildrenType): ReactElement => {
     token ? navigate("/home") : navigate("/login");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
+
+  useEffect(() => {
+    const updateLoggedInState = async () => {
+      try {
+        if (state.user) {
+          await updateDoc(doc(db, "users", state.user.uid as string), {
+            loggedIn: state.loggedIn,
+          });
+        }
+      } catch (error) {
+        alert(error);
+      }
+    };
+    updateLoggedInState();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.loggedIn, state.user?.uid]);
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {

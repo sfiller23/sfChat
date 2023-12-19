@@ -2,7 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import Card from "../../UI/card/Card";
 import "./auth.css";
 import { BaseSyntheticEvent, useContext } from "react";
-import { auth } from "../../App";
+import { auth, db } from "../../App";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -18,6 +18,7 @@ import {
   AppStateActions,
 } from "../../context/appContext/AppContext";
 import ImgPreviewButton from "../../components/imgPreviewButton/ImgPreviewButton";
+import { doc, setDoc } from "firebase/firestore";
 
 const Auth = () => {
   const authContext = useContext(AuthContext);
@@ -57,12 +58,18 @@ const Auth = () => {
           email,
           password
         );
-
+        const displayName = e.target[3].value;
         const file = e.target[4].files[0];
         const uid = credentials.user.uid;
         if (file) {
           await uploadAvatar(e as Event, file, uid);
         }
+        await setDoc(doc(db, "users", uid), {
+          uid: uid,
+          displayName,
+          email,
+          loggedIn: true,
+        });
       }
       authContext?.dispatch({
         type: AuthStateActions.LOGIN,
@@ -137,12 +144,6 @@ const Auth = () => {
       </form>
     </Card>
   );
-  // (
-  //   <label onClick={uploadAvatar} className="avatar-upload" htmlFor="avatar">
-  //     <HiOutlineCloudUpload size={20} />
-  //     <span>Upload</span>
-  //   </label>
-  // );
 };
 
 export default Auth;

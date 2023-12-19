@@ -8,7 +8,7 @@ export async function uploadAvatar(e: Event, file, uid: string) {
   try {
     await uploadBytes(ref(storageRef, uid), file);
   } catch (error) {
-    console.error("Upload failed:", error);
+    alert(error);
   }
 }
 

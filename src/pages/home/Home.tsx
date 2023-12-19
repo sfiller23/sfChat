@@ -13,6 +13,8 @@ import Loader from "../../UI/loader/Loader";
 import ImgPreviewButton, {
   PreviewState,
 } from "../../components/imgPreviewButton/ImgPreviewButton";
+import UserList from "../../components/imgPreviewButton/userList/UserList";
+import UserSearch from "../../components/imgPreviewButton/userSearch/UserSearch";
 
 const Home = () => {
   const authContext = useContext(AuthContext);
@@ -87,19 +89,8 @@ const Home = () => {
             <h3>{authContext?.state.user?.email}</h3>
           </div>
         </div>
-
-        <div className="search-input-container">
-          <input
-            className="search-input"
-            type="text"
-            placeholder="Search Users..."
-          />
-        </div>
-        <div className="users-list-container">
-          <ul className="users-list">
-            <li className="list-item">Admin</li>
-          </ul>
-        </div>
+        <UserSearch />
+        <UserList />
       </span>
       <span className="seperator"></span>
       <span className="chat-container">
