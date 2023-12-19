@@ -21,4 +21,10 @@
 
 .user-list {
   padding: 0;
+  li {
+    cursor: pointer;
+  }
+  li:hover {
+    background-color: #a2a2d9;
+  }
 }

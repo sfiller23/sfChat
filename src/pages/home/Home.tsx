@@ -13,8 +13,8 @@ import Loader from "../../UI/loader/Loader";
 import ImgPreviewButton, {
   PreviewState,
 } from "../../components/imgPreviewButton/ImgPreviewButton";
-import UserList from "../../components/imgPreviewButton/userList/UserList";
-import UserSearch from "../../components/imgPreviewButton/userSearch/UserSearch";
+import UserList from "../../components/userList/UserList";
+import UserSearch from "../../components/userSearch/UserSearch";
 
 const Home = () => {
   const authContext = useContext(AuthContext);

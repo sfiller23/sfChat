@@ -1,14 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { getUsers } from "./chatAPI";
-import { User } from "../../interfaces/auth/auth";
+import { User } from "../../interfaces/auth";
+import { Chat } from "../../interfaces/chat";
 
 export interface ChatState {
   users: User[];
+  chats: Chat[];
   status: string;
 }
 
 const initialState: ChatState = {
   users: [],
+  chats: [],
   status: "",
 };
 
@@ -21,6 +24,7 @@ const chatSlice = createSlice({
         user.displayName.startsWith(action.payload)
       );
     },
+    startChat: (state, action) => {},
   },
   extraReducers: (builder) => {
     builder

@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { db } from "../../App";
 import { collection, getDocs } from "firebase/firestore";
-import { User } from "../../interfaces/auth/auth";
+import { User } from "../../interfaces/auth";
 
 export const getUsers = createAsyncThunk("getUsers", async () => {
   //const q = query(collection(db, "users"), where("displayName", "==", "me"));
