@@ -1,17 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getUsers } from "./chatAPI";
+import { getChats, getUsers } from "./chatAPI";
 import { User } from "../../interfaces/auth";
 import { Chat } from "../../interfaces/chat";
 
 export interface ChatState {
   users: User[];
-  chats: Chat[];
+  chats: {};
   status: string;
 }
 
 const initialState: ChatState = {
   users: [],
-  chats: [],
+  chats: {},
   status: "",
 };
 
@@ -28,14 +28,19 @@ const chatSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getUsers.pending, (state) => {
-        state.status = "Loading...";
-      })
       .addCase(getUsers.fulfilled, (state, action: any) => {
         state.status = "Success";
         state.users = action.payload;
       })
-      .addCase(getUsers.rejected, (state, action: any) => {
+      .addCase(getChats.pending, (state) => {
+        state.status = "Loading...";
+      })
+      .addCase(getChats.fulfilled, (state, action: any) => {
+        state.status = "Success";
+        state.chats = action.payload;
+        console.log(action.payload, "from get chats");
+      })
+      .addCase(getChats.rejected, (state, action: any) => {
         state.status = "Failed!";
         state.status = action.payload;
       });

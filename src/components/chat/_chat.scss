@@ -1,0 +1,48 @@
+.chat-container {
+  width: 100%;
+  background-color: #ddddf7;
+}
+.chat-header {
+  height: 80px;
+  background-color: #5d5b8d;
+}
+
+.chat-message-board {
+  display: flex;
+  justify-content: flex-end;
+  min-height: 500px;
+}
+
+.seperator {
+  width: 15px;
+  background-color: rgb(244, 244, 244);
+}
+
+.right-seperator {
+  width: 10px;
+}
+
+.file-upload {
+  border: none;
+}
+
+.chat-footer {
+  display: flex;
+  align-items: center;
+  background-color: white;
+}
+
+.chat-input {
+  width: 87%;
+}
+
+.send-button-container {
+  display: flex;
+  color: white;
+  justify-content: center;
+  align-items: center;
+  background-color: #8da4f1;
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+}

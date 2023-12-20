@@ -43,6 +43,7 @@ const Auth = () => {
     }
 
     try {
+      let displayName: string = "";
       let credentials: any = {};
       appContext?.dispatch({
         type: AppStateActions.SET_LOADING,
@@ -58,7 +59,7 @@ const Auth = () => {
           email,
           password
         );
-        const displayName = e.target[3].value;
+        displayName = e.target[3].value;
         const file = e.target[4].files[0];
         const uid = credentials.user.uid;
         if (file) {
@@ -73,7 +74,7 @@ const Auth = () => {
       }
       authContext?.dispatch({
         type: AuthStateActions.LOGIN,
-        payload: credentials.user,
+        payload: { ...credentials.user, displayName: displayName },
       });
     } catch (error) {
       alert(error);

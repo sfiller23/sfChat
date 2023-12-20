@@ -23,25 +23,8 @@
   color: white;
 }
 
-.chat-container {
-  width: 100%;
-  background-color: #ddddf7;
-}
-
 .users-container {
   background-color: #3e3c61;
-}
-
-.chat-message-board {
-  display: flex;
-  justify-content: flex-end;
-  min-height: 500px;
-}
-
-.chat-footer {
-  display: flex;
-  align-items: center;
-  background-color: white;
 }
 
 .search-input {
@@ -65,20 +48,6 @@
   color: white;
 }
 
-.seperator {
-  width: 15px;
-  background-color: rgb(244, 244, 244);
-}
-
-.right-seperator {
-  width: 10px;
-}
-
-.chat-header {
-  height: 80px;
-  background-color: #5d5b8d;
-}
-
 .input-box {
   border: none;
 }
@@ -89,28 +58,6 @@
 
 .input-box:focus {
   outline: none;
-}
-
-.file-upload {
-  border: none;
-}
-
-.chat-input {
-  width: 87%;
-}
-
-.send-button-container {
-  background-color: #8da4f1;
-  width: 30px;
-  height: 30px;
-  border-radius: 15px;
-}
-
-.send-button-container {
-  display: flex;
-  color: white;
-  justify-content: center;
-  align-items: center;
 }
 
 .send-icon {
@@ -145,6 +92,6 @@
   flex-direction: column;
 }
 
-.email-container h3 {
+.display-name-container h3 {
   margin: 0px;
 }

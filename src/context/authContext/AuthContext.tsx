@@ -1,8 +1,18 @@
-import { User, onAuthStateChanged, signOut } from "firebase/auth";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import { createContext, useReducer, ReactElement, useEffect } from "react";
 import { auth, db } from "../../App";
 import { useNavigate } from "react-router-dom";
-import { doc, updateDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
+import { User } from "../../interfaces/auth";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks/reduxHooks";
+import { getUserByUid } from "../../redux/chat/chatAPI";
 
 export interface AuthState {
   user: User | null;
@@ -15,6 +25,7 @@ export enum AuthStateActions {
   LOGIN,
   LOGOUT,
   REFRESH,
+  SET_DISPLAY_NAME,
 }
 
 const initialState: AuthState = {
@@ -46,7 +57,12 @@ const reducer = (state: AuthState, action: ReducerAction): AuthState => {
       localStorage.setItem("uid", JSON.stringify(action.payload?.uid));
       return {
         ...state,
-        user: action.payload as User,
+        user: {
+          uid: action.payload.uid,
+          displayName: action.payload.displayName,
+          email: action.payload.email,
+          loggedIn: true,
+        },
         loggedIn: true,
         accessToken: action.payload?.accessToken,
       };
@@ -59,6 +75,12 @@ const reducer = (state: AuthState, action: ReducerAction): AuthState => {
 
     case AuthStateActions.REFRESH:
       return { ...state, user: action.payload as User };
+
+    case AuthStateActions.SET_DISPLAY_NAME:
+      return {
+        ...state,
+        user: { ...state.user, displayName: action.payload } as User,
+      };
 
     default:
       throw new Error("Unknown action");
@@ -73,6 +95,10 @@ export const AuthProvider = ({ children }: ChildrenType): ReactElement => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const navigate = useNavigate();
+
+  //const sliceDispatch = useAppDispatch();
+
+  //const currentDisplayName = useAppSelector((state)=>state.chatReducer.);
 
   const token = localStorage.getItem("accessToken");
 
@@ -94,17 +120,51 @@ export const AuthProvider = ({ children }: ChildrenType): ReactElement => {
       }
     };
     updateLoggedInState();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.loggedIn, state.user?.uid]);
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
-      dispatch({ type: AuthStateActions.REFRESH, payload: user });
+      dispatch({
+        type: AuthStateActions.REFRESH,
+        payload: user
+          ? {
+              uid: user.uid,
+              displayName: user.displayName,
+              email: user.email,
+              loggedin: true,
+            }
+          : user,
+      });
     });
     return () => {
       unsub();
     };
   }, []);
+
+  useEffect(() => {
+    const setUser = async () => {
+      if (state.user) {
+        const q = query(
+          collection(db, "users"),
+          where("uid", "==", state.user.uid)
+        );
+        try {
+          const querySnapshot = await getDocs(q);
+          querySnapshot.forEach((doc) => {
+            dispatch({
+              type: AuthStateActions.REFRESH,
+              payload: { ...doc.data() },
+            });
+          });
+        } catch (error) {
+          alert(`${error} in setUser`);
+        }
+      }
+    };
+    setUser();
+  }, [state.user]);
 
   return (
     <AuthContext.Provider value={{ state, dispatch }}>
