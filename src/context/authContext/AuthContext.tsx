@@ -1,7 +1,7 @@
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { createContext, useReducer, ReactElement, useEffect } from "react";
 import { auth, db } from "../../App";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   collection,
   doc,
@@ -13,6 +13,7 @@ import {
 import { User } from "../../interfaces/auth";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks/reduxHooks";
 import { getUserByUid } from "../../redux/chat/chatAPI";
+import { setAuthenticatedUser } from "../../redux/chat/chatSlice";
 
 export interface AuthState {
   user: User | null;
@@ -71,10 +72,11 @@ const reducer = (state: AuthState, action: ReducerAction): AuthState => {
       signOut(auth);
       localStorage.removeItem("accessToken");
       localStorage.removeItem("uid");
+      localStorage.removeItem("chatId");
       return { ...state, loggedIn: false, user: null, accessToken: "" };
 
     case AuthStateActions.REFRESH:
-      return { ...state, user: action.payload as User };
+      return { ...state, user: action.payload as User, loggedIn: true };
 
     case AuthStateActions.SET_DISPLAY_NAME:
       return {
@@ -96,33 +98,13 @@ export const AuthProvider = ({ children }: ChildrenType): ReactElement => {
 
   const navigate = useNavigate();
 
-  //const sliceDispatch = useAppDispatch();
+  const chatSliceDispatch = useAppDispatch();
 
   //const currentDisplayName = useAppSelector((state)=>state.chatReducer.);
 
+  const uid = JSON.parse(localStorage.getItem("uid") as string);
+
   const token = localStorage.getItem("accessToken");
-
-  useEffect(() => {
-    token ? navigate("/home") : navigate("/login");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
-
-  useEffect(() => {
-    const updateLoggedInState = async () => {
-      try {
-        if (state.user) {
-          await updateDoc(doc(db, "users", state.user.uid as string), {
-            loggedIn: state.loggedIn,
-          });
-        }
-      } catch (error) {
-        alert(error);
-      }
-    };
-    updateLoggedInState();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.loggedIn, state.user?.uid]);
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
@@ -144,27 +126,16 @@ export const AuthProvider = ({ children }: ChildrenType): ReactElement => {
   }, []);
 
   useEffect(() => {
-    const setUser = async () => {
-      if (state.user) {
-        const q = query(
-          collection(db, "users"),
-          where("uid", "==", state.user.uid)
-        );
-        try {
-          const querySnapshot = await getDocs(q);
-          querySnapshot.forEach((doc) => {
-            dispatch({
-              type: AuthStateActions.REFRESH,
-              payload: { ...doc.data() },
-            });
-          });
-        } catch (error) {
-          alert(`${error} in setUser`);
-        }
-      }
-    };
-    setUser();
-  }, [state.user]);
+    if (uid) {
+      chatSliceDispatch(getUserByUid(uid));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [uid]);
+
+  useEffect(() => {
+    token ? navigate("/home") : navigate("/login");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token]);
 
   return (
     <AuthContext.Provider value={{ state, dispatch }}>

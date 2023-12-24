@@ -1,24 +1,29 @@
 import { User } from "./auth";
 
-export interface Messages {
+export interface Message {
   uid?: string;
   displayName: string;
-  sentTime: Date;
   text: string;
+  sentTime: number;
 }
 
-export interface Chat {
+export interface Chats {
   [uid: string]: {
     firstUser: User;
     secondUser: User;
-    messages: Messages[];
-    startDate: number;
+    messages: Message[];
   };
 }
 
-export interface preDefinedChat {
+export interface ChatObj {
+  uid: string;
   firstUser: User;
   secondUser: User;
-  messages: Messages[];
-  startDate: number;
+  messages: Message[];
+}
+
+export interface ActiveChats {
+  uid: string;
+  firstUser: User;
+  secondUser: User;
 }

@@ -18,7 +18,7 @@ import {
   AppStateActions,
 } from "../../context/appContext/AppContext";
 import ImgPreviewButton from "../../components/imgPreviewButton/ImgPreviewButton";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, updateDoc } from "firebase/firestore";
 
 const Auth = () => {
   const authContext = useContext(AuthContext);
@@ -52,6 +52,9 @@ const Auth = () => {
 
       if (location === "/login") {
         credentials = await signInWithEmailAndPassword(auth, email, password);
+        await updateDoc(doc(db, "users", credentials.user.uid), {
+          loggedIn: true,
+        });
         console.log(credentials, "from auth");
       } else if (location === "/register") {
         credentials = await createUserWithEmailAndPassword(
@@ -74,7 +77,11 @@ const Auth = () => {
       }
       authContext?.dispatch({
         type: AuthStateActions.LOGIN,
-        payload: { ...credentials.user, displayName: displayName },
+        payload: {
+          ...credentials.user,
+          displayName: displayName,
+          loggedIn: true,
+        },
       });
     } catch (error) {
       alert(error);

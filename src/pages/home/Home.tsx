@@ -16,10 +16,15 @@ import ImgPreviewButton, {
 import UserList from "../../components/userList/UserList";
 import UserSearch from "../../components/userSearch/UserSearch";
 import Chat from "../../components/chat/Chat";
+import { useAppSelector } from "../../redux/hooks/reduxHooks";
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from "../../App";
 
 const Home = () => {
   const authContext = useContext(AuthContext);
   const appContext = useContext(AppContext);
+
+  const user = useAppSelector((state) => state.chatReducer.user);
 
   // useEffect(() => {
   //   if(authContext?.state.user?.displayName){
@@ -27,8 +32,17 @@ const Home = () => {
   //   }
   // }, [authContext?.state.user?.displayName]);
 
-  const logOutHandler = () => {
-    authContext?.dispatch({ type: AuthStateActions.LOGOUT });
+  const logOutHandler = async () => {
+    try {
+      if (user) {
+        await updateDoc(doc(db, "users", user.uid), {
+          loggedIn: false,
+        });
+        authContext?.dispatch({ type: AuthStateActions.LOGOUT });
+      }
+    } catch (error) {
+      alert(`${error} in logOutHandler`);
+    }
   };
 
   return (
@@ -71,7 +85,7 @@ const Home = () => {
             </button>
           </span>
           <div className="display-name-container">
-            <h3>{authContext?.state.user?.displayName}</h3>
+            <h3>{user?.displayName}</h3>
           </div>
         </div>
         <UserSearch />

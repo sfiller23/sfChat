@@ -6,19 +6,40 @@ import {
   getDocs,
   query,
   setDoc,
+  updateDoc,
   where,
 } from "firebase/firestore";
 import { User } from "../../interfaces/auth";
-import { Chat, preDefinedChat } from "../../interfaces/chat";
+import { Chat, ChatObj, Message, preDefinedChat } from "../../interfaces/chat";
 import { v4 as uuid } from "uuid";
+// continiue from here adjust the update doc func and make it get the right input that will be an object. adjust to the sendMessage func from the right
+export const updateChat = createAsyncThunk(
+  "updateChat",
+  async (args: { uid: string; messages: Message[] }) => {
+    try {
+      if (args.uid) {
+        console.log("updating");
+        await updateDoc(doc(db, "chats", args.uid), {
+          messages: args.messages,
+        });
+      }
+    } catch (error) {
+      alert(`${error} In updateChat`);
+    }
+  }
+);
 
 export const getUserByUid = createAsyncThunk(
   "getUserByUid",
   async (uid: string) => {
-    const q = query(collection(db, "users"), where("uid", "==", uid));
-    const querySnapshot = await getDocs(q);
-    console.log(querySnapshot, "from users");
     try {
+      const q = query(collection(db, "users"), where("uid", "==", uid));
+      const querySnapshot = await getDocs(q);
+      let user = {};
+      querySnapshot.forEach((doc) => {
+        user = { uid: doc.id, ...doc.data() };
+      });
+      return user;
     } catch (error) {
       alert(`${error} In getUserByUid`);
     }
@@ -26,8 +47,6 @@ export const getUserByUid = createAsyncThunk(
 );
 
 export const getUsers = createAsyncThunk("getUsers", async () => {
-  //const q = query(collection(db, "users"), where("displayName", "==", "me"));
-
   try {
     const querySnapshot = await getDocs(collection(db, "users"));
     const usersArray: User[] = [];
@@ -42,14 +61,12 @@ export const getUsers = createAsyncThunk("getUsers", async () => {
 
 export const initChat = createAsyncThunk(
   "initChat",
-  async (chatObj: preDefinedChat) => {
-    const uid = uuid();
+  async (chatObj: ChatObj) => {
     try {
-      await setDoc(doc(db, "chats", uid), {
+      await setDoc(doc(db, "chats", chatObj.uid), {
         firstUser: chatObj.firstUser,
         secondUser: chatObj.secondUser,
         messages: chatObj.messages,
-        startDate: chatObj.startDate,
       });
     } catch (error) {
       alert(`${error} In initChat`);
