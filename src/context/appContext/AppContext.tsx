@@ -84,7 +84,6 @@ export const AppProvider = ({ children }: ChildrenType): ReactElement => {
           type: AppStateActions.SET_LOADING,
           payload: true,
         });
-        console.log(uid, "from app context");
         if (uid) {
           imgUrl = await getDownloadURL(ref(storageRef, uid));
 

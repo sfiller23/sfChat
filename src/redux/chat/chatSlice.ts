@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
+  getChatByUid,
   getChats,
   getUserByUid,
   getUsers,
@@ -7,30 +8,35 @@ import {
   updateChat,
 } from "./chatAPI";
 import { User } from "../../interfaces/auth";
-import { Chats, ChatObj, ActiveChats } from "../../interfaces/chat";
+import { Chats, ChatObj } from "../../interfaces/chat";
 
 export interface ChatState {
   user: User | null;
   users: User[];
   chats: Chats;
-  activeChats: ActiveChats | null;
   currentChat: ChatObj | null;
-  chatUpdated: boolean;
 }
 
 const initialState: ChatState = {
   user: null,
   users: [],
   chats: {},
-  activeChats: null,
   currentChat: null,
-  chatUpdated: false,
 };
 
 const chatSlice = createSlice({
   name: "Chat",
   initialState,
   reducers: {
+    addUser: (state, action) => {
+      state.users.push(action.payload);
+    },
+    updateUser: (state, action) => {
+      const userIndex = state.users
+        .map((user) => user.uid)
+        .indexOf(action.payload.uid);
+      state.users[userIndex] = action.payload;
+    },
     setCurrentChatMessage: (state, action) => {
       state.currentChat?.messages.push(action.payload);
     },
@@ -50,8 +56,11 @@ const chatSlice = createSlice({
 
   extraReducers: (builder) => {
     builder
-      .addCase(updateChat.fulfilled, (state) => {
-        state.chatUpdated = !state.chatUpdated;
+      .addCase(getChatByUid.fulfilled, (state, action: any) => {
+        state.currentChat = action.payload;
+      })
+      .addCase(initChat.fulfilled, (state, action: any) => {
+        state.currentChat = action.payload;
       })
       .addCase(getUsers.fulfilled, (state, action: any) => {
         state.users = action.payload;
@@ -73,6 +82,8 @@ export const {
   startChat,
   setCurrentChat,
   setCurrentChatMessage,
+  addUser,
+  updateUser,
 } = chatSlice.actions;
 
 export default chatSlice.reducer;

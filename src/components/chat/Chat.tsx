@@ -22,19 +22,17 @@ const Chat = () => {
   const chats = useAppSelector((state) => state.chatReducer.chats);
   const chat = useAppSelector((state) => state.chatReducer.currentChat);
   const user = useAppSelector((state) => state.chatReducer.user);
-  const chatUpdated = useAppSelector((state) => state.chatReducer.chatUpdated);
-  const currentMessages = useAppSelector(
-    (state) => state.chatReducer.currentChat?.messages
-  );
 
   useEffect(() => {
-    dispatch(getChats());
-  }, []);
+    if (chat) {
+      //console.log(chat);
+    }
+  }, [chat]);
 
-  useEffect(() => {
-    const chatId = localStorage.getItem("chatId");
-    dispatch(setCurrentChat(chats[chatId as string]));
-  }, [chats]);
+  // useEffect(() => {
+  //   const chatId = localStorage.getItem("chatId");
+  //   //dispatch(setCurrentChat(chats[chatId as string]));
+  // }, [chats]);
 
   // useEffect(() => {
   //   if (chat) {
@@ -43,9 +41,9 @@ const Chat = () => {
   //   }
   // }, [currentMessages]);
 
-  useEffect(() => {
-    dispatch(getChats());
-  }, [chatUpdated]);
+  // useEffect(() => {
+  //   dispatch(getChats());
+  // }, [chatUpdated]);
 
   let messageText: string;
 

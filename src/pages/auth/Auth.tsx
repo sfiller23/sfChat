@@ -55,7 +55,6 @@ const Auth = () => {
         await updateDoc(doc(db, "users", credentials.user.uid), {
           loggedIn: true,
         });
-        console.log(credentials, "from auth");
       } else if (location === "/register") {
         credentials = await createUserWithEmailAndPassword(
           auth,

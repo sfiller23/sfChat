@@ -21,9 +21,3 @@ export interface ChatObj {
   secondUser: User;
   messages: Message[];
 }
-
-export interface ActiveChats {
-  uid: string;
-  firstUser: User;
-  secondUser: User;
-}

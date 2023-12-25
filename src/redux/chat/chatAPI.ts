@@ -10,7 +10,7 @@ import {
   where,
 } from "firebase/firestore";
 import { User } from "../../interfaces/auth";
-import { Chat, ChatObj, Message, preDefinedChat } from "../../interfaces/chat";
+import { Chat, ChatObj, Message } from "../../interfaces/chat";
 import { v4 as uuid } from "uuid";
 // continiue from here adjust the update doc func and make it get the right input that will be an object. adjust to the sendMessage func from the right
 export const updateChat = createAsyncThunk(
@@ -18,13 +18,29 @@ export const updateChat = createAsyncThunk(
   async (args: { uid: string; messages: Message[] }) => {
     try {
       if (args.uid) {
-        console.log("updating");
         await updateDoc(doc(db, "chats", args.uid), {
           messages: args.messages,
         });
       }
     } catch (error) {
       alert(`${error} In updateChat`);
+    }
+  }
+);
+
+export const getChatByUid = createAsyncThunk(
+  "getChatByUid",
+  async (uid: string) => {
+    try {
+      const q = query(collection(db, "chats"), where("uid", "==", uid));
+      const querySnapshot = await getDocs(q);
+      let chat: Partial<ChatObj> = {};
+      querySnapshot.forEach((doc) => {
+        chat = { uid: doc.id, ...doc.data() };
+      });
+      return chat;
+    } catch (error) {
+      alert(`${error} In getChatByUid`);
     }
   }
 );
@@ -61,13 +77,23 @@ export const getUsers = createAsyncThunk("getUsers", async () => {
 
 export const initChat = createAsyncThunk(
   "initChat",
-  async (chatObj: ChatObj) => {
+  async (chatObj: ChatObj, thunkApi) => {
     try {
       await setDoc(doc(db, "chats", chatObj.uid), {
+        uid: chatObj.uid,
         firstUser: chatObj.firstUser,
         secondUser: chatObj.secondUser,
         messages: chatObj.messages,
       });
+      await updateDoc(doc(db, "users", chatObj.firstUser.uid), {
+        chatIds: chatObj.firstUser.chatIds,
+      });
+      await updateDoc(doc(db, "users", chatObj.secondUser.uid), {
+        chatIds: chatObj.secondUser.chatIds,
+      });
+      thunkApi.dispatch(getUsers());
+      thunkApi.dispatch(getUserByUid(chatObj.firstUser.uid));
+      return chatObj;
     } catch (error) {
       alert(`${error} In initChat`);
     }
