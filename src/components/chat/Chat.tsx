@@ -5,14 +5,17 @@ import { BaseSyntheticEvent, useContext, useEffect, useRef } from "react";
 import { AuthContext } from "../../context/authContext/AuthContext";
 import { uploadDocument } from "../../api/firebase/api";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks/reduxHooks";
-import { getChats, updateChat } from "../../redux/chat/chatAPI";
-import { ChatObj, Message } from "../../interfaces/chat";
+import { getChatByUid, getChats, updateChat } from "../../redux/chat/chatAPI";
+import { ChatObj, Message as MessageProps } from "../../interfaces/chat";
 import LoggedInIcon from "../../UI/loggedInIcon/loggedInIcon";
 import {
   setCurrentChat,
   setCurrentChatMessage,
 } from "../../redux/chat/chatSlice";
 import { v4 as uuid } from "uuid";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
+import { db } from "../../App";
+import Message from "../message/Message";
 
 const Chat = () => {
   const authContext = useContext(AuthContext);
@@ -22,28 +25,44 @@ const Chat = () => {
   const chats = useAppSelector((state) => state.chatReducer.chats);
   const chat = useAppSelector((state) => state.chatReducer.currentChat);
   const user = useAppSelector((state) => state.chatReducer.user);
+  const users = useAppSelector((state) => state.chatReducer.users);
+
+  const uid = localStorage.getItem("chatId");
 
   useEffect(() => {
-    if (chat) {
-      //console.log(chat);
+    dispatch(getChats());
+  }, []);
+
+  useEffect(() => {
+    const updateChat = () => {
+      const q = query(collection(db, "chats"), where("uid", "==", uid));
+      const unSub = onSnapshot(q, (doc) => {
+        doc.docChanges().forEach((change) => {
+          switch (change.type) {
+            case "added":
+              //dispatch(getUsers());
+              break;
+            case "modified":
+              dispatch(getChatByUid(uid as string));
+              break;
+            default:
+              return;
+          }
+        });
+      });
+
+      return () => {
+        unSub();
+      };
+    };
+    updateChat();
+  }, []);
+
+  useEffect(() => {
+    if (uid) {
+      dispatch(getChatByUid(uid));
     }
-  }, [chat]);
-
-  // useEffect(() => {
-  //   const chatId = localStorage.getItem("chatId");
-  //   //dispatch(setCurrentChat(chats[chatId as string]));
-  // }, [chats]);
-
-  // useEffect(() => {
-  //   if (chat) {
-  //     console.log(chat, "currentChat");
-  //     dispatch(updateChat({ uid: chat.uid, messages: chat.messages }));
-  //   }
-  // }, [currentMessages]);
-
-  // useEffect(() => {
-  //   dispatch(getChats());
-  // }, [chatUpdated]);
+  }, [uid]);
 
   let messageText: string;
 
@@ -52,38 +71,20 @@ const Chat = () => {
   };
 
   const sendMessage = () => {
-    const uid = uuid();
     if (user) {
-      const messageObj: Message = {
-        uid,
+      const messageObj: MessageProps = {
+        uid: uid as string,
         displayName: user.displayName,
+        userId: user.uid,
         text: messageText,
         sentTime: Date.now(),
       };
       dispatch(setCurrentChatMessage(messageObj));
       if (chat) {
-        const uid = localStorage.getItem("chatId");
         if (uid) {
-          dispatch(updateChat({ uid: uid, messages: chat.messages }));
+          dispatch(updateChat({ uid: uid, message: messageObj }));
         }
       }
-    }
-  };
-
-  const handleDocumentUpload = async (e: BaseSyntheticEvent | Event) => {
-    try {
-      if (e.target.files[0]) {
-        const file = e.target.files[0];
-        if (file) {
-          await uploadDocument(
-            e as Event,
-            file,
-            authContext?.state.user?.uid as string
-          );
-        }
-      }
-    } catch (error) {
-      alert(error);
     }
   };
 
@@ -94,12 +95,22 @@ const Chat = () => {
           {chat &&
             (chat.firstUser.uid !== user?.uid ? (
               <>
-                <LoggedInIcon loggedIn={chat.firstUser.loggedIn} />
+                <LoggedInIcon
+                  loggedIn={
+                    users.find((user) => user.uid === chat.firstUser.uid)
+                      ?.loggedIn
+                  }
+                />
                 {chat.firstUser.displayName}
               </>
             ) : (
               <>
-                <LoggedInIcon loggedIn={chat.secondUser.loggedIn} />
+                <LoggedInIcon
+                  loggedIn={
+                    users.find((user) => user.uid === chat.secondUser.uid)
+                      ?.loggedIn
+                  }
+                />
                 {chat.secondUser.displayName}
               </>
             ))}
@@ -111,10 +122,13 @@ const Chat = () => {
             chat.messages.length !== 0 &&
             chat.messages.map((message) => {
               return (
-                <div key={message.uid}>
-                  <div>{message.text}</div>
-                  <div>{new Date(message.sentTime).toLocaleString()}</div>
-                </div>
+                <Message
+                  key={message.uid}
+                  text={message.text}
+                  uid={message.uid}
+                  sentTime={message.sentTime}
+                  userId={message.userId}
+                />
               );
             })}
           <span className="seperator right-seperator"></span>
@@ -127,19 +141,6 @@ const Chat = () => {
               placeholder="Enter Message..."
               onChange={setMessageText}
             />
-          </span>
-          <span className="file-upload-container">
-            <input
-              className="file-upload"
-              name="fileUpload"
-              type="file"
-              id="fileUpload"
-              style={{ display: "none" }}
-              onChange={handleDocumentUpload}
-            />
-            <label className="upload-label" htmlFor="fileUpload">
-              <MdAttachFile className="upload-icon" size={20} />
-            </label>
           </span>
           <span onClick={sendMessage} className="send-button-container">
             <PiNavigationArrowThin size={20} className="send-icon" />

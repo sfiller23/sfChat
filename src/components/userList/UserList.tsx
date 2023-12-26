@@ -21,6 +21,8 @@ export const UserList = () => {
   const currentUser = useAppSelector((state) => state.chatReducer.user);
   const users = useAppSelector((state) => state.chatReducer.users);
 
+  const dispatch = useAppDispatch();
+
   useEffect(() => {
     dispatch(getUsers());
   }, []);
@@ -49,8 +51,6 @@ export const UserList = () => {
     updateUserList();
   }, []);
 
-  const dispatch = useAppDispatch();
-
   const startChat = (sender: User, receiver: User) => {
     if (sender.chatIds) {
       for (const key in sender.chatIds) {
@@ -58,6 +58,7 @@ export const UserList = () => {
           if (receiver.chatIds[key]) {
             console.log("existing");
             dispatch(getChatByUid(key));
+            localStorage.setItem("chatId", key);
             return;
           }
         }
@@ -66,7 +67,7 @@ export const UserList = () => {
 
     console.log("not existing");
     const uid = uuid();
-    //localStorage.setItem("chatId", uid);
+    localStorage.setItem("chatId", uid);
     const chatObj: ChatObj = {
       uid,
       firstUser: {

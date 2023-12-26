@@ -63,6 +63,7 @@ const chatSlice = createSlice({
         state.currentChat = action.payload;
       })
       .addCase(getUsers.fulfilled, (state, action: any) => {
+        console.log(action.payload, "from slice");
         state.users = action.payload;
       })
       .addCase(getUserByUid.fulfilled, (state, action: any) => {

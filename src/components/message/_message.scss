@@ -1,0 +1,29 @@
+.message-container {
+  border-radius: 5px;
+  width: 50%;
+  height: fit-content;
+  background-color: #a7bcff;
+  padding: 1rem;
+  margin: 0.5rem;
+
+  &.reciever {
+    background-color: #5d5b8d;
+    align-self: flex-end;
+  }
+
+  .message-text-container {
+    color: white;
+    margin-bottom: 0.3rem;
+  }
+
+  .message-date-time-container {
+    font-size: 0.7rem;
+    color: rgb(224, 220, 220);
+    display: flex;
+    justify-content: flex-end;
+
+    > span {
+      margin-right: 0.3rem;
+    }
+  }
+}

@@ -1,6 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { db } from "../../App";
 import {
+  Timestamp,
+  arrayUnion,
   collection,
   doc,
   getDocs,
@@ -15,11 +17,11 @@ import { v4 as uuid } from "uuid";
 // continiue from here adjust the update doc func and make it get the right input that will be an object. adjust to the sendMessage func from the right
 export const updateChat = createAsyncThunk(
   "updateChat",
-  async (args: { uid: string; messages: Message[] }) => {
+  async (args: { uid: string; message: Message }) => {
     try {
       if (args.uid) {
         await updateDoc(doc(db, "chats", args.uid), {
-          messages: args.messages,
+          messages: arrayUnion(args.message),
         });
       }
     } catch (error) {

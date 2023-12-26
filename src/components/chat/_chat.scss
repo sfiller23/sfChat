@@ -10,6 +10,7 @@
 .chat-message-board {
   display: flex;
   justify-content: flex-end;
+  flex-direction: column;
   min-height: 500px;
 }
 
