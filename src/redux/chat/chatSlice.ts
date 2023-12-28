@@ -28,6 +28,9 @@ const chatSlice = createSlice({
   name: "Chat",
   initialState,
   reducers: {
+    clearChat: (state) => {
+      state = initialState;
+    },
     addUser: (state, action) => {
       state.users.push(action.payload);
     },
@@ -63,7 +66,6 @@ const chatSlice = createSlice({
         state.currentChat = action.payload;
       })
       .addCase(getUsers.fulfilled, (state, action: any) => {
-        console.log(action.payload, "from slice");
         state.users = action.payload;
       })
       .addCase(getUserByUid.fulfilled, (state, action: any) => {
@@ -85,6 +87,7 @@ export const {
   setCurrentChatMessage,
   addUser,
   updateUser,
+  clearChat,
 } = chatSlice.actions;
 
 export default chatSlice.reducer;

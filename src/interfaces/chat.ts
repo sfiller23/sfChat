@@ -1,9 +1,9 @@
 import { User } from "./auth";
 
 export enum MessageStatus {
-  SENT,
-  ARRIVED,
-  SEEN,
+  SENT = "SENT",
+  ARRIVED = "ARRIVED",
+  SEEN = "SEEN",
 }
 
 export interface Message {
@@ -28,5 +28,5 @@ export interface ChatObj {
   firstUser: User;
   secondUser: User;
   messages: Message[];
-  writing?: boolean;
+  writing?: { status: boolean; writerID: string };
 }

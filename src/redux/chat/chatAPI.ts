@@ -2,9 +2,11 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { db } from "../../App";
 import {
   Timestamp,
+  arrayRemove,
   arrayUnion,
   collection,
   doc,
+  getDoc,
   getDocs,
   query,
   setDoc,
@@ -12,17 +14,41 @@ import {
   where,
 } from "firebase/firestore";
 import { User } from "../../interfaces/auth";
-import { Chat, ChatObj, Message } from "../../interfaces/chat";
+import { Chat, ChatObj, Message, MessageStatus } from "../../interfaces/chat";
 import { v4 as uuid } from "uuid";
+import firebase from "firebase/compat/app";
 // continiue from here adjust the update doc func and make it get the right input that will be an object. adjust to the sendMessage func from the right
+export const setWritingState = createAsyncThunk(
+  "setWritingState",
+  async (args: { isWriting: boolean; uid: string; writerID: string }) => {
+    await updateDoc(doc(db, "chats", args.uid), {
+      writing: { status: args.isWriting, writerID: args.writerID },
+    });
+  }
+);
+
 export const updateChat = createAsyncThunk(
   "updateChat",
   async (args: { uid: string; message: Message }) => {
     try {
       if (args.uid) {
+        console.log(args.message, "message");
         await updateDoc(doc(db, "chats", args.uid), {
           messages: arrayUnion(args.message),
         });
+        const q = query(collection(db, "chats"), where("uid", "==", args.uid));
+        const querySnapshot = await getDocs(q);
+        let chat: Partial<ChatObj> = {};
+        querySnapshot.forEach((doc) => {
+          chat = { uid: doc.id, ...doc.data() };
+        });
+        if (chat.messages) {
+          chat.messages[chat.messages.length - 1].status =
+            MessageStatus.ARRIVED;
+          await updateDoc(doc(db, "chats", args.uid), {
+            messages: chat.messages,
+          });
+        }
       }
     } catch (error) {
       alert(`${error} In updateChat`);

@@ -5,10 +5,20 @@ import { BaseSyntheticEvent, useContext, useEffect, useRef } from "react";
 import { AuthContext } from "../../context/authContext/AuthContext";
 import { uploadDocument } from "../../api/firebase/api";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks/reduxHooks";
-import { getChatByUid, getChats, updateChat } from "../../redux/chat/chatAPI";
-import { ChatObj, Message as MessageProps } from "../../interfaces/chat";
+import {
+  getChatByUid,
+  getChats,
+  setWritingState,
+  updateChat,
+} from "../../redux/chat/chatAPI";
+import {
+  ChatObj,
+  Message as MessageProps,
+  MessageStatus,
+} from "../../interfaces/chat";
 import LoggedInIcon from "../../UI/loggedInIcon/loggedInIcon";
 import {
+  clearChat,
   setCurrentChat,
   setCurrentChatMessage,
 } from "../../redux/chat/chatSlice";
@@ -40,9 +50,11 @@ const Chat = () => {
         doc.docChanges().forEach((change) => {
           switch (change.type) {
             case "added":
-              //dispatch(getUsers());
+              console.log("added");
+              //dispatch(getChatByUid(uid as string));
               break;
             case "modified":
+              console.log("midofied");
               dispatch(getChatByUid(uid as string));
               break;
             default:
@@ -78,6 +90,7 @@ const Chat = () => {
         userId: user.uid,
         text: messageText,
         sentTime: Date.now(),
+        status: MessageStatus.SENT,
       };
       dispatch(setCurrentChatMessage(messageObj));
       if (chat) {
@@ -85,6 +98,18 @@ const Chat = () => {
           dispatch(updateChat({ uid: uid, message: messageObj }));
         }
       }
+    }
+  };
+
+  const setWriting = (isWritineMode: boolean) => {
+    if (chat && user) {
+      dispatch(
+        setWritingState({
+          isWriting: isWritineMode,
+          uid: chat.uid,
+          writerID: user?.uid,
+        })
+      );
     }
   };
 
@@ -115,6 +140,11 @@ const Chat = () => {
               </>
             ))}
         </>
+        {chat?.writing?.status && chat.writing.writerID !== user?.uid && (
+          <span>
+            <img src="../../assets/gifs/writing.gif" alt="Writing..." />
+          </span>
+        )}
       </div>
       <div className="chat-message-board-container">
         <div className="chat-message-board">
@@ -123,11 +153,12 @@ const Chat = () => {
             chat.messages.map((message) => {
               return (
                 <Message
-                  key={message.uid}
+                  key={message.sentTime}
                   text={message.text}
                   uid={message.uid}
                   sentTime={message.sentTime}
                   userId={message.userId}
+                  status={message.status}
                 />
               );
             })}
@@ -140,6 +171,12 @@ const Chat = () => {
               type="text"
               placeholder="Enter Message..."
               onChange={setMessageText}
+              onMouseEnter={() => {
+                setWriting(true);
+              }}
+              onMouseLeave={() => {
+                setWriting(false);
+              }}
             />
           </span>
           <span onClick={sendMessage} className="send-button-container">

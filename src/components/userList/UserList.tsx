@@ -80,7 +80,6 @@ export const UserList = () => {
       },
       messages: [],
     };
-    console.log(chatObj);
     dispatch(initChat(chatObj));
     //dispatch(setCurrentChat(chatObj));
   };

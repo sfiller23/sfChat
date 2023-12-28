@@ -7,5 +7,5 @@ export interface User {
   email: string;
   loggedIn: boolean;
   uid: string;
-  chatIds: ChatIds;
+  chatIds?: ChatIds;
 }

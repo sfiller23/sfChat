@@ -13,7 +13,7 @@ import {
 import { User } from "../../interfaces/auth";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks/reduxHooks";
 import { getUserByUid } from "../../redux/chat/chatAPI";
-import { setAuthenticatedUser } from "../../redux/chat/chatSlice";
+import { clearChat, setAuthenticatedUser } from "../../redux/chat/chatSlice";
 
 export interface AuthState {
   user: User | null;
@@ -119,6 +119,10 @@ export const AuthProvider = ({ children }: ChildrenType): ReactElement => {
             }
           : user,
       });
+      if (!user) {
+        console.log("chat is clear");
+        chatSliceDispatch(clearChat());
+      }
     });
     return () => {
       unsub();
