@@ -1,47 +1,30 @@
-import { MdAttachFile } from "react-icons/md";
 import "./_chat.scss";
 import { PiNavigationArrowThin } from "react-icons/pi";
-import { BaseSyntheticEvent, useContext, useEffect, useRef } from "react";
-import { AuthContext } from "../../context/authContext/AuthContext";
-import { uploadDocument } from "../../api/firebase/api";
+import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks/reduxHooks";
 import {
   getChatByUid,
-  getChats,
+  setMessageSeenReq,
   setWritingState,
   updateChat,
 } from "../../redux/chat/chatAPI";
-import {
-  ChatObj,
-  Message as MessageProps,
-  MessageStatus,
-} from "../../interfaces/chat";
+import { Message as MessageProps, MessageStatus } from "../../interfaces/chat";
 import LoggedInIcon from "../../UI/loggedInIcon/loggedInIcon";
-import {
-  clearChat,
-  setCurrentChat,
-  setCurrentChatMessage,
-} from "../../redux/chat/chatSlice";
-import { v4 as uuid } from "uuid";
+import { setCurrentChatMessage } from "../../redux/chat/chatSlice";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "../../App";
 import Message from "../message/Message";
 
 const Chat = () => {
-  const authContext = useContext(AuthContext);
-
   const dispatch = useAppDispatch();
 
-  const chats = useAppSelector((state) => state.chatReducer.chats);
   const chat = useAppSelector((state) => state.chatReducer.currentChat);
   const user = useAppSelector((state) => state.chatReducer.user);
   const users = useAppSelector((state) => state.chatReducer.users);
 
-  const uid = localStorage.getItem("chatId");
+  const [messageText, setMessageText] = useState("");
 
-  useEffect(() => {
-    dispatch(getChats());
-  }, []);
+  const uid = localStorage.getItem("chatId");
 
   useEffect(() => {
     const updateChat = () => {
@@ -50,11 +33,9 @@ const Chat = () => {
         doc.docChanges().forEach((change) => {
           switch (change.type) {
             case "added":
-              console.log("added");
-              //dispatch(getChatByUid(uid as string));
+              dispatch(getChatByUid(change.doc.id));
               break;
             case "modified":
-              console.log("midofied");
               dispatch(getChatByUid(uid as string));
               break;
             default:
@@ -68,19 +49,13 @@ const Chat = () => {
       };
     };
     updateChat();
-  }, []);
+  }, [uid]);
 
   useEffect(() => {
     if (uid) {
       dispatch(getChatByUid(uid));
     }
   }, [uid]);
-
-  let messageText: string;
-
-  const setMessageText = (e: BaseSyntheticEvent | Event) => {
-    messageText = e.target.value;
-  };
 
   const sendMessage = () => {
     if (user) {
@@ -98,18 +73,25 @@ const Chat = () => {
           dispatch(updateChat({ uid: uid, message: messageObj }));
         }
       }
+      setMessageText("");
     }
   };
 
-  const setWriting = (isWritineMode: boolean) => {
+  const setWriting = (isWritingMode: boolean) => {
     if (chat && user) {
       dispatch(
         setWritingState({
-          isWriting: isWritineMode,
+          isWriting: isWritingMode,
           uid: chat.uid,
           writerID: user?.uid,
         })
       );
+    }
+  };
+
+  const setMessageSeen = () => {
+    if (chat) {
+      dispatch(setMessageSeenReq(chat.uid));
     }
   };
 
@@ -170,13 +152,17 @@ const Chat = () => {
               className="input-box"
               type="text"
               placeholder="Enter Message..."
-              onChange={setMessageText}
+              value={messageText}
               onMouseEnter={() => {
                 setWriting(true);
               }}
               onMouseLeave={() => {
                 setWriting(false);
               }}
+              onChange={(e) => {
+                setMessageText(e.target.value);
+              }}
+              onFocus={setMessageSeen}
             />
           </span>
           <span onClick={sendMessage} className="send-button-container">

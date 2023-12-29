@@ -1,23 +1,16 @@
-import { memo, useContext, useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks/reduxHooks";
 import { getChatByUid, getUsers, initChat } from "../../redux/chat/chatAPI";
-import { AppContext } from "../../context/appContext/AppContext";
-import { AuthContext } from "../../context/authContext/AuthContext";
 import "./_user-list.scss";
-import { Chats, ChatObj } from "../../interfaces/chat";
+import { ChatObj } from "../../interfaces/chat";
 import { User } from "../../interfaces/auth";
 import { v4 as uuid } from "uuid";
-import {
-  addUser,
-  setCurrentChat,
-  updateUser,
-} from "../../redux/chat/chatSlice";
+import { updateUser } from "../../redux/chat/chatSlice";
 import LoggedInIcon from "../../UI/loggedInIcon/loggedInIcon";
 import { db } from "../../App";
 import { collection, onSnapshot } from "firebase/firestore";
 
 export const UserList = () => {
-  //const [currentReceiver, setCurrentReceiver] = useState({});
   const currentUser = useAppSelector((state) => state.chatReducer.user);
   const users = useAppSelector((state) => state.chatReducer.users);
 
@@ -56,7 +49,6 @@ export const UserList = () => {
       for (const key in sender.chatIds) {
         if (receiver.chatIds) {
           if (receiver.chatIds[key]) {
-            console.log("existing");
             dispatch(getChatByUid(key));
             localStorage.setItem("chatId", key);
             return;
@@ -65,7 +57,6 @@ export const UserList = () => {
       }
     }
 
-    console.log("not existing");
     const uid = uuid();
     localStorage.setItem("chatId", uid);
     const chatObj: ChatObj = {
@@ -81,14 +72,7 @@ export const UserList = () => {
       messages: [],
     };
     dispatch(initChat(chatObj));
-    //dispatch(setCurrentChat(chatObj));
   };
-
-  // useEffect(() => {
-  //   if (users) {
-  //     //console.log(users, "from user list");
-  //   }
-  // }, [users]);
 
   return (
     <div className="user-list-container">

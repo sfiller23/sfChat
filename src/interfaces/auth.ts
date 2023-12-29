@@ -9,3 +9,10 @@ export interface User {
   uid: string;
   chatIds?: ChatIds;
 }
+
+export enum AuthStateActions {
+  LOGIN,
+  LOGOUT,
+  REFRESH,
+  SET_DISPLAY_NAME,
+}

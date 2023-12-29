@@ -1,13 +1,7 @@
-import { MdAttachFile } from "react-icons/md";
 import Card from "../../UI/card/Card";
 import "./home.css";
-import { BaseSyntheticEvent, useContext, useEffect } from "react";
-import {
-  AuthContext,
-  AuthStateActions,
-} from "../../context/authContext/AuthContext";
-import { PiNavigationArrowThin } from "react-icons/pi";
-import { uploadDocument } from "../../api/firebase/api";
+import { useContext, useEffect } from "react";
+import { AuthContext } from "../../context/authContext/AuthContext";
 import { AppContext } from "../../context/appContext/AppContext";
 import Loader from "../../UI/loader/Loader";
 import ImgPreviewButton, {
@@ -16,21 +10,50 @@ import ImgPreviewButton, {
 import UserList from "../../components/userList/UserList";
 import UserSearch from "../../components/userSearch/UserSearch";
 import Chat from "../../components/chat/Chat";
-import { useAppSelector } from "../../redux/hooks/reduxHooks";
-import { doc, updateDoc } from "firebase/firestore";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks/reduxHooks";
+import { collection, doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { db } from "../../App";
+import { getChats, getUserByUid, getUsers } from "../../redux/chat/chatAPI";
+import { AuthStateActions } from "../../interfaces/auth";
 
 const Home = () => {
   const authContext = useContext(AuthContext);
   const appContext = useContext(AppContext);
 
+  const dispatch = useAppDispatch();
+
   const user = useAppSelector((state) => state.chatReducer.user);
 
-  // useEffect(() => {
-  //   if(authContext?.state.user?.displayName){
+  const userId = JSON.parse(localStorage.getItem("uid") as string);
 
-  //   }
-  // }, [authContext?.state.user?.displayName]);
+  useEffect(() => {
+    const updateChatIds = () => {
+      const unSub2 = onSnapshot(collection(db, "chatIds"), (doc) => {
+        doc.docChanges().forEach((change) => {
+          switch (change.type) {
+            case "added":
+              dispatch(getChats());
+              dispatch(getUsers());
+              console.log(userId);
+              if (userId) {
+                dispatch(getUserByUid(userId));
+              }
+
+              break;
+            case "modified":
+              break;
+            default:
+              return;
+          }
+        });
+      });
+
+      return () => {
+        unSub2();
+      };
+    };
+    updateChatIds();
+  }, []);
 
   const logOutHandler = async () => {
     try {

@@ -28,9 +28,9 @@ const chatSlice = createSlice({
   name: "Chat",
   initialState,
   reducers: {
-    clearChat: (state) => {
-      state = initialState;
-    },
+    // clearChat: (state) => {
+    //   state = initialState;
+    // },
     addUser: (state, action) => {
       state.users.push(action.payload);
     },
@@ -54,40 +54,35 @@ const chatSlice = createSlice({
     setCurrentChat: (state, action) => {
       state.currentChat = action.payload;
     },
-    startChat: (state, action) => {},
   },
 
   extraReducers: (builder) => {
     builder
-      .addCase(getChatByUid.fulfilled, (state, action: any) => {
-        state.currentChat = action.payload;
+      .addCase(getChatByUid.fulfilled, (state, action) => {
+        state.currentChat = action.payload as ChatObj;
       })
-      .addCase(initChat.fulfilled, (state, action: any) => {
-        state.currentChat = action.payload;
+      .addCase(initChat.fulfilled, (state, action) => {
+        state.currentChat = action.payload as ChatObj;
       })
-      .addCase(getUsers.fulfilled, (state, action: any) => {
-        state.users = action.payload;
+      .addCase(getUsers.fulfilled, (state, action) => {
+        state.users = action.payload as User[];
       })
-      .addCase(getUserByUid.fulfilled, (state, action: any) => {
-        state.user = action.payload;
+      .addCase(getUserByUid.fulfilled, (state, action) => {
+        state.user = action.payload as User;
       })
-      .addCase(getChats.pending, (state) => {})
-      .addCase(getChats.fulfilled, (state, action: any) => {
-        state.chats = action.payload;
-      })
-      .addCase(getChats.rejected, (state, action: any) => {});
+      .addCase(getChats.fulfilled, (state, action) => {
+        state.chats = action.payload as Chats;
+      });
   },
 });
 
 export const {
   searchUser,
   setAuthenticatedUser,
-  startChat,
   setCurrentChat,
   setCurrentChatMessage,
   addUser,
   updateUser,
-  clearChat,
 } = chatSlice.actions;
 
 export default chatSlice.reducer;

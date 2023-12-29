@@ -1,32 +1,22 @@
-import { onAuthStateChanged, signOut } from "firebase/auth";
-import { createContext, useReducer, ReactElement, useEffect } from "react";
-import { auth, db } from "../../App";
-import { useLocation, useNavigate } from "react-router-dom";
+import { signOut } from "firebase/auth";
 import {
-  collection,
-  doc,
-  getDocs,
-  query,
-  updateDoc,
-  where,
-} from "firebase/firestore";
-import { User } from "../../interfaces/auth";
-import { useAppDispatch, useAppSelector } from "../../redux/hooks/reduxHooks";
+  createContext,
+  useReducer,
+  ReactElement,
+  useEffect,
+  useLayoutEffect,
+} from "react";
+import { auth } from "../../App";
+import { useNavigate } from "react-router-dom";
+import { AuthStateActions, User } from "../../interfaces/auth";
+import { useAppDispatch } from "../../redux/hooks/reduxHooks";
 import { getUserByUid } from "../../redux/chat/chatAPI";
-import { clearChat, setAuthenticatedUser } from "../../redux/chat/chatSlice";
 
 export interface AuthState {
   user: User | null;
   loggedIn: boolean;
   accessToken?: string;
   error: string;
-}
-
-export enum AuthStateActions {
-  LOGIN,
-  LOGOUT,
-  REFRESH,
-  SET_DISPLAY_NAME,
 }
 
 const initialState: AuthState = {
@@ -38,6 +28,7 @@ const initialState: AuthState = {
 
 export interface ReducerAction {
   type: AuthStateActions;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   payload?: any;
 }
 
@@ -72,7 +63,6 @@ const reducer = (state: AuthState, action: ReducerAction): AuthState => {
       signOut(auth);
       localStorage.removeItem("accessToken");
       localStorage.removeItem("uid");
-      localStorage.removeItem("chatId");
       return { ...state, loggedIn: false, user: null, accessToken: "" };
 
     case AuthStateActions.REFRESH:
@@ -100,45 +90,19 @@ export const AuthProvider = ({ children }: ChildrenType): ReactElement => {
 
   const chatSliceDispatch = useAppDispatch();
 
-  //const currentDisplayName = useAppSelector((state)=>state.chatReducer.);
-
   const uid = JSON.parse(localStorage.getItem("uid") as string);
 
-  const token = localStorage.getItem("accessToken");
+  const token = JSON.parse(localStorage.getItem("accessToken") as string);
 
-  useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (user) => {
-      dispatch({
-        type: AuthStateActions.REFRESH,
-        payload: user
-          ? {
-              uid: user.uid,
-              displayName: user.displayName,
-              email: user.email,
-              loggedin: true,
-            }
-          : user,
-      });
-      if (!user) {
-        console.log("chat is clear");
-        chatSliceDispatch(clearChat());
-      }
-    });
-    return () => {
-      unsub();
-    };
-  }, []);
-
-  useEffect(() => {
+  useLayoutEffect(() => {
+    console.log(uid, "from aurh context");
     if (uid) {
       chatSliceDispatch(getUserByUid(uid));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [uid]);
 
   useEffect(() => {
     token ? navigate("/home") : navigate("/login");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
   return (

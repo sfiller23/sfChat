@@ -6,7 +6,7 @@ import { FaCheckDouble } from "react-icons/fa6";
 
 const Message = (props: Partial<MessageProps>) => {
   const user = useAppSelector((state) => state.chatReducer.user);
-  const chat = useAppSelector((state) => state.chatReducer.currentChat);
+
   const { text, sentTime, status = MessageStatus.SENT, userId } = props;
 
   return (
@@ -31,7 +31,7 @@ const Message = (props: Partial<MessageProps>) => {
               </span>
             )}
             {status === MessageStatus.SEEN && (
-              <span style={{ color: "green" }}>
+              <span style={{ color: "#7ca67c" }}>
                 <FaCheckDouble />
               </span>
             )}

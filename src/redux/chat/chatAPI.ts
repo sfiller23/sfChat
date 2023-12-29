@@ -1,12 +1,9 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { db } from "../../App";
 import {
-  Timestamp,
-  arrayRemove,
   arrayUnion,
   collection,
   doc,
-  getDoc,
   getDocs,
   query,
   setDoc,
@@ -14,10 +11,8 @@ import {
   where,
 } from "firebase/firestore";
 import { User } from "../../interfaces/auth";
-import { Chat, ChatObj, Message, MessageStatus } from "../../interfaces/chat";
-import { v4 as uuid } from "uuid";
-import firebase from "firebase/compat/app";
-// continiue from here adjust the update doc func and make it get the right input that will be an object. adjust to the sendMessage func from the right
+import { Chats, ChatObj, Message, MessageStatus } from "../../interfaces/chat";
+
 export const setWritingState = createAsyncThunk(
   "setWritingState",
   async (args: { isWriting: boolean; uid: string; writerID: string }) => {
@@ -27,12 +22,29 @@ export const setWritingState = createAsyncThunk(
   }
 );
 
+export const setMessageSeenReq = createAsyncThunk(
+  "setMessageSeen",
+  async (uid: string) => {
+    const q = query(collection(db, "chats"), where("uid", "==", uid));
+    const querySnapshot = await getDocs(q);
+    let chat: Partial<ChatObj> = {};
+    querySnapshot.forEach((doc) => {
+      chat = { uid: doc.id, ...doc.data() };
+    });
+    if (chat.messages) {
+      chat.messages[chat.messages.length - 1].status = MessageStatus.SEEN;
+      await updateDoc(doc(db, "chats", uid), {
+        messages: chat.messages,
+      });
+    }
+  }
+);
+
 export const updateChat = createAsyncThunk(
   "updateChat",
   async (args: { uid: string; message: Message }) => {
     try {
       if (args.uid) {
-        console.log(args.message, "message");
         await updateDoc(doc(db, "chats", args.uid), {
           messages: arrayUnion(args.message),
         });
@@ -121,6 +133,9 @@ export const initChat = createAsyncThunk(
       });
       thunkApi.dispatch(getUsers());
       thunkApi.dispatch(getUserByUid(chatObj.firstUser.uid));
+      await setDoc(doc(db, "chatIds", chatObj.uid), {
+        chatId: chatObj.uid,
+      });
       return chatObj;
     } catch (error) {
       alert(`${error} In initChat`);
@@ -131,9 +146,9 @@ export const initChat = createAsyncThunk(
 export const getChats = createAsyncThunk("getChats", async () => {
   try {
     const querySnapshot = await getDocs(collection(db, "chats"));
-    let chatObj: Partial<Chat> = {};
+    let chatObj: Partial<Chats> = {};
     querySnapshot.forEach((doc) => {
-      chatObj = { ...chatObj, [doc.id]: { ...doc.data() } } as Chat;
+      chatObj = { ...chatObj, [doc.id]: { ...doc.data() } } as Chats;
     });
     return chatObj;
   } catch (error) {

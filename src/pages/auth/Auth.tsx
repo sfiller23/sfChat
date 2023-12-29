@@ -9,16 +9,14 @@ import {
 } from "firebase/auth";
 import { uploadAvatar } from "../../api/firebase/api";
 import Loader from "../../UI/loader/Loader";
-import {
-  AuthContext,
-  AuthStateActions,
-} from "../../context/authContext/AuthContext";
+import { AuthContext } from "../../context/authContext/AuthContext";
 import {
   AppContext,
   AppStateActions,
 } from "../../context/appContext/AppContext";
 import ImgPreviewButton from "../../components/imgPreviewButton/ImgPreviewButton";
 import { doc, setDoc, updateDoc } from "firebase/firestore";
+import { AuthStateActions } from "../../interfaces/auth";
 
 const Auth = () => {
   const authContext = useContext(AuthContext);
@@ -44,6 +42,7 @@ const Auth = () => {
 
     try {
       let displayName: string = "";
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let credentials: any = {};
       appContext?.dispatch({
         type: AppStateActions.SET_LOADING,
