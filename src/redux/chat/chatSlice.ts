@@ -5,7 +5,6 @@ import {
   getUserByUid,
   getUsers,
   initChat,
-  updateChat,
 } from "./chatAPI";
 import { User } from "../../interfaces/auth";
 import { Chats, ChatObj } from "../../interfaces/chat";
@@ -28,9 +27,6 @@ const chatSlice = createSlice({
   name: "Chat",
   initialState,
   reducers: {
-    // clearChat: (state) => {
-    //   state = initialState;
-    // },
     addUser: (state, action) => {
       state.users.push(action.payload);
     },
