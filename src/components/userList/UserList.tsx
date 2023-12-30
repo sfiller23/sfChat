@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks/reduxHooks";
 import { getChatByUid, getUsers, initChat } from "../../redux/chat/chatAPI";
 import "./_user-list.scss";
@@ -14,11 +14,21 @@ export const UserList = () => {
   const currentUser = useAppSelector((state) => state.chatReducer.user);
   const users = useAppSelector((state) => state.chatReducer.users);
 
+  const chatId = localStorage.getItem("chatId");
+
+  const [chatActiveId, setChatActiveId] = useState(chatId);
+  const [ListItemActive, setListItemActive] = useState("");
+
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(getUsers());
   }, []);
+
+  useEffect(() => {
+    console.log("changed");
+    setChatActiveId(chatId);
+  }, [chatId]);
 
   useEffect(() => {
     const updateUserList = () => {
@@ -83,9 +93,13 @@ export const UserList = () => {
               <li
                 onClick={() => {
                   startChat(currentUser, user);
+                  setListItemActive(user.uid);
                 }}
                 key={user.uid}
-                className="list-item"
+                className={`list-item ${ListItemActive === user.uid && "active"}
+                   ${
+                     user.chatIds && chatId && user.chatIds[chatId] && "active"
+                   }`}
               >
                 <LoggedInIcon loggedIn={user.loggedIn} />
                 {user.displayName}
