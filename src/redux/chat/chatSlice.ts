@@ -50,6 +50,12 @@ const chatSlice = createSlice({
     setCurrentChat: (state, action) => {
       state.currentChat = action.payload;
     },
+    clearChat: (state) => {
+      state.user = null;
+      state.users = [];
+      state.chats = {};
+      state.currentChat = null;
+    },
   },
 
   extraReducers: (builder) => {
@@ -79,6 +85,7 @@ export const {
   setCurrentChatMessage,
   addUser,
   updateUser,
+  clearChat,
 } = chatSlice.actions;
 
 export default chatSlice.reducer;

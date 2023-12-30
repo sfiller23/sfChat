@@ -17,12 +17,19 @@ import {
 import ImgPreviewButton from "../../components/imgPreviewButton/ImgPreviewButton";
 import { doc, setDoc, updateDoc } from "firebase/firestore";
 import { AuthStateActions } from "../../interfaces/auth";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks/reduxHooks";
+import { clearChat } from "../../redux/chat/chatSlice";
+import { getChatByUid } from "../../redux/chat/chatAPI";
 
 const Auth = () => {
   const authContext = useContext(AuthContext);
   const appContext = useContext(AppContext);
 
   const location = useLocation();
+
+  const dispatch = useAppDispatch();
+
+  const user = useAppSelector((state) => state.chatReducer.user);
 
   const handleSubmit = async (
     e: BaseSyntheticEvent | Event,
@@ -54,6 +61,20 @@ const Auth = () => {
         await updateDoc(doc(db, "users", credentials.user.uid), {
           loggedIn: true,
         });
+        const chatId = await localStorage.getItem("chatId");
+        console.log(chatId, "after await");
+        if (user?.chatIds) {
+          if (chatId) {
+            if (user.chatIds[chatId]) {
+              //login with the same user
+              dispatch(getChatByUid(chatId));
+            } else {
+              //login with different user
+              localStorage.setItem("chatId", Object.keys(user.chatIds)[0]);
+              dispatch(getChatByUid(Object.keys(user.chatIds)[0]));
+            }
+          } // register (or login with a user that didn't start a chat yet):
+        }
       } else if (location === "/register") {
         credentials = await createUserWithEmailAndPassword(
           auth,
@@ -72,6 +93,8 @@ const Auth = () => {
           email,
           loggedIn: true,
         });
+        localStorage.removeItem("chatId");
+        dispatch(clearChat());
       }
       authContext?.dispatch({
         type: AuthStateActions.LOGIN,

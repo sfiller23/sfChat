@@ -28,7 +28,7 @@ const Home = () => {
 
   useEffect(() => {
     const updateChatIds = () => {
-      const unSub2 = onSnapshot(collection(db, "chatIds"), (doc) => {
+      const unSub = onSnapshot(collection(db, "chatIds"), (doc) => {
         doc.docChanges().forEach((change) => {
           switch (change.type) {
             case "added":
@@ -49,7 +49,7 @@ const Home = () => {
       });
 
       return () => {
-        unSub2();
+        unSub();
       };
     };
     updateChatIds();

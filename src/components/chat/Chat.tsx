@@ -91,7 +91,9 @@ const Chat = () => {
 
   const setMessageSeen = () => {
     if (chat) {
-      dispatch(setMessageSeenReq(chat.uid));
+      if (chat?.messages[chat?.messages.length - 1].userId !== user?.uid) {
+        dispatch(setMessageSeenReq(chat.uid));
+      }
     }
   };
 
@@ -162,7 +164,9 @@ const Chat = () => {
               onChange={(e) => {
                 setMessageText(e.target.value);
               }}
-              onFocus={setMessageSeen}
+              onFocus={() => {
+                setMessageSeen();
+              }}
             />
           </span>
           <span onClick={sendMessage} className="send-button-container">
