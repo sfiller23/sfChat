@@ -4,9 +4,7 @@ import { useContext, useEffect } from "react";
 import { AuthContext } from "../../context/authContext/AuthContext";
 import { AppContext } from "../../context/appContext/AppContext";
 import Loader from "../../UI/loader/Loader";
-import ImgPreviewButton, {
-  PreviewState,
-} from "../../components/imgPreviewButton/ImgPreviewButton";
+import ImgPreviewButton from "../../components/imgPreviewButton/ImgPreviewButton";
 import UserList from "../../components/userList/UserList";
 import UserSearch from "../../components/userSearch/UserSearch";
 import Chat from "../../components/chat/Chat";
@@ -14,7 +12,7 @@ import { useAppDispatch, useAppSelector } from "../../redux/hooks/reduxHooks";
 import { collection, doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { db } from "../../App";
 import { getChats, getUserByUid, getUsers } from "../../redux/chat/chatAPI";
-import { AuthStateActions } from "../../interfaces/auth";
+import { AuthStateActions, PreviewState } from "../../constants/enums";
 
 const Home = () => {
   const authContext = useContext(AuthContext);
@@ -24,7 +22,7 @@ const Home = () => {
 
   const user = useAppSelector((state) => state.chatReducer.user);
 
-  const userId = JSON.parse(localStorage.getItem("uid") as string);
+  const userId = JSON.parse(localStorage.getItem("userId") as string);
 
   useEffect(() => {
     const updateChatIds = () => {
@@ -58,7 +56,7 @@ const Home = () => {
   const logOutHandler = async () => {
     try {
       if (user) {
-        await updateDoc(doc(db, "users", user.uid), {
+        await updateDoc(doc(db, "users", user.userId), {
           loggedIn: false,
         });
         authContext?.dispatch({ type: AuthStateActions.LOGOUT });

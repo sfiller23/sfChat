@@ -11,29 +11,39 @@ import {
   where,
 } from "firebase/firestore";
 import { User } from "../../interfaces/auth";
-import { Chats, ChatObj, Message, MessageStatus } from "../../interfaces/chat";
+import { Chats, ChatObj, Message } from "../../interfaces/chat";
+import { MessageStatus } from "../../constants/enums";
 
 export const setWritingState = createAsyncThunk(
   "setWritingState",
-  async (args: { isWriting: boolean; uid: string; writerID: string }) => {
-    await updateDoc(doc(db, "chats", args.uid), {
+  async (args: { isWriting: boolean; chatId: string; writerID: string }) => {
+    await updateDoc(doc(db, "chats", args.chatId), {
       writing: { status: args.isWriting, writerID: args.writerID },
+    });
+  }
+);
+
+export const setNewMessageState = createAsyncThunk(
+  "setNewMessageState",
+  async (args: { userId: string; state: boolean }) => {
+    await updateDoc(doc(db, "users", args.userId), {
+      newMessage: args.state,
     });
   }
 );
 
 export const setMessageSeenReq = createAsyncThunk(
   "setMessageSeen",
-  async (uid: string) => {
-    const q = query(collection(db, "chats"), where("uid", "==", uid));
+  async (chatId: string) => {
+    const q = query(collection(db, "chats"), where("chatId", "==", chatId));
     const querySnapshot = await getDocs(q);
     let chat: Partial<ChatObj> = {};
     querySnapshot.forEach((doc) => {
-      chat = { uid: doc.id, ...doc.data() };
+      chat = { chatId: doc.id, ...doc.data() };
     });
     if (chat.messages) {
       chat.messages[chat.messages.length - 1].status = MessageStatus.SEEN;
-      await updateDoc(doc(db, "chats", uid), {
+      await updateDoc(doc(db, "chats", chatId), {
         messages: chat.messages,
       });
     }
@@ -42,22 +52,25 @@ export const setMessageSeenReq = createAsyncThunk(
 
 export const updateChat = createAsyncThunk(
   "updateChat",
-  async (args: { uid: string; message: Message }) => {
+  async (args: { chatId: string; message: Message }) => {
     try {
-      if (args.uid) {
-        await updateDoc(doc(db, "chats", args.uid), {
+      if (args.chatId) {
+        await updateDoc(doc(db, "chats", args.chatId), {
           messages: arrayUnion(args.message),
         });
-        const q = query(collection(db, "chats"), where("uid", "==", args.uid));
+        const q = query(
+          collection(db, "chats"),
+          where("chatId", "==", args.chatId)
+        );
         const querySnapshot = await getDocs(q);
         let chat: Partial<ChatObj> = {};
         querySnapshot.forEach((doc) => {
-          chat = { uid: doc.id, ...doc.data() };
+          chat = { chatId: doc.id, ...doc.data() };
         });
         if (chat.messages) {
           chat.messages[chat.messages.length - 1].status =
             MessageStatus.ARRIVED;
-          await updateDoc(doc(db, "chats", args.uid), {
+          await updateDoc(doc(db, "chats", args.chatId), {
             messages: chat.messages,
           });
         }
@@ -70,13 +83,13 @@ export const updateChat = createAsyncThunk(
 
 export const getChatByUid = createAsyncThunk(
   "getChatByUid",
-  async (uid: string) => {
+  async (chatId: string) => {
     try {
-      const q = query(collection(db, "chats"), where("uid", "==", uid));
+      const q = query(collection(db, "chats"), where("chatId", "==", chatId));
       const querySnapshot = await getDocs(q);
       let chat: Partial<ChatObj> = {};
       querySnapshot.forEach((doc) => {
-        chat = { uid: doc.id, ...doc.data() };
+        chat = { chatId: doc.id, ...doc.data() };
       });
       return chat;
     } catch (error) {
@@ -87,13 +100,13 @@ export const getChatByUid = createAsyncThunk(
 
 export const getUserByUid = createAsyncThunk(
   "getUserByUid",
-  async (uid: string) => {
+  async (userId: string) => {
     try {
-      const q = query(collection(db, "users"), where("uid", "==", uid));
+      const q = query(collection(db, "users"), where("userId", "==", userId));
       const querySnapshot = await getDocs(q);
-      let user = {};
+      let user: Partial<User> = {};
       querySnapshot.forEach((doc) => {
-        user = { uid: doc.id, ...doc.data() };
+        user = { userId: doc.id, ...doc.data() };
       });
       return user;
     } catch (error) {
@@ -107,7 +120,7 @@ export const getUsers = createAsyncThunk("getUsers", async () => {
     const querySnapshot = await getDocs(collection(db, "users"));
     const usersArray: User[] = [];
     querySnapshot.forEach((doc) => {
-      usersArray.push({ uid: doc.id, ...doc.data() } as User);
+      usersArray.push({ userId: doc.id, ...doc.data() } as User);
     });
     return usersArray;
   } catch (error) {
@@ -119,22 +132,22 @@ export const initChat = createAsyncThunk(
   "initChat",
   async (chatObj: ChatObj, thunkApi) => {
     try {
-      await setDoc(doc(db, "chats", chatObj.uid), {
-        uid: chatObj.uid,
+      await setDoc(doc(db, "chats", chatObj.chatId), {
+        chatId: chatObj.chatId,
         firstUser: chatObj.firstUser,
         secondUser: chatObj.secondUser,
         messages: chatObj.messages,
       });
-      await updateDoc(doc(db, "users", chatObj.firstUser.uid), {
+      await updateDoc(doc(db, "users", chatObj.firstUser.userId), {
         chatIds: chatObj.firstUser.chatIds,
       });
-      await updateDoc(doc(db, "users", chatObj.secondUser.uid), {
+      await updateDoc(doc(db, "users", chatObj.secondUser.userId), {
         chatIds: chatObj.secondUser.chatIds,
       });
       thunkApi.dispatch(getUsers());
-      thunkApi.dispatch(getUserByUid(chatObj.firstUser.uid));
-      await setDoc(doc(db, "chatIds", chatObj.uid), {
-        chatId: chatObj.uid,
+      thunkApi.dispatch(getUserByUid(chatObj.firstUser.userId));
+      await setDoc(doc(db, "chatIds", chatObj.chatId), {
+        chatId: chatObj.chatId,
       });
       return chatObj;
     } catch (error) {

@@ -1,18 +1,10 @@
-export interface ChatIds {
-  [chatId: string]: { active: boolean };
-}
+import { ChatIds } from "./chat";
 
 export interface User {
   displayName: string;
   email: string;
   loggedIn: boolean;
-  uid: string;
+  userId: string;
   chatIds?: ChatIds;
-}
-
-export enum AuthStateActions {
-  LOGIN,
-  LOGOUT,
-  REFRESH,
-  SET_DISPLAY_NAME,
+  newMessage?: boolean;
 }

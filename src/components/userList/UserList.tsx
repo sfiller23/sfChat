@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks/reduxHooks";
-import { getChatByUid, getUsers, initChat } from "../../redux/chat/chatAPI";
+import {
+  getChatByUid,
+  getUsers,
+  initChat,
+  setNewMessageState,
+} from "../../redux/chat/chatAPI";
 import "./_user-list.scss";
 import { ChatObj } from "../../interfaces/chat";
 import { User } from "../../interfaces/auth";
@@ -14,10 +19,7 @@ export const UserList = () => {
   const currentUser = useAppSelector((state) => state.chatReducer.user);
   const users = useAppSelector((state) => state.chatReducer.users);
 
-  const chatId = localStorage.getItem("chatId");
-
-  const [chatActiveId, setChatActiveId] = useState(chatId);
-  const [ListItemActive, setListItemActive] = useState("");
+  const [listItemActiveUid, setListItemActiveUid] = useState("");
 
   const dispatch = useAppDispatch();
 
@@ -25,10 +27,7 @@ export const UserList = () => {
     dispatch(getUsers());
   }, []);
 
-  useEffect(() => {
-    console.log("changed");
-    setChatActiveId(chatId);
-  }, [chatId]);
+  useEffect(() => {}, []);
 
   useEffect(() => {
     const updateUserList = () => {
@@ -67,39 +66,48 @@ export const UserList = () => {
       }
     }
 
-    const uid = uuid();
-    localStorage.setItem("chatId", uid);
+    const chatId = uuid();
+    localStorage.setItem("chatId", chatId);
     const chatObj: ChatObj = {
-      uid,
+      chatId: chatId,
       firstUser: {
         ...sender,
-        chatIds: { ...sender.chatIds, [uid]: { active: true } },
+        chatIds: { ...sender.chatIds, [chatId]: { active: true } },
       },
       secondUser: {
         ...receiver,
-        chatIds: { ...receiver.chatIds, [uid]: { active: true } },
+        chatIds: { ...receiver.chatIds, [chatId]: { active: true } },
       },
       messages: [],
     };
     dispatch(initChat(chatObj));
   };
 
+  const activeUid = localStorage.getItem("activeUid");
+
+  const onUserClick = (uid: string) => {
+    setListItemActiveUid(uid);
+    localStorage.setItem("activeUid", uid);
+  };
+
   return (
     <div className="user-list-container">
       <ul className="user-list">
         {users.map((user) => {
-          if (currentUser && currentUser.uid !== user.uid) {
+          if (currentUser && currentUser.userId !== user.userId) {
             return (
               <li
+                key={user.userId}
                 onClick={() => {
                   startChat(currentUser, user);
-                  setListItemActive(user.uid);
+                  onUserClick(user.userId);
                 }}
-                key={user.uid}
-                className={`list-item ${ListItemActive === user.uid && "active"}
-                   ${
-                     user.chatIds && chatId && user.chatIds[chatId] && "active"
-                   }`}
+                className={`list-item ${
+                  (listItemActiveUid === user.userId && "active") ||
+                  (activeUid && activeUid === user.userId && "active")
+                } 
+
+                   ${user.newMessage && "new-message"}`}
               >
                 <LoggedInIcon loggedIn={user.loggedIn} />
                 {user.displayName}

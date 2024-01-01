@@ -5,11 +5,11 @@ import {
   useReducer,
   ReactElement,
   useEffect,
-  useState,
   useContext,
 } from "react";
 import { storage } from "../../App";
 import { AuthContext } from "../authContext/AuthContext";
+import { AppStateActions } from "../../constants/enums";
 
 export interface AppState {
   imgProfileUrl: string;
@@ -17,14 +17,6 @@ export interface AppState {
   users: User[];
   isLoading: boolean;
   error: string;
-}
-
-export enum AppStateActions {
-  SET_IMAGE_PROFILE,
-  SET_IMAGE_PROFILE_CHANGE,
-  SET_USERS,
-  SET_ERROR,
-  SET_LOADING,
 }
 
 const initialState: AppState = {
@@ -37,6 +29,7 @@ const initialState: AppState = {
 
 export interface ReducerAction {
   type: AppStateActions;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   payload?: any;
 }
 
@@ -54,7 +47,7 @@ const reducer = (state: AppState, action: ReducerAction): AppState => {
     case AppStateActions.SET_IMAGE_PROFILE_CHANGE:
       return { ...state, imgProfileChange: !state.imgProfileChange };
     case AppStateActions.SET_ERROR:
-      return;
+      return { ...state };
       break;
     case AppStateActions.SET_LOADING:
       return { ...state, isLoading: action.payload };

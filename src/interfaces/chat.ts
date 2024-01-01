@@ -1,13 +1,7 @@
+import { MessageStatus } from "../constants/enums";
 import { User } from "./auth";
 
-export enum MessageStatus {
-  SENT = "SENT",
-  ARRIVED = "ARRIVED",
-  SEEN = "SEEN",
-}
-
 export interface Message {
-  uid?: string;
   displayName: string;
   userId: string;
   text: string;
@@ -16,7 +10,7 @@ export interface Message {
 }
 
 export interface Chats {
-  [uid: string]: {
+  [chatId: string]: {
     firstUser: User;
     secondUser: User;
     messages: Message[];
@@ -24,9 +18,13 @@ export interface Chats {
 }
 
 export interface ChatObj {
-  uid: string;
+  chatId: string;
   firstUser: User;
   secondUser: User;
   messages: Message[];
   writing?: { status: boolean; writerID: string };
+}
+
+export interface ChatIds {
+  [chatId: string]: { active: boolean };
 }

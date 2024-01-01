@@ -10,16 +10,13 @@ import {
 import { uploadAvatar } from "../../api/firebase/api";
 import Loader from "../../UI/loader/Loader";
 import { AuthContext } from "../../context/authContext/AuthContext";
-import {
-  AppContext,
-  AppStateActions,
-} from "../../context/appContext/AppContext";
+import { AppContext } from "../../context/appContext/AppContext";
 import ImgPreviewButton from "../../components/imgPreviewButton/ImgPreviewButton";
 import { doc, setDoc, updateDoc } from "firebase/firestore";
-import { AuthStateActions } from "../../interfaces/auth";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks/reduxHooks";
 import { clearChat } from "../../redux/chat/chatSlice";
 import { getChatByUid } from "../../redux/chat/chatAPI";
+import { AppStateActions, AuthStateActions } from "../../constants/enums";
 
 const Auth = () => {
   const authContext = useContext(AuthContext);
@@ -62,7 +59,6 @@ const Auth = () => {
           loggedIn: true,
         });
         const chatId = await localStorage.getItem("chatId");
-        console.log(chatId, "after await");
         if (user?.chatIds) {
           if (chatId) {
             if (user.chatIds[chatId]) {
@@ -73,7 +69,9 @@ const Auth = () => {
               localStorage.setItem("chatId", Object.keys(user.chatIds)[0]);
               dispatch(getChatByUid(Object.keys(user.chatIds)[0]));
             }
-          } // register (or login with a user that didn't start a chat yet):
+          } else {
+            dispatch(clearChat()); // if chatId was removed from localStorage
+          }
         }
       } else if (location === "/register") {
         credentials = await createUserWithEmailAndPassword(
@@ -88,7 +86,7 @@ const Auth = () => {
           await uploadAvatar(e as Event, file, uid);
         }
         await setDoc(doc(db, "users", uid), {
-          uid: uid,
+          userId: uid,
           displayName,
           email,
           loggedIn: true,

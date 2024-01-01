@@ -1,15 +1,37 @@
+.chat-message-board-container {
+  height: 25.4rem;
+  overflow-y: scroll;
+}
+
+.writing-gif-container {
+  align-self: flex-start;
+  margin-top: 0.3rem;
+}
+
 .chat-container {
   width: 100%;
   background-color: #ddddf7;
 }
 .chat-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   height: 80px;
   background-color: #5d5b8d;
 
   img {
     width: 40px;
     height: 40px;
+    border-radius: 50%;
   }
+
+  h3 {
+    color: white;
+  }
+}
+
+.logged-in-icon-container {
+  margin-right: 0.5rem;
 }
 
 .chat-message-board {

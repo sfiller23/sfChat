@@ -1,19 +1,22 @@
 import "./_chat.scss";
 import { PiNavigationArrowThin } from "react-icons/pi";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks/reduxHooks";
 import {
   getChatByUid,
   setMessageSeenReq,
+  setNewMessageState,
+  setUserNewMessage,
   setWritingState,
   updateChat,
 } from "../../redux/chat/chatAPI";
-import { Message as MessageProps, MessageStatus } from "../../interfaces/chat";
+import { Message as MessageProps } from "../../interfaces/chat";
 import LoggedInIcon from "../../UI/loggedInIcon/loggedInIcon";
 import { setCurrentChatMessage } from "../../redux/chat/chatSlice";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "../../App";
 import Message from "../message/Message";
+import { MessageStatus } from "../../constants/enums";
 
 const Chat = () => {
   const dispatch = useAppDispatch();
@@ -24,11 +27,17 @@ const Chat = () => {
 
   const [messageText, setMessageText] = useState("");
 
-  const uid = localStorage.getItem("chatId");
+  const chatId = localStorage.getItem("chatId");
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ top: 100 });
+  }, [scrollRef]);
 
   useEffect(() => {
     const updateChat = () => {
-      const q = query(collection(db, "chats"), where("uid", "==", uid));
+      const q = query(collection(db, "chats"), where("chatId", "==", chatId));
       const unSub = onSnapshot(q, (doc) => {
         doc.docChanges().forEach((change) => {
           switch (change.type) {
@@ -36,7 +45,7 @@ const Chat = () => {
               dispatch(getChatByUid(change.doc.id));
               break;
             case "modified":
-              dispatch(getChatByUid(uid as string));
+              dispatch(getChatByUid(chatId as string));
               break;
             default:
               return;
@@ -49,30 +58,40 @@ const Chat = () => {
       };
     };
     updateChat();
-  }, [uid]);
+  }, [chatId]);
 
   useEffect(() => {
-    if (uid) {
-      dispatch(getChatByUid(uid));
+    if (chatId) {
+      dispatch(getChatByUid(chatId));
     }
-  }, [uid]);
+  }, [chatId]);
 
   const sendMessage = () => {
+    //scrollRef.current?.scrollTo({ top: 1100 });
     if (user) {
       const messageObj: MessageProps = {
-        uid: uid as string,
         displayName: user.displayName,
-        userId: user.uid,
+        userId: user.userId,
         text: messageText,
         sentTime: Date.now(),
         status: MessageStatus.SENT,
       };
       dispatch(setCurrentChatMessage(messageObj));
       if (chat) {
-        if (uid) {
-          dispatch(updateChat({ uid: uid, message: messageObj }));
+        if (chatId) {
+          dispatch(updateChat({ chatId: chatId, message: messageObj }));
+          dispatch(
+            setNewMessageState({
+              userId:
+                user.userId === chat.firstUser.userId
+                  ? chat.firstUser.userId
+                  : chat.secondUser.userId,
+              state: true,
+            })
+          );
         }
       }
+
       setMessageText("");
     }
   };
@@ -82,8 +101,8 @@ const Chat = () => {
       dispatch(
         setWritingState({
           isWriting: isWritingMode,
-          uid: chat.uid,
-          writerID: user?.uid,
+          chatId: chat.chatId,
+          writerID: user?.userId,
         })
       );
     }
@@ -91,8 +110,16 @@ const Chat = () => {
 
   const setMessageSeen = () => {
     if (chat) {
-      if (chat?.messages[chat?.messages.length - 1].userId !== user?.uid) {
-        dispatch(setMessageSeenReq(chat.uid));
+      if (chat.messages.length !== 0) {
+        if (chat?.messages[chat?.messages.length - 1].userId !== user?.userId) {
+          dispatch(setMessageSeenReq(chat.chatId));
+          dispatch(
+            setNewMessageState({
+              userId: chat?.messages[chat?.messages.length - 1].userId,
+              state: false,
+            })
+          );
+        }
       }
     }
   };
@@ -101,36 +128,47 @@ const Chat = () => {
     <span className="chat-container">
       <div className="chat-header">
         <>
+          {chat?.writing?.status && chat.writing.writerID !== user?.userId && (
+            <span className="writing-gif-container">
+              <img src="../../assets/gifs/writing.gif" alt="Writing..." />
+            </span>
+          )}
           {chat &&
-            (chat.firstUser.uid !== user?.uid ? (
+            (chat.firstUser.userId !== user?.userId ? (
               <>
-                <LoggedInIcon
-                  loggedIn={
-                    users.find((user) => user.uid === chat.firstUser.uid)
-                      ?.loggedIn
-                  }
-                />
-                {chat.firstUser.displayName}
+                <span className="logged-in-icon-container">
+                  {" "}
+                  <LoggedInIcon
+                    loggedIn={
+                      users.find(
+                        (user) => user.userId === chat.firstUser.userId
+                      )?.loggedIn
+                    }
+                  />
+                </span>
+                <span>
+                  <h3>{chat.firstUser.displayName}</h3>
+                </span>
               </>
             ) : (
               <>
-                <LoggedInIcon
-                  loggedIn={
-                    users.find((user) => user.uid === chat.secondUser.uid)
-                      ?.loggedIn
-                  }
-                />
-                {chat.secondUser.displayName}
+                <span className="logged-in-icon-container">
+                  <LoggedInIcon
+                    loggedIn={
+                      users.find(
+                        (user) => user.userId === chat.secondUser.userId
+                      )?.loggedIn
+                    }
+                  />
+                </span>
+                <span>
+                  <h3>{chat.secondUser.displayName}</h3>
+                </span>
               </>
             ))}
         </>
-        {chat?.writing?.status && chat.writing.writerID !== user?.uid && (
-          <span>
-            <img src="../../assets/gifs/writing.gif" alt="Writing..." />
-          </span>
-        )}
       </div>
-      <div className="chat-message-board-container">
+      <div ref={scrollRef} className="chat-message-board-container">
         <div className="chat-message-board">
           {chat &&
             chat.messages.length !== 0 &&
@@ -139,7 +177,6 @@ const Chat = () => {
                 <Message
                   key={message.sentTime}
                   text={message.text}
-                  uid={message.uid}
                   sentTime={message.sentTime}
                   userId={message.userId}
                   status={message.status}
@@ -148,31 +185,31 @@ const Chat = () => {
             })}
           <span className="seperator right-seperator"></span>
         </div>
-        <div className="chat-footer">
-          <span className="chat-input">
-            <input
-              className="input-box"
-              type="text"
-              placeholder="Enter Message..."
-              value={messageText}
-              onMouseEnter={() => {
-                setWriting(true);
-              }}
-              onMouseLeave={() => {
-                setWriting(false);
-              }}
-              onChange={(e) => {
-                setMessageText(e.target.value);
-              }}
-              onFocus={() => {
-                setMessageSeen();
-              }}
-            />
-          </span>
-          <span onClick={sendMessage} className="send-button-container">
-            <PiNavigationArrowThin size={20} className="send-icon" />
-          </span>
-        </div>
+      </div>
+      <div className="chat-footer">
+        <span className="chat-input">
+          <input
+            className="input-box"
+            type="text"
+            placeholder="Enter Message..."
+            value={messageText}
+            onMouseEnter={() => {
+              setWriting(true);
+            }}
+            onMouseLeave={() => {
+              setWriting(false);
+            }}
+            onChange={(e) => {
+              setMessageText(e.target.value);
+            }}
+            onFocus={() => {
+              setMessageSeen();
+            }}
+          />
+        </span>
+        <span onClick={sendMessage} className="send-button-container">
+          <PiNavigationArrowThin size={20} className="send-icon" />
+        </span>
       </div>
     </span>
   );

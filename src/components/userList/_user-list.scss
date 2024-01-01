@@ -1,3 +1,8 @@
+.user-list-container {
+  height: 25.4rem;
+  overflow-y: scroll;
+}
+
 .is-loggedin-icon {
   width: 20px;
   height: 20px;
@@ -21,10 +26,61 @@
 
 .user-list {
   padding: 0;
+
   li {
     cursor: pointer;
     &.active {
       background-color: #a2a2d9;
+    }
+    @keyframes flickerAnimation {
+      0% {
+        background-color: green;
+      }
+      50% {
+        background-color: transparent;
+      }
+      100% {
+        background-color: green;
+      }
+    }
+    @-o-keyframes flickerAnimation {
+      0% {
+        background-color: green;
+      }
+      50% {
+        background-color: transparent;
+      }
+      100% {
+        background-color: green;
+      }
+    }
+    @-moz-keyframes flickerAnimation {
+      0% {
+        background-color: green;
+      }
+      50% {
+        background-color: transparent;
+      }
+      100% {
+        background-color: green;
+      }
+    }
+    @-webkit-keyframes flickerAnimation {
+      0% {
+        background-color: green;
+      }
+      50% {
+        background-color: transparent;
+      }
+      100% {
+        background-color: green;
+      }
+    }
+    &.new-message {
+      -webkit-animation: flickerAnimation 0.5s infinite;
+      -moz-animation: flickerAnimation 0.5s infinite;
+      -o-animation: flickerAnimation 0.5s infinite;
+      animation: flickerAnimation 0.5s infinite;
     }
   }
 

@@ -8,9 +8,10 @@ import {
 } from "react";
 import { auth } from "../../App";
 import { useNavigate } from "react-router-dom";
-import { AuthStateActions, User } from "../../interfaces/auth";
+import { User } from "../../interfaces/auth";
 import { useAppDispatch } from "../../redux/hooks/reduxHooks";
 import { getUserByUid } from "../../redux/chat/chatAPI";
+import { AuthStateActions } from "../../constants/enums";
 
 export interface AuthState {
   user: User | null;
@@ -46,11 +47,11 @@ const reducer = (state: AuthState, action: ReducerAction): AuthState => {
         "accessToken",
         JSON.stringify(action.payload?.accessToken)
       );
-      localStorage.setItem("uid", JSON.stringify(action.payload?.uid));
+      localStorage.setItem("userId", JSON.stringify(action.payload?.uid));
       return {
         ...state,
         user: {
-          uid: action.payload.uid,
+          userId: action.payload.uid,
           displayName: action.payload.displayName,
           email: action.payload.email,
           loggedIn: true,
@@ -62,7 +63,8 @@ const reducer = (state: AuthState, action: ReducerAction): AuthState => {
     case AuthStateActions.LOGOUT:
       signOut(auth);
       localStorage.removeItem("accessToken");
-      localStorage.removeItem("uid");
+      localStorage.removeItem("userId");
+      localStorage.removeItem("activeUid");
       return { ...state, loggedIn: false, user: null, accessToken: "" };
 
     case AuthStateActions.REFRESH:
@@ -90,16 +92,16 @@ export const AuthProvider = ({ children }: ChildrenType): ReactElement => {
 
   const chatSliceDispatch = useAppDispatch();
 
-  const uid = JSON.parse(localStorage.getItem("uid") as string);
+  const userId = JSON.parse(localStorage.getItem("userId") as string);
 
   const token = JSON.parse(localStorage.getItem("accessToken") as string);
 
   useLayoutEffect(() => {
-    console.log(uid, "from aurh context");
-    if (uid) {
-      chatSliceDispatch(getUserByUid(uid));
+    console.log(userId, "from aurh context");
+    if (userId) {
+      chatSliceDispatch(getUserByUid(userId));
     }
-  }, [uid]);
+  }, [userId]);
 
   useEffect(() => {
     token ? navigate("/home") : navigate("/login");

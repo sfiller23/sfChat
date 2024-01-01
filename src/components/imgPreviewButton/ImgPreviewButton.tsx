@@ -5,15 +5,8 @@ import { HiOutlineCloudUpload } from "react-icons/hi";
 import { uploadAvatar } from "../../api/firebase/api";
 import { BaseSyntheticEvent, useContext, useState } from "react";
 import { AuthContext } from "../../context/authContext/AuthContext";
-import {
-  AppContext,
-  AppStateActions,
-} from "../../context/appContext/AppContext";
-
-export enum PreviewState {
-  ADD = "Add",
-  EDIT = "Edit",
-}
+import { AppContext } from "../../context/appContext/AppContext";
+import { AppStateActions, PreviewState } from "../../constants/enums";
 
 interface imgPreviewButtonProps {
   action?: PreviewState;
@@ -37,7 +30,7 @@ const ImgPreviewButton = (props: imgPreviewButtonProps) => {
       await uploadAvatar(
         e as Event,
         picture,
-        authContext?.state.user?.uid as string
+        authContext?.state.user?.userId as string
       );
       setPicture(null);
       setIsPreview(false);
@@ -67,7 +60,6 @@ const ImgPreviewButton = (props: imgPreviewButtonProps) => {
       />
 
       {!inForm && imgData && isPreview && (
-        // <button className="avatar-upload-button">Upload</button>
         <button
           onClick={handleAvatarUpload}
           className="avatar-upload avatar-upload-button"
