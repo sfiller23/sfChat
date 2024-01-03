@@ -7,7 +7,7 @@ import {
   useLayoutEffect,
 } from "react";
 import { auth } from "../../App";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { User } from "../../interfaces/auth";
 import { useAppDispatch } from "../../redux/hooks/reduxHooks";
 import { getUserByUid } from "../../redux/chat/chatAPI";
@@ -64,6 +64,7 @@ const reducer = (state: AuthState, action: ReducerAction): AuthState => {
       signOut(auth);
       localStorage.removeItem("accessToken");
       localStorage.removeItem("userId");
+      localStorage.removeItem("chatId");
       localStorage.removeItem("activeUid");
       return { ...state, loggedIn: false, user: null, accessToken: "" };
 
@@ -97,7 +98,6 @@ export const AuthProvider = ({ children }: ChildrenType): ReactElement => {
   const token = JSON.parse(localStorage.getItem("accessToken") as string);
 
   useLayoutEffect(() => {
-    console.log(userId, "from aurh context");
     if (userId) {
       chatSliceDispatch(getUserByUid(userId));
     }

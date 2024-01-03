@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { MessageStatus } from "../../constants/enums";
 import { Message as MessageProps } from "../../interfaces/chat";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks/reduxHooks";
@@ -9,19 +9,32 @@ import { newMessageArrived } from "../../redux/chat/chatSlice";
 
 const Message = (props: Partial<MessageProps>) => {
   const user = useAppSelector((state) => state.chatReducer.user);
+  const chats = useAppSelector((state) => state.chatReducer.chats);
 
   const dispatch = useAppDispatch();
 
-  const { text, sentTime, status = MessageStatus.SENT, userId } = props;
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  const {
+    text,
+    sentTime,
+    status = MessageStatus.SENT,
+    userId,
+    index,
+    chatId,
+  } = props;
 
   useEffect(() => {
-    if (status === MessageStatus.ARRIVED) {
-      //dispatch(newMessageArrived(userId));
+    if (chatId && index) {
+      if (chats[chatId].messages.length - 1 === index) {
+        bottomRef.current?.scrollIntoView();
+      }
     }
-  }, [status]);
+  }, []);
 
   return (
     <div
+      ref={bottomRef}
       className={`message-container ${
         userId === user?.userId ? "sender" : "reciever"
       }`}

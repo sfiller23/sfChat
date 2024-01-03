@@ -1,6 +1,6 @@
 import Card from "../../UI/card/Card";
 import "./home.css";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useLayoutEffect } from "react";
 import { AuthContext } from "../../context/authContext/AuthContext";
 import { AppContext } from "../../context/appContext/AppContext";
 import Loader from "../../UI/loader/Loader";
@@ -13,6 +13,8 @@ import { collection, doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { db } from "../../App";
 import { getChats, getUserByUid, getUsers } from "../../redux/chat/chatAPI";
 import { AuthStateActions, PreviewState } from "../../constants/enums";
+import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
+import { addChatId } from "../../redux/chat/chatSlice";
 
 const Home = () => {
   const authContext = useContext(AuthContext);
@@ -20,9 +22,25 @@ const Home = () => {
 
   const dispatch = useAppDispatch();
 
+  const navigate = useNavigate();
+
+  const location = useLocation();
+
   const user = useAppSelector((state) => state.chatReducer.user);
 
-  const userId = JSON.parse(localStorage.getItem("userId") as string);
+  const activeUid = localStorage.getItem("activeUid");
+
+  //const { userId } = useParams();
+
+  useEffect(() => {
+    if (activeUid) {
+      navigate(activeUid);
+    }
+  }, [location.pathname]);
+
+  useEffect(() => {
+    dispatch(getChats());
+  }, []);
 
   useEffect(() => {
     const updateChatIds = () => {
@@ -32,10 +50,9 @@ const Home = () => {
             case "added":
               dispatch(getChats());
               dispatch(getUsers());
-              console.log(userId);
-              if (userId) {
-                dispatch(getUserByUid(userId));
-              }
+              console.log({ ...change.doc.data() }, "user list hook");
+              //localStorage.setItem("chatId", change.doc.data().chatId);
+              //dispatch(addChatId(change.doc.data().chatId));
 
               break;
             case "modified":
@@ -113,7 +130,7 @@ const Home = () => {
         <UserList />
       </span>
       <span className="seperator"></span>
-      <Chat />
+      {activeUid ? <Outlet /> : <div>Hello</div>}
     </Card>
   );
 };

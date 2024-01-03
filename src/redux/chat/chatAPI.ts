@@ -42,7 +42,9 @@ export const setMessageSeenReq = createAsyncThunk(
       chat = { chatId: doc.id, ...doc.data() };
     });
     if (chat.messages) {
-      chat.messages[chat.messages.length - 1].status = MessageStatus.SEEN;
+      chat.messages.forEach((message) => {
+        message.status = MessageStatus.SEEN;
+      });
       await updateDoc(doc(db, "chats", chatId), {
         messages: chat.messages,
       });

@@ -11,6 +11,7 @@ import { firebaseConfig } from "../config";
 import Auth from "./pages/auth/Auth";
 import { getStorage, ref } from "firebase/storage";
 import { getFirestore } from "firebase/firestore";
+import Chat from "./components/chat/Chat";
 
 const app = initializeApp(firebaseConfig);
 
@@ -25,7 +26,9 @@ function App() {
       <Route index element={<Navigate replace to="login" />} />
       <Route path="login" element={<Auth />} />
       <Route path="register" element={<Auth />} />
-      <Route path="home" element={<Home />} />
+      <Route path="home" element={<Home />}>
+        <Route path=":userId" element={<Chat />} />
+      </Route>
     </Routes>
   );
 }

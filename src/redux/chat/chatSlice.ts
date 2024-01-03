@@ -27,6 +27,18 @@ const chatSlice = createSlice({
   name: "Chat",
   initialState,
   reducers: {
+    addChatId: (state, action) => {
+      if (state.user) {
+        state.user.chatIds = {
+          ...state.user?.chatIds,
+          [action.payload]: { active: true },
+        };
+      }
+      console.log(state.user, "from slice reducer");
+    },
+    updateCurrentChat: (state, action) => {
+      state.chats[action.payload.chatId] = action.payload;
+    },
     setMessageAsSeen: (state, action) => {
       const userIndex = state.users
         .map((user) => user.userId)
@@ -103,6 +115,8 @@ export const {
   clearChat,
   newMessageArrived,
   setMessageAsSeen,
+  updateCurrentChat,
+  addChatId,
 } = chatSlice.actions;
 
 export default chatSlice.reducer;

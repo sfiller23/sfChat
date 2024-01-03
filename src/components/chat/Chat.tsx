@@ -10,20 +10,28 @@ import {
   setWritingState,
   updateChat,
 } from "../../redux/chat/chatAPI";
-import { Message as MessageProps } from "../../interfaces/chat";
+import { ChatObj, Message as MessageProps } from "../../interfaces/chat";
 import LoggedInIcon from "../../UI/loggedInIcon/loggedInIcon";
-import { setCurrentChatMessage } from "../../redux/chat/chatSlice";
+import {
+  setCurrentChat,
+  setCurrentChatMessage,
+  updateCurrentChat,
+} from "../../redux/chat/chatSlice";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "../../App";
 import Message from "../message/Message";
 import { MessageStatus } from "../../constants/enums";
+import { useNavigate, useParams } from "react-router-dom";
 
 const Chat = () => {
   const dispatch = useAppDispatch();
 
-  const chat = useAppSelector((state) => state.chatReducer.currentChat);
+  //const chat = useAppSelector((state) => state.chatReducer.currentChat);
   const user = useAppSelector((state) => state.chatReducer.user);
   const users = useAppSelector((state) => state.chatReducer.users);
+  const chats = useAppSelector((state) => state.chatReducer.chats);
+
+  const [chat, setChat] = useState<ChatObj>();
 
   const [messageText, setMessageText] = useState("");
 
@@ -31,9 +39,13 @@ const Chat = () => {
 
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  const { userId } = useParams();
+
   useEffect(() => {
-    scrollRef.current?.scrollTo({ top: 100 });
-  }, [scrollRef]);
+    if (chatId) {
+      setChat(chats[chatId]);
+    }
+  }, [chats, userId]);
 
   useEffect(() => {
     const updateChat = () => {
@@ -42,10 +54,10 @@ const Chat = () => {
         doc.docChanges().forEach((change) => {
           switch (change.type) {
             case "added":
-              dispatch(getChatByUid(change.doc.id));
+              dispatch(getChatByUid(chatId as string));
               break;
             case "modified":
-              dispatch(getChatByUid(chatId as string));
+              dispatch(updateCurrentChat(change.doc.data()));
               break;
             default:
               return;
@@ -58,13 +70,13 @@ const Chat = () => {
       };
     };
     updateChat();
-  }, [chatId]);
+  }, []);
 
-  useEffect(() => {
-    if (chatId) {
-      dispatch(getChatByUid(chatId));
-    }
-  }, [chatId]);
+  // useEffect(() => {
+  //   if (chatId) {
+  //     dispatch(getChatByUid(chatId));
+  //   }
+  // }, [chatId]);
 
   const sendMessage = () => {
     //scrollRef.current?.scrollTo({ top: 1100 });
@@ -172,7 +184,7 @@ const Chat = () => {
         <div className="chat-message-board">
           {chat &&
             chat.messages.length !== 0 &&
-            chat.messages.map((message) => {
+            chat.messages.map((message, index) => {
               return (
                 <Message
                   key={message.sentTime}
@@ -180,6 +192,8 @@ const Chat = () => {
                   sentTime={message.sentTime}
                   userId={message.userId}
                   status={message.status}
+                  index={index}
+                  chatId={chat.chatId}
                 />
               );
             })}

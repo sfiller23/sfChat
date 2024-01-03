@@ -14,6 +14,7 @@ import { updateUser } from "../../redux/chat/chatSlice";
 import LoggedInIcon from "../../UI/loggedInIcon/loggedInIcon";
 import { db } from "../../App";
 import { collection, onSnapshot } from "firebase/firestore";
+import { Link } from "react-router-dom";
 
 export const UserList = () => {
   const currentUser = useAppSelector((state) => state.chatReducer.user);
@@ -54,6 +55,8 @@ export const UserList = () => {
   }, []);
 
   const startChat = (sender: User, receiver: User) => {
+    console.log(sender, "from start chat");
+    console.log(receiver, "from start chat");
     if (sender.chatIds) {
       for (const key in sender.chatIds) {
         if (receiver.chatIds) {
@@ -96,22 +99,23 @@ export const UserList = () => {
         {users.map((user) => {
           if (currentUser && currentUser.userId !== user.userId) {
             return (
-              <li
-                key={user.userId}
-                onClick={() => {
-                  startChat(currentUser, user);
-                  onUserClick(user.userId);
-                }}
-                className={`list-item ${
-                  (listItemActiveUid === user.userId && "active") ||
-                  (activeUid && activeUid === user.userId && "active")
-                } 
+              <Link key={user.userId} to={user.userId}>
+                <li
+                  onClick={() => {
+                    startChat(currentUser, user);
+                    onUserClick(user.userId);
+                  }}
+                  className={`list-item ${
+                    (listItemActiveUid === user.userId && "active") ||
+                    (activeUid && activeUid === user.userId && "active")
+                  } 
 
                    ${user.newMessage && "new-message"}`}
-              >
-                <LoggedInIcon loggedIn={user.loggedIn} />
-                {user.displayName}
-              </li>
+                >
+                  <LoggedInIcon loggedIn={user.loggedIn} />
+                  {user.displayName}
+                </li>
+              </Link>
             );
           }
         })}

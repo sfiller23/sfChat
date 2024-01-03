@@ -7,14 +7,12 @@ export interface Message {
   text: string;
   sentTime: number;
   status?: MessageStatus;
+  index?: number;
+  chatId?: string;
 }
 
 export interface Chats {
-  [chatId: string]: {
-    firstUser: User;
-    secondUser: User;
-    messages: Message[];
-  };
+  [chatId: string]: ChatObj;
 }
 
 export interface ChatObj {

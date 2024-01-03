@@ -39,7 +39,7 @@ const Auth = () => {
 
     if (repeatPassword) {
       if (password !== repeatPassword) {
-        alert("Passwordes don't match");
+        alert("Passwords don't match");
         return;
       }
     }
@@ -58,21 +58,6 @@ const Auth = () => {
         await updateDoc(doc(db, "users", credentials.user.uid), {
           loggedIn: true,
         });
-        const chatId = await localStorage.getItem("chatId");
-        if (user?.chatIds) {
-          if (chatId) {
-            if (user.chatIds[chatId]) {
-              //login with the same user
-              dispatch(getChatByUid(chatId));
-            } else {
-              //login with different user
-              localStorage.setItem("chatId", Object.keys(user.chatIds)[0]);
-              dispatch(getChatByUid(Object.keys(user.chatIds)[0]));
-            }
-          } else {
-            dispatch(clearChat()); // if chatId was removed from localStorage
-          }
-        }
       } else if (location === "/register") {
         credentials = await createUserWithEmailAndPassword(
           auth,
