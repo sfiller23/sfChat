@@ -13,6 +13,7 @@ import {
 import { ChatObj, Message as MessageProps } from "../../interfaces/chat";
 import LoggedInIcon from "../../UI/loggedInIcon/loggedInIcon";
 import {
+  ChatState,
   setCurrentChat,
   setCurrentChatMessage,
   updateCurrentChat,
@@ -21,13 +22,14 @@ import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "../../App";
 import Message from "../message/Message";
 import { MessageStatus } from "../../constants/enums";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
-const Chat = () => {
+const Chat = (props: Partial<ChatState>) => {
+  const { user } = props;
   const dispatch = useAppDispatch();
 
-  //const chat = useAppSelector((state) => state.chatReducer.currentChat);
-  const user = useAppSelector((state) => state.chatReducer.user);
+  const currentChat = useAppSelector((state) => state.chatReducer.currentChat);
+  //const user = useAppSelector((state) => state.chatReducer.user);
   const users = useAppSelector((state) => state.chatReducer.users);
   const chats = useAppSelector((state) => state.chatReducer.chats);
 
@@ -35,42 +37,82 @@ const Chat = () => {
 
   const [messageText, setMessageText] = useState("");
 
-  const chatId = localStorage.getItem("chatId");
+  //const [chatId, setChatId] = useState("");
+  const location = useLocation();
 
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const { userId } = useParams();
+  //const chatId = chat?.chatId;
+
+  //const chat = currentChat;
+
+  const chatId = localStorage.getItem("chatId");
+
+  //const { userId } = useParams();
+  // useEffect(() => {
+  //   if (currentChatId) {
+  //     setChatId(currentChatId);
+  //   }
+  // }, [currentChatId]);
 
   useEffect(() => {
+    console.log("refresh", chatId);
     if (chatId) {
-      setChat(chats[chatId]);
+      dispatch(getChatByUid(chatId));
     }
-  }, [chats, userId]);
+  }, [location.pathname]);
 
   useEffect(() => {
-    const updateChat = () => {
-      const q = query(collection(db, "chats"), where("chatId", "==", chatId));
-      const unSub = onSnapshot(q, (doc) => {
-        doc.docChanges().forEach((change) => {
-          switch (change.type) {
-            case "added":
-              dispatch(getChatByUid(chatId as string));
-              break;
-            case "modified":
-              dispatch(updateCurrentChat(change.doc.data()));
-              break;
-            default:
-              return;
-          }
-        });
-      });
+    if (currentChat) {
+      setChat(chats[currentChat.chatId]);
+    }
+  }, [chats, currentChat]);
 
-      return () => {
-        unSub();
+  useEffect(() => {
+    console.log(user?.chatIds);
+    console.log(chat?.chatId);
+    if (chat?.chatId) {
+      console.log("after if");
+      console.log(user?.chatIds);
+      console.log(chat?.chatId);
+      const updateChat = () => {
+        const q = query(
+          collection(db, "chats"),
+          where(
+            "chatId",
+            "in",
+            user && user.chatIds
+              ? Object.keys({ ...user?.chatIds })
+              : [chat.chatId]
+          )
+        );
+        const unSub = onSnapshot(q, (doc) => {
+          doc.docChanges().forEach((change) => {
+            console.log(change.doc.data(), "listening");
+            switch (change.type) {
+              case "added":
+                console.log("added");
+                console.log({ ...change.doc.data() }.chatId, "chatId");
+                //dispatch(getChatByUid({ ...change.doc.data() }.chatId));
+                dispatch(updateCurrentChat(change.doc.data()));
+                break;
+              case "modified":
+                console.log("modified");
+                dispatch(updateCurrentChat(change.doc.data()));
+                break;
+              default:
+                return;
+            }
+          });
+        });
+
+        return () => {
+          unSub();
+        };
       };
-    };
-    updateChat();
-  }, []);
+      updateChat();
+    }
+  }, [user?.chatIds, chat?.chatId]);
 
   // useEffect(() => {
   //   if (chatId) {
@@ -90,8 +132,8 @@ const Chat = () => {
       };
       dispatch(setCurrentChatMessage(messageObj));
       if (chat) {
-        if (chatId) {
-          dispatch(updateChat({ chatId: chatId, message: messageObj }));
+        if (chat.chatId) {
+          dispatch(updateChat({ chatId: chat.chatId, message: messageObj }));
           dispatch(
             setNewMessageState({
               userId:
@@ -207,7 +249,7 @@ const Chat = () => {
             type="text"
             placeholder="Enter Message..."
             value={messageText}
-            onMouseEnter={() => {
+            onInput={() => {
               setWriting(true);
             }}
             onMouseLeave={() => {

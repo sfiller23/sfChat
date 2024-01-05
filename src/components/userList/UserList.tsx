@@ -28,8 +28,6 @@ export const UserList = () => {
     dispatch(getUsers());
   }, []);
 
-  useEffect(() => {}, []);
-
   useEffect(() => {
     const updateUserList = () => {
       const unSub = onSnapshot(collection(db, "users"), (doc) => {
@@ -61,6 +59,7 @@ export const UserList = () => {
       for (const key in sender.chatIds) {
         if (receiver.chatIds) {
           if (receiver.chatIds[key]) {
+            console.log("geting the chat", key);
             dispatch(getChatByUid(key));
             localStorage.setItem("chatId", key);
             return;
@@ -99,23 +98,29 @@ export const UserList = () => {
         {users.map((user) => {
           if (currentUser && currentUser.userId !== user.userId) {
             return (
-              <Link key={user.userId} to={user.userId}>
-                <li
-                  onClick={() => {
-                    startChat(currentUser, user);
-                    onUserClick(user.userId);
-                  }}
-                  className={`list-item ${
-                    (listItemActiveUid === user.userId && "active") ||
-                    (activeUid && activeUid === user.userId && "active")
-                  } 
+              // <Link key={user.userId} to={user.userId}>
+              <li
+                key={user.userId}
+                onClick={() => {
+                  startChat(
+                    users.filter(
+                      (user) => user.userId === currentUser.userId
+                    )[0],
+                    user
+                  );
+                  onUserClick(user.userId);
+                }}
+                className={`list-item ${
+                  (listItemActiveUid === user.userId && "active") ||
+                  (activeUid && activeUid === user.userId && "active")
+                } 
 
                    ${user.newMessage && "new-message"}`}
-                >
-                  <LoggedInIcon loggedIn={user.loggedIn} />
-                  {user.displayName}
-                </li>
-              </Link>
+              >
+                <LoggedInIcon loggedIn={user.loggedIn} />
+                {user.displayName}
+              </li>
+              // </Link>
             );
           }
         })}

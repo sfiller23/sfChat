@@ -25,12 +25,14 @@ const Message = (props: Partial<MessageProps>) => {
   } = props;
 
   useEffect(() => {
-    if (chatId && index) {
-      if (chats[chatId].messages.length - 1 === index) {
-        bottomRef.current?.scrollIntoView();
-      }
-    }
-  }, []);
+    bottomRef.current?.scrollIntoView();
+  }, [
+    chatId,
+    chats[chatId as string],
+    index,
+    chats[chatId as string].messages.length,
+    bottomRef.current,
+  ]);
 
   return (
     <div

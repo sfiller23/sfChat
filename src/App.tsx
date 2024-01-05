@@ -26,9 +26,9 @@ function App() {
       <Route index element={<Navigate replace to="login" />} />
       <Route path="login" element={<Auth />} />
       <Route path="register" element={<Auth />} />
-      <Route path="home" element={<Home />}>
-        <Route path=":userId" element={<Chat />} />
-      </Route>
+      <Route path="home" element={<Home />} />
+      {/* <Route path=":userId" element={<Chat />} />
+      </Route> */}
     </Routes>
   );
 }

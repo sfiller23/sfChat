@@ -1,6 +1,6 @@
 import Card from "../../UI/card/Card";
 import "./home.css";
-import { useContext, useEffect, useLayoutEffect } from "react";
+import { useContext, useEffect, useLayoutEffect, useState } from "react";
 import { AuthContext } from "../../context/authContext/AuthContext";
 import { AppContext } from "../../context/appContext/AppContext";
 import Loader from "../../UI/loader/Loader";
@@ -15,6 +15,7 @@ import { getChats, getUserByUid, getUsers } from "../../redux/chat/chatAPI";
 import { AuthStateActions, PreviewState } from "../../constants/enums";
 import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
 import { addChatId } from "../../redux/chat/chatSlice";
+import { ChatObj } from "../../interfaces/chat";
 
 const Home = () => {
   const authContext = useContext(AuthContext);
@@ -28,15 +29,17 @@ const Home = () => {
 
   const user = useAppSelector((state) => state.chatReducer.user);
 
-  const activeUid = localStorage.getItem("activeUid");
+  const [chat, setChat] = useState<ChatObj>();
+
+  //const activeUid = localStorage.getItem("activeUid");
 
   //const { userId } = useParams();
 
-  useEffect(() => {
-    if (activeUid) {
-      navigate(activeUid);
-    }
-  }, [location.pathname]);
+  // useEffect(() => {
+  //   if (activeUid) {
+  //     navigate(activeUid);
+  //   }
+  // }, [location.pathname]);
 
   useEffect(() => {
     dispatch(getChats());
@@ -130,7 +133,7 @@ const Home = () => {
         <UserList />
       </span>
       <span className="seperator"></span>
-      {activeUid ? <Outlet /> : <div>Hello</div>}
+      <Chat user={user} />
     </Card>
   );
 };
