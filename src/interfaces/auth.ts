@@ -6,5 +6,4 @@ export interface User {
   loggedIn: boolean;
   userId: string;
   chatIds?: ChatIds;
-  newMessage?: boolean;
 }

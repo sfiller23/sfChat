@@ -7,7 +7,7 @@ import {
   setNewMessageState,
 } from "../../redux/chat/chatAPI";
 import "./_user-list.scss";
-import { ChatObj } from "../../interfaces/chat";
+import { ChatIds, ChatObj, Chats } from "../../interfaces/chat";
 import { User } from "../../interfaces/auth";
 import { v4 as uuid } from "uuid";
 import { updateUser } from "../../redux/chat/chatSlice";
@@ -15,10 +15,15 @@ import LoggedInIcon from "../../UI/loggedInIcon/loggedInIcon";
 import { db } from "../../App";
 import { collection, onSnapshot } from "firebase/firestore";
 import { Link } from "react-router-dom";
+import { MessageStatus } from "../../constants/enums";
 
 export const UserList = () => {
   const currentUser = useAppSelector((state) => state.chatReducer.user);
   const users = useAppSelector((state) => state.chatReducer.users);
+  const chats = useAppSelector((state) => state.chatReducer.chats);
+  const currentChat = useAppSelector((state) => state.chatReducer.currentChat);
+
+  const [chatId, setCatId] = useState("");
 
   const [listItemActiveUid, setListItemActiveUid] = useState("");
 
@@ -92,6 +97,44 @@ export const UserList = () => {
     localStorage.setItem("activeUid", uid);
   };
 
+  const isNewMessage = (user: User, currentUser: User, chats: Chats) => {
+    for (const chatId in user.chatIds) {
+      if (chats[chatId]) {
+        if (currentUser.userId === chats[chatId].firstUser.userId) {
+          if (
+            chats[chatId].secondUser.userId === user.userId &&
+            chats[chatId].messages &&
+            chats[chatId].messages.length !== 0 &&
+            chats[chatId].messages[chats[chatId].messages.length - 1][
+              "status"
+            ] &&
+            chats[chatId].messages[chats[chatId].messages.length - 1].userId !==
+              chats[chatId].firstUser.userId &&
+            chats[chatId].messages[chats[chatId].messages.length - 1].status ===
+              MessageStatus.ARRIVED
+          ) {
+            return chats[chatId].secondUser.userId;
+          }
+        } else if (currentUser.userId === chats[chatId].secondUser.userId) {
+          if (
+            chats[chatId].firstUser.userId === user.userId &&
+            chats[chatId].messages &&
+            chats[chatId].messages.length !== 0 &&
+            chats[chatId].messages[chats[chatId].messages.length - 1][
+              "status"
+            ] &&
+            chats[chatId].messages[chats[chatId].messages.length - 1].userId !==
+              chats[chatId].secondUser.userId &&
+            chats[chatId].messages[chats[chatId].messages.length - 1].status ===
+              MessageStatus.ARRIVED
+          ) {
+            return chats[chatId].firstUser.userId;
+          }
+        }
+      }
+    }
+  };
+
   return (
     <div className="user-list-container">
       <ul className="user-list">
@@ -115,7 +158,11 @@ export const UserList = () => {
                   (activeUid && activeUid === user.userId && "active")
                 } 
 
-                   ${user.newMessage && "new-message"}`}
+                   ${
+                     user.chatIds &&
+                     user.userId === isNewMessage(user, currentUser, chats) &&
+                     "new-message"
+                   }`}
               >
                 <LoggedInIcon loggedIn={user.loggedIn} />
                 {user.displayName}

@@ -14,7 +14,7 @@ import { db } from "../../App";
 import { getChats, getUserByUid, getUsers } from "../../redux/chat/chatAPI";
 import { AuthStateActions, PreviewState } from "../../constants/enums";
 import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
-import { addChatId } from "../../redux/chat/chatSlice";
+import { addChatId, clearChat } from "../../redux/chat/chatSlice";
 import { ChatObj } from "../../interfaces/chat";
 
 const Home = () => {
@@ -45,33 +45,33 @@ const Home = () => {
     dispatch(getChats());
   }, []);
 
-  useEffect(() => {
-    const updateChatIds = () => {
-      const unSub = onSnapshot(collection(db, "chatIds"), (doc) => {
-        doc.docChanges().forEach((change) => {
-          switch (change.type) {
-            case "added":
-              dispatch(getChats());
-              dispatch(getUsers());
-              console.log({ ...change.doc.data() }, "user list hook");
-              //localStorage.setItem("chatId", change.doc.data().chatId);
-              //dispatch(addChatId(change.doc.data().chatId));
+  // useEffect(() => {
+  //   const updateChatIds = () => {
+  //     const unSub = onSnapshot(collection(db, "chatIds"), (doc) => {
+  //       doc.docChanges().forEach((change) => {
+  //         switch (change.type) {
+  //           case "added":
+  //             dispatch(getChats());
+  //             dispatch(getUsers());
+  //             console.log({ ...change.doc.data() }, "user list hook");
+  //             //localStorage.setItem("chatId", change.doc.data().chatId);
+  //             //dispatch(addChatId(change.doc.data().chatId));
 
-              break;
-            case "modified":
-              break;
-            default:
-              return;
-          }
-        });
-      });
+  //             break;
+  //           case "modified":
+  //             break;
+  //           default:
+  //             return;
+  //         }
+  //       });
+  //     });
 
-      return () => {
-        unSub();
-      };
-    };
-    updateChatIds();
-  }, []);
+  //     return () => {
+  //       unSub();
+  //     };
+  //   };
+  //   updateChatIds();
+  // }, []);
 
   const logOutHandler = async () => {
     try {
@@ -80,6 +80,7 @@ const Home = () => {
           loggedIn: false,
         });
         authContext?.dispatch({ type: AuthStateActions.LOGOUT });
+        dispatch(clearChat());
       }
     } catch (error) {
       alert(`${error} in logOutHandler`);

@@ -39,21 +39,21 @@ const chatSlice = createSlice({
     updateCurrentChat: (state, action) => {
       state.chats[action.payload.chatId] = action.payload;
     },
-    setMessageAsSeen: (state, action) => {
-      const userIndex = state.users
-        .map((user) => user.userId)
-        .indexOf(action.payload.userId);
-      state.users[userIndex] = {
-        ...state.users[userIndex],
-        newMessage: false,
-      };
-    },
-    newMessageArrived: (state, action) => {
-      const userIndex = state.users
-        .map((user) => user.userId)
-        .indexOf(action.payload.userId);
-      state.users[userIndex] = { ...state.users[userIndex], newMessage: true };
-    },
+    // setMessageAsSeen: (state, action) => {
+    //   const userIndex = state.users
+    //     .map((user) => user.userId)
+    //     .indexOf(action.payload.userId);
+    //   state.users[userIndex] = {
+    //     ...state.users[userIndex],
+    //     newMessage: false,
+    //   };
+    // },
+    // newMessageArrived: (state, action) => {
+    //   const userIndex = state.users
+    //     .map((user) => user.userId)
+    //     .indexOf(action.payload.userId);
+    //   state.users[userIndex] = { ...state.users[userIndex], newMessage: true };
+    // },
     addUser: (state, action) => {
       state.users.push(action.payload);
     },
@@ -114,8 +114,6 @@ export const {
   addUser,
   updateUser,
   clearChat,
-  newMessageArrived,
-  setMessageAsSeen,
   updateCurrentChat,
   addChatId,
 } = chatSlice.actions;

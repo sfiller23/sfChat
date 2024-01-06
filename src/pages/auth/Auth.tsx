@@ -77,7 +77,6 @@ const Auth = () => {
           loggedIn: true,
         });
         localStorage.removeItem("chatId");
-        dispatch(clearChat());
       }
       authContext?.dispatch({
         type: AuthStateActions.LOGIN,
