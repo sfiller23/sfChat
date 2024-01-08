@@ -7,8 +7,6 @@ import {
   getChats,
   getUsers,
   setMessageSeenReq,
-  setNewMessageState,
-  setUserNewMessage,
   setWritingState,
   updateChat,
 } from "../../redux/chat/chatAPI";
@@ -16,15 +14,14 @@ import { ChatObj, Message as MessageProps } from "../../interfaces/chat";
 import LoggedInIcon from "../../UI/loggedInIcon/loggedInIcon";
 import {
   ChatState,
-  setCurrentChat,
   setCurrentChatMessage,
   updateCurrentChat,
 } from "../../redux/chat/chatSlice";
-import { collection, onSnapshot, query, where } from "firebase/firestore";
+import { collection, onSnapshot } from "firebase/firestore";
 import { db } from "../../App";
 import Message from "../message/Message";
 import { MessageStatus } from "../../constants/enums";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 const Chat = (props: Partial<ChatState>) => {
   const { user } = props;
@@ -73,12 +70,6 @@ const Chat = (props: Partial<ChatState>) => {
     updateChat();
   }, []);
 
-  // useEffect(() => {
-  //   if (chatId) {
-  //     dispatch(getChatByUid(chatId));
-  //   }
-  // }, [chatId]);
-
   const sendMessage = () => {
     setWriting(false);
     if (user) {
@@ -93,15 +84,6 @@ const Chat = (props: Partial<ChatState>) => {
       if (chat) {
         if (chat.chatId) {
           dispatch(updateChat({ chatId: chat.chatId, message: messageObj }));
-          // dispatch(
-          //   setNewMessageState({
-          //     userId:
-          //       user.userId === chat.firstUser.userId
-          //         ? chat.firstUser.userId
-          //         : chat.secondUser.userId,
-          //     state: true,
-          //   })
-          // );
         }
       }
 
@@ -126,12 +108,6 @@ const Chat = (props: Partial<ChatState>) => {
       if (chat.messages.length !== 0) {
         if (chat?.messages[chat?.messages.length - 1].userId !== user?.userId) {
           dispatch(setMessageSeenReq(chat.chatId));
-          // dispatch(
-          //   setNewMessageState({
-          //     userId: chat?.messages[chat?.messages.length - 1].userId,
-          //     state: false,
-          //   })
-          // );
         }
       }
     }
@@ -198,7 +174,6 @@ const Chat = (props: Partial<ChatState>) => {
                 />
               );
             })}
-          <span className="seperator right-seperator"></span>
         </div>
       </div>
       <div className="chat-footer">

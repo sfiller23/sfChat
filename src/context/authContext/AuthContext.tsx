@@ -7,7 +7,7 @@ import {
   useLayoutEffect,
 } from "react";
 import { auth } from "../../App";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { User } from "../../interfaces/auth";
 import { useAppDispatch } from "../../redux/hooks/reduxHooks";
 import { getUserByUid } from "../../redux/chat/chatAPI";

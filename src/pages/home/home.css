@@ -3,7 +3,7 @@
   border-radius: 10px;
   width: 85%;
   min-width: 400px;
-  max-width: 800px;
+  max-width: 650px;
   max-height: 32.5rem;
   overflow: hidden;
 }
@@ -51,6 +51,8 @@
 
 .input-box {
   border: none;
+  border-top-right-radius: 60%;
+  /* border-bottom-right-radius: 30%; */
 }
 
 .input-box::placeholder {

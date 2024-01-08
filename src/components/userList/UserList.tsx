@@ -1,29 +1,20 @@
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks/reduxHooks";
-import {
-  getChatByUid,
-  getUsers,
-  initChat,
-  setNewMessageState,
-} from "../../redux/chat/chatAPI";
+import { getChatByUid, getUsers, initChat } from "../../redux/chat/chatAPI";
 import "./_user-list.scss";
-import { ChatIds, ChatObj, Chats } from "../../interfaces/chat";
+import { ChatObj, Chats } from "../../interfaces/chat";
 import { User } from "../../interfaces/auth";
 import { v4 as uuid } from "uuid";
 import { updateUser } from "../../redux/chat/chatSlice";
 import LoggedInIcon from "../../UI/loggedInIcon/loggedInIcon";
 import { db } from "../../App";
 import { collection, onSnapshot } from "firebase/firestore";
-import { Link } from "react-router-dom";
 import { MessageStatus } from "../../constants/enums";
 
 export const UserList = () => {
   const currentUser = useAppSelector((state) => state.chatReducer.user);
   const users = useAppSelector((state) => state.chatReducer.users);
   const chats = useAppSelector((state) => state.chatReducer.chats);
-  const currentChat = useAppSelector((state) => state.chatReducer.currentChat);
-
-  const [chatId, setCatId] = useState("");
 
   const [listItemActiveUid, setListItemActiveUid] = useState("");
 
@@ -145,12 +136,7 @@ export const UserList = () => {
               <li
                 key={user.userId}
                 onClick={() => {
-                  startChat(
-                    users.filter(
-                      (user) => user.userId === currentUser.userId
-                    )[0],
-                    user
-                  );
+                  startChat(currentUser, user);
                   onUserClick(user.userId);
                 }}
                 className={`list-item ${

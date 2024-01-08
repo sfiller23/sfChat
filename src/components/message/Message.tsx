@@ -1,17 +1,14 @@
 import { useEffect, useRef } from "react";
 import { MessageStatus } from "../../constants/enums";
 import { Message as MessageProps } from "../../interfaces/chat";
-import { useAppDispatch, useAppSelector } from "../../redux/hooks/reduxHooks";
+import { useAppSelector } from "../../redux/hooks/reduxHooks";
 import "./_message.scss";
 import { FaCheck } from "react-icons/fa6";
 import { FaCheckDouble } from "react-icons/fa6";
-import { newMessageArrived } from "../../redux/chat/chatSlice";
 
 const Message = (props: Partial<MessageProps>) => {
   const user = useAppSelector((state) => state.chatReducer.user);
   const chats = useAppSelector((state) => state.chatReducer.chats);
-
-  const dispatch = useAppDispatch();
 
   const bottomRef = useRef<HTMLDivElement>(null);
 

@@ -1,6 +1,6 @@
 import Card from "../../UI/card/Card";
 import "./home.css";
-import { useContext, useEffect, useLayoutEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { AuthContext } from "../../context/authContext/AuthContext";
 import { AppContext } from "../../context/appContext/AppContext";
 import Loader from "../../UI/loader/Loader";
@@ -11,11 +11,9 @@ import Chat from "../../components/chat/Chat";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks/reduxHooks";
 import { collection, doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { db } from "../../App";
-import { getChats, getUserByUid, getUsers } from "../../redux/chat/chatAPI";
+import { getChats, getUsers } from "../../redux/chat/chatAPI";
 import { AuthStateActions, PreviewState } from "../../constants/enums";
-import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
-import { addChatId, clearChat } from "../../redux/chat/chatSlice";
-import { ChatObj } from "../../interfaces/chat";
+import { clearChat } from "../../redux/chat/chatSlice";
 
 const Home = () => {
   const authContext = useContext(AuthContext);
@@ -23,55 +21,36 @@ const Home = () => {
 
   const dispatch = useAppDispatch();
 
-  const navigate = useNavigate();
-
-  const location = useLocation();
-
   const user = useAppSelector((state) => state.chatReducer.user);
-
-  const [chat, setChat] = useState<ChatObj>();
-
-  //const activeUid = localStorage.getItem("activeUid");
-
-  //const { userId } = useParams();
-
-  // useEffect(() => {
-  //   if (activeUid) {
-  //     navigate(activeUid);
-  //   }
-  // }, [location.pathname]);
 
   useEffect(() => {
     dispatch(getChats());
   }, []);
 
-  // useEffect(() => {
-  //   const updateChatIds = () => {
-  //     const unSub = onSnapshot(collection(db, "chatIds"), (doc) => {
-  //       doc.docChanges().forEach((change) => {
-  //         switch (change.type) {
-  //           case "added":
-  //             dispatch(getChats());
-  //             dispatch(getUsers());
-  //             console.log({ ...change.doc.data() }, "user list hook");
-  //             //localStorage.setItem("chatId", change.doc.data().chatId);
-  //             //dispatch(addChatId(change.doc.data().chatId));
+  useEffect(() => {
+    const updateChatIds = () => {
+      const unSub = onSnapshot(collection(db, "chatIds"), (doc) => {
+        doc.docChanges().forEach((change) => {
+          switch (change.type) {
+            case "added":
+              dispatch(getChats());
+              dispatch(getUsers());
 
-  //             break;
-  //           case "modified":
-  //             break;
-  //           default:
-  //             return;
-  //         }
-  //       });
-  //     });
+              break;
+            case "modified":
+              break;
+            default:
+              return;
+          }
+        });
+      });
 
-  //     return () => {
-  //       unSub();
-  //     };
-  //   };
-  //   updateChatIds();
-  // }, []);
+      return () => {
+        unSub();
+      };
+    };
+    updateChatIds();
+  }, []);
 
   const logOutHandler = async () => {
     try {
@@ -133,7 +112,6 @@ const Home = () => {
         <UserSearch />
         <UserList />
       </span>
-      <span className="seperator"></span>
       <Chat user={user} />
     </Card>
   );

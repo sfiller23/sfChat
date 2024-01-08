@@ -12,6 +12,7 @@
   width: 100%;
   background-color: #ddddf7;
 }
+
 .chat-header {
   display: flex;
   justify-content: center;
@@ -41,15 +42,6 @@
   min-height: 500px;
 }
 
-.seperator {
-  width: 15px;
-  background-color: rgb(244, 244, 244);
-}
-
-.right-seperator {
-  width: 10px;
-}
-
 .file-upload {
   border: none;
 }
@@ -57,11 +49,14 @@
 .chat-footer {
   display: flex;
   align-items: center;
-  background-color: white;
+  background: linear-gradient(to left top, #6277bd, #b5b5e4);
 }
 
 .chat-input {
   width: 87%;
+  input {
+    width: 60%;
+  }
 }
 
 .send-button-container {
@@ -73,4 +68,5 @@
   width: 30px;
   height: 30px;
   border-radius: 15px;
+  cursor: pointer;
 }

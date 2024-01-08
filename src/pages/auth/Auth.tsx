@@ -13,9 +13,6 @@ import { AuthContext } from "../../context/authContext/AuthContext";
 import { AppContext } from "../../context/appContext/AppContext";
 import ImgPreviewButton from "../../components/imgPreviewButton/ImgPreviewButton";
 import { doc, setDoc, updateDoc } from "firebase/firestore";
-import { useAppDispatch, useAppSelector } from "../../redux/hooks/reduxHooks";
-import { clearChat } from "../../redux/chat/chatSlice";
-import { getChatByUid } from "../../redux/chat/chatAPI";
 import { AppStateActions, AuthStateActions } from "../../constants/enums";
 
 const Auth = () => {
@@ -23,10 +20,6 @@ const Auth = () => {
   const appContext = useContext(AppContext);
 
   const location = useLocation();
-
-  const dispatch = useAppDispatch();
-
-  const user = useAppSelector((state) => state.chatReducer.user);
 
   const handleSubmit = async (
     e: BaseSyntheticEvent | Event,
