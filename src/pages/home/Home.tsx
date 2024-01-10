@@ -60,7 +60,7 @@ const Home = () => {
       <span className="users-container">
         <UserHeader user={user} />
         <UserSearch />
-        <UserList user={user} />
+        <UserList user={user} users={users} />
       </span>
       <span className="chat-container">
         <Chat user={user} />

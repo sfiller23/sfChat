@@ -15,9 +15,8 @@ import { collection, onSnapshot } from "firebase/firestore";
 import { MessageStatus } from "../../../constants/enums";
 
 export const UserList = (props: Partial<ChatState>) => {
-  const { user: currentUser } = props;
+  const { user: currentUser, users } = props;
 
-  const users = useAppSelector((state) => state.chatReducer.users);
   const chats = useAppSelector((state) => state.chatReducer.chats);
 
   const [listItemActiveUid, setListItemActiveUid] = useState("");
@@ -130,7 +129,7 @@ export const UserList = (props: Partial<ChatState>) => {
   return (
     <div className="user-list-container">
       <ul className="user-list">
-        {users.map((user) => {
+        {users?.map((user) => {
           if (currentUser && currentUser.userId !== user.userId) {
             return (
               <li
