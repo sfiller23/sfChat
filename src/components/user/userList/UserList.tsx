@@ -1,18 +1,22 @@
 import { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../redux/hooks/reduxHooks";
-import { getChatByUid, getUsers, initChat } from "../../redux/chat/chatAPI";
+import {
+  useAppDispatch,
+  useAppSelector,
+} from "../../../redux/hooks/reduxHooks";
+import { getChatByUid, getUsers, initChat } from "../../../redux/chat/chatAPI";
 import "./_user-list.scss";
-import { ChatObj, Chats } from "../../interfaces/chat";
-import { User } from "../../interfaces/auth";
+import { ChatObj, Chats } from "../../../interfaces/chat";
+import { User } from "../../../interfaces/auth";
 import { v4 as uuid } from "uuid";
-import { updateUser } from "../../redux/chat/chatSlice";
-import LoggedInIcon from "../../UI/loggedInIcon/loggedInIcon";
-import { db } from "../../App";
+import { ChatState, updateUser } from "../../../redux/chat/chatSlice";
+import LoggedInIcon from "../../../UI/loggedInIcon/loggedInIcon";
+import { db } from "../../../App";
 import { collection, onSnapshot } from "firebase/firestore";
-import { MessageStatus } from "../../constants/enums";
+import { MessageStatus } from "../../../constants/enums";
 
-export const UserList = () => {
-  const currentUser = useAppSelector((state) => state.chatReducer.user);
+export const UserList = (props: Partial<ChatState>) => {
+  const { user: currentUser } = props;
+
   const users = useAppSelector((state) => state.chatReducer.users);
   const chats = useAppSelector((state) => state.chatReducer.chats);
 
@@ -49,13 +53,10 @@ export const UserList = () => {
   }, []);
 
   const startChat = (sender: User, receiver: User) => {
-    console.log(sender, "from start chat");
-    console.log(receiver, "from start chat");
     if (sender.chatIds) {
       for (const key in sender.chatIds) {
         if (receiver.chatIds) {
           if (receiver.chatIds[key]) {
-            console.log("geting the chat", key);
             dispatch(getChatByUid(key));
             localStorage.setItem("chatId", key);
             return;
@@ -132,7 +133,6 @@ export const UserList = () => {
         {users.map((user) => {
           if (currentUser && currentUser.userId !== user.userId) {
             return (
-              // <Link key={user.userId} to={user.userId}>
               <li
                 key={user.userId}
                 onClick={() => {
@@ -153,7 +153,6 @@ export const UserList = () => {
                 <LoggedInIcon loggedIn={user.loggedIn} />
                 {user.displayName}
               </li>
-              // </Link>
             );
           }
         })}

@@ -1,7 +1,7 @@
 import { BaseSyntheticEvent } from "react";
-import { useAppDispatch } from "../../redux/hooks/reduxHooks";
-import { searchUser } from "../../redux/chat/chatSlice";
-import { getUsers } from "../../redux/chat/chatAPI";
+import { useAppDispatch } from "../../../redux/hooks/reduxHooks";
+import { searchUser } from "../../../redux/chat/chatSlice";
+import { getUsers } from "../../../redux/chat/chatAPI";
 import "./_user-search.scss";
 
 const UserSearch = () => {

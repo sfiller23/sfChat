@@ -1,17 +1,12 @@
 import { initializeApp } from "firebase/app";
-import {
-  getAuth,
-  connectAuthEmulator,
-  onAuthStateChanged,
-} from "firebase/auth";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { getAuth } from "firebase/auth";
+import { Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
 import Home from "./pages/home/Home";
 import { firebaseConfig } from "../config";
 import Auth from "./pages/auth/Auth";
 import { getStorage, ref } from "firebase/storage";
 import { getFirestore } from "firebase/firestore";
-import Chat from "./components/chat/Chat";
 
 const app = initializeApp(firebaseConfig);
 
@@ -27,8 +22,6 @@ function App() {
       <Route path="login" element={<Auth />} />
       <Route path="register" element={<Auth />} />
       <Route path="home" element={<Home />} />
-      {/* <Route path=":userId" element={<Chat />} />
-      </Route> */}
     </Routes>
   );
 }

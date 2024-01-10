@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
-import { MessageStatus } from "../../constants/enums";
-import { Message as MessageProps } from "../../interfaces/chat";
-import { useAppSelector } from "../../redux/hooks/reduxHooks";
+import { MessageStatus } from "../../../constants/enums";
+import { Message as MessageProps } from "../../../interfaces/chat";
+import { useAppSelector } from "../../../redux/hooks/reduxHooks";
 import "./_message.scss";
 import { FaCheck } from "react-icons/fa6";
 import { FaCheckDouble } from "react-icons/fa6";

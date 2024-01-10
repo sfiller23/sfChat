@@ -1,0 +1,73 @@
+.user-list-container {
+  height: 25.4rem;
+  overflow-y: scroll;
+}
+.list-item {
+  display: flex;
+  gap: 0.4rem;
+  padding: 0.2rem 0.5rem;
+}
+.user-list {
+  padding: 0;
+
+  li {
+    cursor: pointer;
+    &.active {
+      background-color: #a2a2d9;
+    }
+    @keyframes flickerAnimation {
+      0% {
+        background-color: green;
+      }
+      50% {
+        background-color: transparent;
+      }
+      100% {
+        background-color: green;
+      }
+    }
+    @-o-keyframes flickerAnimation {
+      0% {
+        background-color: green;
+      }
+      50% {
+        background-color: transparent;
+      }
+      100% {
+        background-color: green;
+      }
+    }
+    @-moz-keyframes flickerAnimation {
+      0% {
+        background-color: green;
+      }
+      50% {
+        background-color: transparent;
+      }
+      100% {
+        background-color: green;
+      }
+    }
+    @-webkit-keyframes flickerAnimation {
+      0% {
+        background-color: green;
+      }
+      50% {
+        background-color: transparent;
+      }
+      100% {
+        background-color: green;
+      }
+    }
+    &.new-message {
+      -webkit-animation: flickerAnimation 0.8s infinite;
+      -moz-animation: flickerAnimation 0.8s infinite;
+      -o-animation: flickerAnimation 0.8s infinite;
+      animation: flickerAnimation 0.8s infinite;
+    }
+  }
+
+  li:hover {
+    background-color: #a2a2d9;
+  }
+}

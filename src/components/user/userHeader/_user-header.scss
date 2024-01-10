@@ -1,0 +1,50 @@
+.user-header {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  max-width: 200px;
+  flex-wrap: wrap;
+  background-color: #2f2d52;
+  border: none;
+  padding: 10px;
+  color: white;
+}
+
+.no-image {
+  flex-direction: column;
+}
+
+.user-img-container input {
+  margin-bottom: 10px;
+  max-width: 180px;
+}
+
+.user-img-container {
+  gap: 5px;
+  flex-direction: column;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.user-img {
+  object-fit: cover;
+  width: 60px;
+  height: 60px;
+  border-radius: 30px;
+}
+
+.user-img-container h3 {
+  color: white;
+}
+
+.logout-button {
+  cursor: pointer;
+  background: #5d5b8d;
+  color: #ddddf7;
+  border: none;
+}
+
+.display-name-container h3 {
+  margin: 0px;
+}

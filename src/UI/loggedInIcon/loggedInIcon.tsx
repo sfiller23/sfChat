@@ -1,6 +1,6 @@
 import "./_logged-in-icon.scss";
 
-const LoggedInIcon = (props) => {
+const LoggedInIcon = (props: { loggedIn?: boolean }) => {
   const { loggedIn } = props;
   return (
     <div
