@@ -1,12 +1,12 @@
 import { RiImageAddFill } from "react-icons/ri";
 import "./imgPreviewButton.css";
-import { useHandleImgPick } from "../../utils/Hooks";
+import { useHandleImgPick } from "../../../utils/Hooks";
 import { HiOutlineCloudUpload } from "react-icons/hi";
-import { uploadAvatar } from "../../api/firebase/api";
+import { uploadAvatar } from "../../../api/firebase/api";
 import { BaseSyntheticEvent, useContext, useState } from "react";
-import { AuthContext } from "../../context/authContext/AuthContext";
-import { AppContext } from "../../context/appContext/AppContext";
-import { AppStateActions, PreviewState } from "../../constants/enums";
+import { AuthContext } from "../../../context/authContext/AuthContext";
+import { AppContext } from "../../../context/appContext/AppContext";
+import { AppStateActions, PreviewState } from "../../../constants/enums";
 
 interface imgPreviewButtonProps {
   action?: PreviewState;

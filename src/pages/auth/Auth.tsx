@@ -11,7 +11,7 @@ import { uploadAvatar } from "../../api/firebase/api";
 import Loader from "../../UI/loader/Loader";
 import { AuthContext } from "../../context/authContext/AuthContext";
 import { AppContext } from "../../context/appContext/AppContext";
-import ImgPreviewButton from "../../components/imgPreviewButton/ImgPreviewButton";
+import ImgPreviewButton from "../../components/common/imgPreviewButton/ImgPreviewButton";
 import { doc, setDoc, updateDoc } from "firebase/firestore";
 import { AppStateActions, AuthStateActions } from "../../constants/enums";
 

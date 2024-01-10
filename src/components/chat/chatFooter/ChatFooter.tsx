@@ -79,6 +79,9 @@ const ChatFooter = (props: Partial<ChatState>) => {
             setWriting(false);
           }}
           onChange={(e) => {
+            if (e.target.value === "" || e.target.value === undefined) {
+              setWriting(false);
+            }
             setMessageText(e.target.value);
           }}
           onFocus={() => {

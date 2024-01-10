@@ -9,10 +9,10 @@ import { ChatObj, Chats } from "../../../interfaces/chat";
 import { User } from "../../../interfaces/auth";
 import { v4 as uuid } from "uuid";
 import { ChatState, updateUser } from "../../../redux/chat/chatSlice";
-import LoggedInIcon from "../../../UI/loggedInIcon/loggedInIcon";
 import { db } from "../../../App";
 import { collection, onSnapshot } from "firebase/firestore";
 import { MessageStatus } from "../../../constants/enums";
+import ListItem from "./listItem/ListItem";
 
 export const UserList = (props: Partial<ChatState>) => {
   const { user: currentUser, users } = props;
@@ -81,9 +81,7 @@ export const UserList = (props: Partial<ChatState>) => {
     dispatch(initChat(chatObj));
   };
 
-  const activeUid = localStorage.getItem("activeUid");
-
-  const onUserClick = (uid: string) => {
+  const setUserActive = (uid: string) => {
     setListItemActiveUid(uid);
     localStorage.setItem("activeUid", uid);
   };
@@ -132,26 +130,15 @@ export const UserList = (props: Partial<ChatState>) => {
         {users?.map((user) => {
           if (currentUser && currentUser.userId !== user.userId) {
             return (
-              <li
-                key={user.userId}
-                onClick={() => {
-                  startChat(currentUser, user);
-                  onUserClick(user.userId);
-                }}
-                className={`list-item ${
-                  (listItemActiveUid === user.userId && "active") ||
-                  (activeUid && activeUid === user.userId && "active")
-                } 
-
-                   ${
-                     user.chatIds &&
-                     user.userId === isNewMessage(user, currentUser, chats) &&
-                     "new-message"
-                   }`}
-              >
-                <LoggedInIcon loggedIn={user.loggedIn} />
-                {user.displayName}
-              </li>
+              <ListItem
+                currentUser={currentUser}
+                user={user}
+                chats={chats}
+                startChat={startChat}
+                setUserActive={setUserActive}
+                isNewMessage={isNewMessage}
+                listItemActiveUid={listItemActiveUid}
+              />
             );
           }
         })}
