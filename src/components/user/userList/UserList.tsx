@@ -131,6 +131,7 @@ export const UserList = (props: Partial<ChatState>) => {
           if (currentUser && currentUser.userId !== user.userId) {
             return (
               <ListItem
+                key={user.userId}
                 currentUser={currentUser}
                 user={user}
                 chats={chats}

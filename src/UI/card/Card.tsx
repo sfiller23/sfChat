@@ -1,4 +1,4 @@
-import "./card.css";
+import "./_card.scss";
 
 interface Props {
   children: string | JSX.Element | JSX.Element[];

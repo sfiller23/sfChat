@@ -4,17 +4,17 @@
   align-items: center;
   width: 100vw;
   height: 100vh;
-}
 
-.loader {
-  width: 10%;
+  .loader {
+    width: 70%;
+
+    img {
+      width: 10%;
+    }
+  }
 }
 
 .profile-image-loader {
   width: 100px;
   height: 100px;
-}
-
-.profile-image-loader .loader {
-  width: 70%;
 }

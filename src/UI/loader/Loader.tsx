@@ -1,6 +1,6 @@
-import "./loader.css";
+import "./_loader.scss";
 
-const Loader = (props) => {
+const Loader = (props: { className?: string }) => {
   const { className } = props;
   return (
     <div className={`loader-container ${className}`}>

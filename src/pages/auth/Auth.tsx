@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import Card from "../../UI/card/Card";
-import "./auth.css";
+import "./_auth.scss";
 import { BaseSyntheticEvent, useContext } from "react";
 import { auth, db } from "../../App";
 import {

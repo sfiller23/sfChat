@@ -1,3 +1,11 @@
-.search-input {
-  color: white;
+.search-input-container {
+  height: 30px;
+
+  .search-input {
+    color: white;
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid #a5a5a5;
+  }
 }

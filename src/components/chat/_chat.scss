@@ -1,15 +1,11 @@
 .chat-message-board-container {
-  height: 25.4rem;
+  max-height: 430px;
   overflow-y: scroll;
-}
 
-.chat-message-board {
-  display: flex;
-  justify-content: flex-end;
-  flex-direction: column;
-  min-height: 500px;
-}
-
-.file-upload {
-  border: none;
+  .chat-message-board {
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: column;
+    min-height: 500px;
+  }
 }

@@ -1,5 +1,5 @@
 import Card from "../../UI/card/Card";
-import "./home.css";
+import "./_home.scss";
 import { useEffect, useState } from "react";
 import UserList from "../../components/user/userList/UserList";
 import UserSearch from "../../components/user/userSearch/UserSearch";
@@ -30,30 +30,30 @@ const Home = () => {
     }
   }, [authUser?.userId, users]);
 
-  useEffect(() => {
-    const updateChatIds = () => {
-      const unSub = onSnapshot(collection(db, "chatIds"), (doc) => {
-        doc.docChanges().forEach((change) => {
-          switch (change.type) {
-            case "added":
-              dispatch(getChats());
-              dispatch(getUsers());
+  // useEffect(() => {
+  //   const updateChatIds = () => {
+  //     const unSub = onSnapshot(collection(db, "chatIds"), (doc) => {
+  //       doc.docChanges().forEach((change) => {
+  //         switch (change.type) {
+  //           case "added":
+  //             dispatch(getChats());
+  //             dispatch(getUsers());
 
-              break;
-            case "modified":
-              break;
-            default:
-              return;
-          }
-        });
-      });
+  //             break;
+  //           case "modified":
+  //             break;
+  //           default:
+  //             return;
+  //         }
+  //       });
+  //     });
 
-      return () => {
-        unSub();
-      };
-    };
-    updateChatIds();
-  }, []);
+  //     return () => {
+  //       unSub();
+  //     };
+  //   };
+  //   updateChatIds();
+  // }, []);
 
   return (
     <Card classNames={["chat-card"]}>

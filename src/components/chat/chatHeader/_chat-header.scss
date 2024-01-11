@@ -1,7 +1,3 @@
-.writing-gif-container {
-  align-self: flex-start;
-  margin-top: 0.3rem;
-}
 .chat-header {
   display: flex;
   justify-content: center;
@@ -9,17 +5,22 @@
   height: 80px;
   background: linear-gradient(to left top, #6277bd, #b5b5e4);
 
-  img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
+  .writing-gif-container {
+    align-self: flex-start;
+    margin-top: 10px;
+
+    img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+    }
   }
 
   h3 {
     color: white;
   }
-}
 
-.logged-in-icon-container {
-  margin-right: 0.5rem;
+  .logged-in-icon-container {
+    margin-right: 5px;
+  }
 }

@@ -1,5 +1,5 @@
 import { RiImageAddFill } from "react-icons/ri";
-import "./imgPreviewButton.css";
+import "./_img-preview-button.scss";
 import { useHandleImgPick } from "../../../utils/Hooks";
 import { HiOutlineCloudUpload } from "react-icons/hi";
 import { uploadAvatar } from "../../../api/firebase/api";
@@ -60,10 +60,7 @@ const ImgPreviewButton = (props: imgPreviewButtonProps) => {
       />
 
       {!inForm && imgData && isPreview && (
-        <button
-          onClick={handleAvatarUpload}
-          className="avatar-upload avatar-upload-button"
-        >
+        <button onClick={handleAvatarUpload} className="avatar-upload-button">
           <HiOutlineCloudUpload className="upload-avatar-icon" size={20} />
           <label className="upload-avatar-label">Upload</label>
         </button>
