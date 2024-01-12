@@ -1,7 +1,9 @@
+@import "../../../UI/layout/layout";
+
 .chat-footer {
   display: flex;
   align-items: center;
-  background: linear-gradient(to left top, #6277bd, #b5b5e4);
+  background: $gradient;
 
   .chat-input {
     width: 87%;
@@ -15,7 +17,7 @@
     }
 
     .input-box::placeholder {
-      color: rgb(190, 189, 189);
+      color: $light-grey;
     }
 
     .input-box:focus {
@@ -28,7 +30,7 @@
     color: white;
     justify-content: center;
     align-items: center;
-    background-color: #8da4f1;
+    background-color: $light-blue;
     width: 30px;
     height: 30px;
     border-radius: 15px;
@@ -42,7 +44,7 @@
   .select-user-container {
     h3 {
       margin: 5px;
-      color: #5d5b8d;
+      color: $light-purple;
     }
   }
 }

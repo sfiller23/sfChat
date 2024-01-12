@@ -1,10 +1,12 @@
+@import "../../../UI/layout/layout";
+
 .user-header {
   display: flex;
   justify-content: space-around;
   align-items: center;
   max-width: 200px;
   flex-wrap: wrap;
-  background-color: #2f2d52;
+  background-color: $very-dark-purple;
   border: none;
   padding: 10px;
   color: white;
@@ -35,8 +37,8 @@
 
   .logout-button {
     cursor: pointer;
-    background: #5d5b8d;
-    color: #ddddf7;
+    background: $light-purple;
+    color: $very-light-purple;
     border: none;
   }
   .display-name-container h3 {

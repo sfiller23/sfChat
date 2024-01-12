@@ -1,3 +1,5 @@
+@import "../../UI/layout/layout";
+
 :root {
   --primary: #a7bcff;
 }
@@ -6,7 +8,7 @@ h1,
 h2,
 h3,
 p {
-  color: #5d5b8d;
+  color: $light-purple;
 }
 
 .auth-card {
@@ -39,7 +41,7 @@ p {
       border: none;
       color: white;
       border-radius: 0;
-      background-color: #7b96ec;
+      background-color: $blue;
       padding: 10px 0px;
       font-weight: bold;
     }
@@ -50,7 +52,7 @@ p {
       border-top: 1px solid white;
       border-left: 1px solid white;
       border-right: 1px solid white;
-      border-bottom: 1px solid var(--primary);
+      border-bottom: 1px solid $very-light-blue;
       padding: 10px;
     }
 

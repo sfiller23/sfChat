@@ -1,5 +1,7 @@
+@import "../../../UI/layout/layout";
+
 .avatar-label {
-  color: var(--primary);
+  color: $very-light-blue;
   display: flex;
   gap: 10px;
   margin-bottom: 5px;
@@ -17,7 +19,7 @@
 
 .avatar-upload-button {
   cursor: pointer;
-  background-color: #56528f;
+  background-color: $light-purple;
   color: white;
   z-index: 9;
 

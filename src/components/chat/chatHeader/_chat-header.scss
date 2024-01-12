@@ -1,9 +1,11 @@
+@import "../../../UI/layout/layout";
+
 .chat-header {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 80px;
-  background: linear-gradient(to left top, #6277bd, #b5b5e4);
+  background: $gradient;
 
   .writing-gif-container {
     align-self: flex-start;

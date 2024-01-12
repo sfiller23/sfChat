@@ -5,9 +5,7 @@ import UserList from "../../components/user/userList/UserList";
 import UserSearch from "../../components/user/userSearch/UserSearch";
 import Chat from "../../components/chat/Chat";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks/reduxHooks";
-import { collection, onSnapshot } from "firebase/firestore";
-import { db } from "../../App";
-import { getChats, getUsers } from "../../redux/chat/chatAPI";
+import { getChats } from "../../redux/chat/chatAPI";
 import UserHeader from "../../components/user/userHeader/UserHeader";
 import { User } from "../../interfaces/auth";
 
