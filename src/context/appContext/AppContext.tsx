@@ -63,7 +63,7 @@ type ChildrenType = {
 export const AppProvider = ({ children }: ChildrenType): ReactElement => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const uid = JSON.parse(localStorage.getItem("uid") as string);
+  const userId = JSON.parse(localStorage.getItem("userId") as string);
 
   const authContext = useContext(AuthContext);
 
@@ -77,8 +77,10 @@ export const AppProvider = ({ children }: ChildrenType): ReactElement => {
           type: AppStateActions.SET_LOADING,
           payload: true,
         });
-        if (uid) {
-          imgUrl = await getDownloadURL(ref(storageRef, uid));
+        if (userId) {
+          imgUrl = await getDownloadURL(
+            ref(storageRef, `profileImages/${userId}`)
+          );
 
           dispatch({
             type: AppStateActions.SET_IMAGE_PROFILE,
@@ -103,7 +105,7 @@ export const AppProvider = ({ children }: ChildrenType): ReactElement => {
     };
     getProfileUrl();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [authContext?.state.loggedIn, state.imgProfileChange, uid]);
+  }, [authContext?.state.loggedIn, state.imgProfileChange, userId]);
 
   return (
     <AppContext.Provider value={{ state, dispatch }}>

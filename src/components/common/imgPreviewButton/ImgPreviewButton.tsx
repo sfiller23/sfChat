@@ -27,11 +27,14 @@ const ImgPreviewButton = (props: imgPreviewButtonProps) => {
         type: AppStateActions.SET_LOADING,
         payload: true,
       });
-      await uploadAvatar(
-        e as Event,
-        picture,
-        authContext?.state.user?.userId as string
-      );
+      if (picture) {
+        await uploadAvatar(
+          e as Event,
+          picture,
+          authContext?.state.user?.userId as string
+        );
+      }
+
       setPicture(null);
       setIsPreview(false);
       appContext?.dispatch({ type: AppStateActions.SET_IMAGE_PROFILE_CHANGE });

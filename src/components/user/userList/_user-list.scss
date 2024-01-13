@@ -12,56 +12,7 @@
       &.active {
         background-color: $purple;
       }
-      @keyframes flickerAnimation {
-        0% {
-          background-color: green;
-        }
-        50% {
-          background-color: transparent;
-        }
-        100% {
-          background-color: green;
-        }
-      }
-      @-o-keyframes flickerAnimation {
-        0% {
-          background-color: green;
-        }
-        50% {
-          background-color: transparent;
-        }
-        100% {
-          background-color: green;
-        }
-      }
-      @-moz-keyframes flickerAnimation {
-        0% {
-          background-color: green;
-        }
-        50% {
-          background-color: transparent;
-        }
-        100% {
-          background-color: green;
-        }
-      }
-      @-webkit-keyframes flickerAnimation {
-        0% {
-          background-color: green;
-        }
-        50% {
-          background-color: transparent;
-        }
-        100% {
-          background-color: green;
-        }
-      }
-      &.new-message {
-        -webkit-animation: flickerAnimation 0.8s infinite;
-        -moz-animation: flickerAnimation 0.8s infinite;
-        -o-animation: flickerAnimation 0.8s infinite;
-        animation: flickerAnimation 0.8s infinite;
-      }
+      @include flicker(0.8s, green, transparent);
     }
 
     li:hover {

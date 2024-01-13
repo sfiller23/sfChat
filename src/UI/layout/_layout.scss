@@ -10,6 +10,59 @@ $grey: #a5a5a5;
 $light-grey: #bebdbd;
 $gradient: linear-gradient(to left top, #6277bd, #b5b5e4);
 
+@mixin flicker($intervalTime, $mainColor, $secondaryColor) {
+  @keyframes flickerAnimation {
+    0% {
+      background-color: $mainColor;
+    }
+    50% {
+      background-color: $secondaryColor;
+    }
+    100% {
+      background-color: $mainColor;
+    }
+  }
+  @-o-keyframes flickerAnimation {
+    0% {
+      background-color: $mainColor;
+    }
+    50% {
+      background-color: $secondaryColor;
+    }
+    100% {
+      background-color: $mainColor;
+    }
+  }
+  @-moz-keyframes flickerAnimation {
+    0% {
+      background-color: $mainColor;
+    }
+    50% {
+      background-color: $secondaryColor;
+    }
+    100% {
+      background-color: $mainColor;
+    }
+  }
+  @-webkit-keyframes flickerAnimation {
+    0% {
+      background-color: $mainColor;
+    }
+    50% {
+      background-color: $secondaryColor;
+    }
+    100% {
+      background-color: $mainColor;
+    }
+  }
+  &.new-message {
+    -webkit-animation: flickerAnimation $intervalTime infinite;
+    -moz-animation: flickerAnimation $intervalTime infinite;
+    -o-animation: flickerAnimation $intervalTime infinite;
+    animation: flickerAnimation $intervalTime infinite;
+  }
+}
+
 .app-container {
   display: flex;
   justify-content: center;

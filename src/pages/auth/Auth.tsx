@@ -2,17 +2,11 @@ import { Link, useLocation } from "react-router-dom";
 import Card from "../../UI/card/Card";
 import "./_auth.scss";
 import { BaseSyntheticEvent, useContext } from "react";
-import { auth, db } from "../../App";
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-} from "firebase/auth";
-import { uploadAvatar } from "../../api/firebase/api";
+import { login, register, uploadAvatar } from "../../api/firebase/api";
 import Loader from "../../UI/loader/Loader";
 import { AuthContext } from "../../context/authContext/AuthContext";
 import { AppContext } from "../../context/appContext/AppContext";
 import ImgPreviewButton from "../../components/common/imgPreviewButton/ImgPreviewButton";
-import { doc, setDoc, updateDoc } from "firebase/firestore";
 import { AppStateActions, AuthStateActions } from "../../constants/enums";
 
 const Auth = () => {
@@ -47,29 +41,17 @@ const Auth = () => {
       });
 
       if (location === "/login") {
-        credentials = await signInWithEmailAndPassword(auth, email, password);
-        await updateDoc(doc(db, "users", credentials.user.uid), {
-          loggedIn: true,
-        });
+        credentials = await login(email, password);
       } else if (location === "/register") {
-        credentials = await createUserWithEmailAndPassword(
-          auth,
-          email,
-          password
-        );
         displayName = e.target[3].value;
+        credentials = await register(email, password, displayName);
+
         const file = e.target[4].files[0];
-        const uid = credentials.user.uid;
+        const userId = credentials.user.uid;
+
         if (file) {
-          await uploadAvatar(e as Event, file, uid);
+          await uploadAvatar(e as Event, file, userId);
         }
-        await setDoc(doc(db, "users", uid), {
-          userId: uid,
-          displayName,
-          email,
-          loggedIn: true,
-        });
-        localStorage.removeItem("chatId");
       }
       authContext?.dispatch({
         type: AuthStateActions.LOGIN,

@@ -1,14 +1,59 @@
 import { uploadBytes, ref } from "firebase/storage";
-import { storage } from "../../App";
+import { auth, db, storage } from "../../App";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { doc, setDoc, updateDoc } from "firebase/firestore";
 
-export async function uploadAvatar(e: Event, file, uid: string) {
+export async function uploadAvatar(
+  e: Event,
+  file: File | Blob,
+  userId: string
+) {
   e.stopPropagation();
   e.preventDefault();
 
-  const storageRef = ref(storage, uid);
+  const storageRef = ref(storage, `profileImages/${userId}`);
 
   try {
     await uploadBytes(storageRef, file);
+  } catch (error) {
+    alert(error);
+  }
+}
+
+export async function login(email: string, password: string) {
+  try {
+    const credentials = await signInWithEmailAndPassword(auth, email, password);
+    await updateDoc(doc(db, "users", credentials.user.uid), {
+      loggedIn: true,
+    });
+    return credentials;
+  } catch (error) {
+    alert(error);
+  }
+}
+
+export async function register(
+  email: string,
+  password: string,
+  displayName: string
+) {
+  try {
+    const credentials = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    const userId = credentials.user.uid;
+    await setDoc(doc(db, "users", userId), {
+      userId,
+      displayName,
+      email,
+      loggedIn: true,
+    });
+    return credentials;
   } catch (error) {
     alert(error);
   }
