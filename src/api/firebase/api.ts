@@ -1,4 +1,4 @@
-import { uploadBytes, ref } from "firebase/storage";
+import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
 import { auth, db, storage } from "../../App";
 import {
   createUserWithEmailAndPassword,
@@ -23,12 +23,23 @@ export async function uploadAvatar(
   }
 }
 
+export async function setLoggedInState(
+  loggedInStatus: boolean,
+  userId: string
+) {
+  try {
+    await updateDoc(doc(db, "users", userId), {
+      loggedIn: loggedInStatus,
+    });
+  } catch (error) {
+    alert(error);
+  }
+}
+
 export async function login(email: string, password: string) {
   try {
     const credentials = await signInWithEmailAndPassword(auth, email, password);
-    await updateDoc(doc(db, "users", credentials.user.uid), {
-      loggedIn: true,
-    });
+    await setLoggedInState(true, credentials.user.uid);
     return credentials;
   } catch (error) {
     alert(error);
@@ -54,6 +65,18 @@ export async function register(
       loggedIn: true,
     });
     return credentials;
+  } catch (error) {
+    alert(error);
+  }
+}
+
+export async function getAvatar(userId: string): Promise<string | undefined> {
+  const storageRef = ref(storage);
+  try {
+    const imgUrl = await getDownloadURL(
+      ref(storageRef, `profileImages/${userId}`)
+    );
+    return imgUrl;
   } catch (error) {
     alert(error);
   }

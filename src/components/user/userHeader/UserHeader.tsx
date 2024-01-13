@@ -4,11 +4,10 @@ import { AuthStateActions, PreviewState } from "../../../constants/enums";
 import ImgPreviewButton from "../../common/imgPreviewButton/ImgPreviewButton";
 import { AuthContext } from "../../../context/authContext/AuthContext";
 import { AppContext } from "../../../context/appContext/AppContext";
-import { doc, updateDoc } from "firebase/firestore";
-import { db } from "../../../App";
 import { ChatState, clearChat } from "../../../redux/chat/chatSlice";
 import { useAppDispatch } from "../../../redux/hooks/reduxHooks";
 import "./_user-header.scss";
+import { setLoggedInState } from "../../../api/firebase/api";
 
 const UserHeader = (props: Partial<ChatState>) => {
   const { user } = props;
@@ -21,9 +20,7 @@ const UserHeader = (props: Partial<ChatState>) => {
   const logOutHandler = async () => {
     try {
       if (user) {
-        await updateDoc(doc(db, "users", user.userId), {
-          loggedIn: false,
-        });
+        await setLoggedInState(false, user.userId);
         authContext?.dispatch({ type: AuthStateActions.LOGOUT });
         dispatch(clearChat());
       }

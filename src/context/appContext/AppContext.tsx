@@ -1,5 +1,3 @@
-import { User } from "firebase/auth";
-import { ref, getDownloadURL } from "firebase/storage";
 import {
   createContext,
   useReducer,
@@ -7,14 +5,13 @@ import {
   useEffect,
   useContext,
 } from "react";
-import { storage } from "../../App";
 import { AuthContext } from "../authContext/AuthContext";
 import { AppStateActions } from "../../constants/enums";
+import { getAvatar } from "../../api/firebase/api";
 
 export interface AppState {
   imgProfileUrl: string;
   imgProfileChange: boolean;
-  users: User[];
   isLoading: boolean;
   error: string;
 }
@@ -22,7 +19,6 @@ export interface AppState {
 const initialState: AppState = {
   imgProfileUrl: "",
   imgProfileChange: false,
-  users: [],
   isLoading: false,
   error: "",
 };
@@ -67,10 +63,8 @@ export const AppProvider = ({ children }: ChildrenType): ReactElement => {
 
   const authContext = useContext(AuthContext);
 
-  const storageRef = ref(storage);
-
   useEffect(() => {
-    let imgUrl: string = "";
+    let imgUrl: string | undefined = "";
     const getProfileUrl = async () => {
       try {
         dispatch({
@@ -78,9 +72,7 @@ export const AppProvider = ({ children }: ChildrenType): ReactElement => {
           payload: true,
         });
         if (userId) {
-          imgUrl = await getDownloadURL(
-            ref(storageRef, `profileImages/${userId}`)
-          );
+          imgUrl = await getAvatar(userId);
 
           dispatch({
             type: AppStateActions.SET_IMAGE_PROFILE,
