@@ -1,6 +1,4 @@
 export const firebaseConfig = {
-  // Your web app's Firebase configuration here
-  // See https://firebase.google.com/docs/web/setup#add-sdks-initialize
   apiKey: "AIzaSyC3MzC7enBsiyIvp14_X7kD3EME6oWi0Hs",
   authDomain: "sfchat-47232.firebaseapp.com",
   projectId: "sfchat-47232",

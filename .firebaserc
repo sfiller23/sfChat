@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "firechat-81801"
-  }
+    "default": "firechat-81801",
+    "      ": "sfchat-47232"
+  },
+  "targets": {},
+  "etags": {}
 }

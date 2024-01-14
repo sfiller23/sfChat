@@ -1,7 +1,7 @@
 import "./_chat.scss";
 import { useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks/reduxHooks";
-import { getChatByUid, getChats, getUsers } from "../../redux/chat/chatAPI";
+import { getChatById, getChats, getUsers } from "../../redux/chat/chatAPI";
 import { ChatObj } from "../../interfaces/chat";
 import { ChatState, updateCurrentChat } from "../../redux/chat/chatSlice";
 import { collection, onSnapshot } from "firebase/firestore";
@@ -30,7 +30,7 @@ const Chat = (props: Partial<ChatState>) => {
 
   useEffect(() => {
     if (chatId) {
-      dispatch(getChatByUid(chatId));
+      dispatch(getChatById(chatId));
     }
   }, [location.pathname]);
 

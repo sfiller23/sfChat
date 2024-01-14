@@ -72,12 +72,9 @@ export async function register(
 
 export async function getAvatar(userId: string): Promise<string | undefined> {
   const storageRef = ref(storage);
-  try {
-    const imgUrl = await getDownloadURL(
-      ref(storageRef, `profileImages/${userId}`)
-    );
-    return imgUrl;
-  } catch (error) {
-    alert(error);
-  }
+
+  const imgUrl = await getDownloadURL(
+    ref(storageRef, `profileImages/${userId}`)
+  );
+  return imgUrl;
 }

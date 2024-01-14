@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
-  getChatByUid,
+  getChatById,
   getChats,
-  getUserByUid,
+  getUserById,
   getUsers,
   initChat,
 } from "./chatAPI";
@@ -27,36 +27,20 @@ const chatSlice = createSlice({
   name: "Chat",
   initialState,
   reducers: {
-    addChatId: (state, action) => {
-      if (state.user) {
-        state.user.chatIds = {
-          ...state.user?.chatIds,
-          [action.payload]: { active: true },
-        };
-      }
-      console.log(state.user, "from slice reducer");
-    },
+    // addChatId: (state, action) => {
+    //   if (state.user) {
+    //     state.user.chatIds = {
+    //       ...state.user?.chatIds,
+    //       [action.payload]: { active: true },
+    //     };
+    //   }
+    // },
     updateCurrentChat: (state, action) => {
       state.chats[action.payload.chatId] = action.payload;
     },
-    // setMessageAsSeen: (state, action) => {
-    //   const userIndex = state.users
-    //     .map((user) => user.userId)
-    //     .indexOf(action.payload.userId);
-    //   state.users[userIndex] = {
-    //     ...state.users[userIndex],
-    //     newMessage: false,
-    //   };
+    // addUser: (state, action) => {
+    //   state.users.push(action.payload);
     // },
-    // newMessageArrived: (state, action) => {
-    //   const userIndex = state.users
-    //     .map((user) => user.userId)
-    //     .indexOf(action.payload.userId);
-    //   state.users[userIndex] = { ...state.users[userIndex], newMessage: true };
-    // },
-    addUser: (state, action) => {
-      state.users.push(action.payload);
-    },
     updateUser: (state, action) => {
       const userIndex = state.users
         .map((user) => user.userId)
@@ -74,9 +58,9 @@ const chatSlice = createSlice({
         user.displayName.startsWith(action.payload)
       );
     },
-    setCurrentChat: (state, action) => {
-      state.currentChat = action.payload;
-    },
+    // setCurrentChat: (state, action) => {
+    //   state.currentChat = action.payload;
+    // },
     clearChat: (state) => {
       state.user = null;
       state.users = [];
@@ -87,7 +71,7 @@ const chatSlice = createSlice({
 
   extraReducers: (builder) => {
     builder
-      .addCase(getChatByUid.fulfilled, (state, action) => {
+      .addCase(getChatById.fulfilled, (state, action) => {
         state.currentChat = action.payload as ChatObj;
       })
       .addCase(initChat.fulfilled, (state, action) => {
@@ -97,7 +81,7 @@ const chatSlice = createSlice({
         console.log(action.payload, "getUsers");
         state.users = action.payload as User[];
       })
-      .addCase(getUserByUid.fulfilled, (state, action) => {
+      .addCase(getUserById.fulfilled, (state, action) => {
         state.user = action.payload as User;
       })
       .addCase(getChats.fulfilled, (state, action) => {
@@ -109,13 +93,13 @@ const chatSlice = createSlice({
 export const {
   searchUser,
   setAuthenticatedUser,
-  setCurrentChat,
+  //setCurrentChat,
   setCurrentChatMessage,
-  addUser,
+  //addUser,
   updateUser,
   clearChat,
   updateCurrentChat,
-  addChatId,
+  //addChatId,
 } = chatSlice.actions;
 
 export default chatSlice.reducer;

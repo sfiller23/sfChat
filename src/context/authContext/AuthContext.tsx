@@ -10,7 +10,7 @@ import { auth } from "../../App";
 import { useNavigate } from "react-router-dom";
 import { User } from "../../interfaces/auth";
 import { useAppDispatch } from "../../redux/hooks/reduxHooks";
-import { getUserByUid } from "../../redux/chat/chatAPI";
+import { getUserById } from "../../redux/chat/chatAPI";
 import { AuthStateActions } from "../../constants/enums";
 
 export interface AuthState {
@@ -99,7 +99,7 @@ export const AuthProvider = ({ children }: ChildrenType): ReactElement => {
 
   useLayoutEffect(() => {
     if (userId) {
-      chatSliceDispatch(getUserByUid(userId));
+      chatSliceDispatch(getUserById(userId));
     }
   }, [userId]);
 

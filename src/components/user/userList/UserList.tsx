@@ -3,7 +3,7 @@ import {
   useAppDispatch,
   useAppSelector,
 } from "../../../redux/hooks/reduxHooks";
-import { getChatByUid, getUsers, initChat } from "../../../redux/chat/chatAPI";
+import { getChatById, getUsers, initChat } from "../../../redux/chat/chatAPI";
 import "./_user-list.scss";
 import { ChatObj, Chats } from "../../../interfaces/chat";
 import { User } from "../../../interfaces/auth";
@@ -56,7 +56,7 @@ export const UserList = (props: Partial<ChatState>) => {
       for (const key in sender.chatIds) {
         if (receiver.chatIds) {
           if (receiver.chatIds[key]) {
-            dispatch(getChatByUid(key));
+            dispatch(getChatById(key));
             localStorage.setItem("chatId", key);
             return;
           }
@@ -86,12 +86,29 @@ export const UserList = (props: Partial<ChatState>) => {
     localStorage.setItem("activeUid", uid);
   };
 
-  const isNewMessage = (user: User, currentUser: User, chats: Chats) => {
+  const isNewMessage = (
+    user: User,
+    currentUser: User,
+    chats: Chats
+  ): string | undefined => {
     for (const chatId in user.chatIds) {
       if (chats[chatId]) {
+        // if (
+        //   chats[chatId].messages &&
+        //   chats[chatId].messages.length !== 0 &&
+        //   chats[chatId].messages[chats[chatId].messages.length - 1]["status"] &&
+        //   chats[chatId].messages[chats[chatId].messages.length - 1].status ===
+        //     MessageStatus.ARRIVED &&
+        //   chats[chatId].writing?.writerID !== currentUser.userId
+        // ) {
+        //   return chats[chatId].secondUser.userId;
+        // } else {
+        //   return chats[chatId].firstUser.userId;
+        // }
+
         if (currentUser.userId === chats[chatId].firstUser.userId) {
           if (
-            chats[chatId].secondUser.userId === user.userId &&
+            //chats[chatId].secondUser.userId === user.userId &&
             chats[chatId].messages &&
             chats[chatId].messages.length !== 0 &&
             chats[chatId].messages[chats[chatId].messages.length - 1][
@@ -106,7 +123,7 @@ export const UserList = (props: Partial<ChatState>) => {
           }
         } else if (currentUser.userId === chats[chatId].secondUser.userId) {
           if (
-            chats[chatId].firstUser.userId === user.userId &&
+            //chats[chatId].firstUser.userId === user.userId &&
             chats[chatId].messages &&
             chats[chatId].messages.length !== 0 &&
             chats[chatId].messages[chats[chatId].messages.length - 1][

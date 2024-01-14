@@ -23,14 +23,14 @@ export const setWritingState = createAsyncThunk(
   }
 );
 
-export const setNewMessageState = createAsyncThunk(
-  "setNewMessageState",
-  async (args: { userId: string; state: boolean }) => {
-    await updateDoc(doc(db, "users", args.userId), {
-      newMessage: args.state,
-    });
-  }
-);
+// export const setNewMessageState = createAsyncThunk(
+//   "setNewMessageState",
+//   async (args: { userId: string; state: boolean }) => {
+//     await updateDoc(doc(db, "users", args.userId), {
+//       newMessage: args.state,
+//     });
+//   }
+// );
 
 export const setMessageSeenReq = createAsyncThunk(
   "setMessageSeen",
@@ -83,8 +83,8 @@ export const updateChat = createAsyncThunk(
   }
 );
 
-export const getChatByUid = createAsyncThunk(
-  "getChatByUid",
+export const getChatById = createAsyncThunk(
+  "getChatById",
   async (chatId: string) => {
     try {
       const q = query(collection(db, "chats"), where("chatId", "==", chatId));
@@ -95,13 +95,13 @@ export const getChatByUid = createAsyncThunk(
       });
       return chat;
     } catch (error) {
-      alert(`${error} In getChatByUid`);
+      alert(`${error} In getChatById`);
     }
   }
 );
 
-export const getUserByUid = createAsyncThunk(
-  "getUserByUid",
+export const getUserById = createAsyncThunk(
+  "getUserById",
   async (userId: string) => {
     try {
       const q = query(collection(db, "users"), where("userId", "==", userId));
@@ -112,7 +112,7 @@ export const getUserByUid = createAsyncThunk(
       });
       return user;
     } catch (error) {
-      alert(`${error} In getUserByUid`);
+      alert(`${error} In getUserById`);
     }
   }
 );
@@ -147,10 +147,7 @@ export const initChat = createAsyncThunk(
         chatIds: chatObj.secondUser.chatIds,
       });
       thunkApi.dispatch(getUsers());
-      thunkApi.dispatch(getUserByUid(chatObj.firstUser.userId));
-      await setDoc(doc(db, "chatIds", chatObj.chatId), {
-        chatId: chatObj.chatId,
-      });
+      thunkApi.dispatch(getUserById(chatObj.firstUser.userId));
       return chatObj;
     } catch (error) {
       alert(`${error} In initChat`);

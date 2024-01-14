@@ -44,6 +44,7 @@ const Auth = () => {
         credentials = await login(email, password);
       } else if (location === "/register") {
         displayName = e.target[3].value;
+
         credentials = await register(email, password, displayName);
 
         const file = e.target[4].files[0];

@@ -28,31 +28,6 @@ const Home = () => {
     }
   }, [authUser?.userId, users]);
 
-  // useEffect(() => {
-  //   const updateChatIds = () => {
-  //     const unSub = onSnapshot(collection(db, "chatIds"), (doc) => {
-  //       doc.docChanges().forEach((change) => {
-  //         switch (change.type) {
-  //           case "added":
-  //             dispatch(getChats());
-  //             dispatch(getUsers());
-
-  //             break;
-  //           case "modified":
-  //             break;
-  //           default:
-  //             return;
-  //         }
-  //       });
-  //     });
-
-  //     return () => {
-  //       unSub();
-  //     };
-  //   };
-  //   updateChatIds();
-  // }, []);
-
   return (
     <Card classNames={["chat-card"]}>
       <span className="users-container">
