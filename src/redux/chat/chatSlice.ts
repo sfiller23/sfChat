@@ -78,7 +78,6 @@ const chatSlice = createSlice({
         state.currentChat = action.payload as ChatObj;
       })
       .addCase(getUsers.fulfilled, (state, action) => {
-        console.log(action.payload, "getUsers");
         state.users = action.payload as User[];
       })
       .addCase(getUserById.fulfilled, (state, action) => {

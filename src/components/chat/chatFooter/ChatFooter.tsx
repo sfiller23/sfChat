@@ -76,32 +76,34 @@ const ChatFooter = (props: Partial<ChatState>) => {
     <div className="chat-footer">
       {isChatActive ? (
         <>
-          <span className="chat-input">
-            <input
-              className="input-box"
-              type="text"
-              placeholder="Enter Message..."
-              value={messageText}
-              onInput={() => {
-                setWriting(true);
-              }}
-              onMouseLeave={() => {
+          <textarea
+            className="input-box"
+            placeholder="Enter Message..."
+            value={messageText}
+            onInput={() => {
+              setWriting(true);
+            }}
+            onMouseLeave={() => {
+              setWriting(false);
+            }}
+            onChange={(e) => {
+              if (e.target.value === "" || e.target.value === undefined) {
                 setWriting(false);
-              }}
-              onChange={(e) => {
-                if (e.target.value === "" || e.target.value === undefined) {
-                  setWriting(false);
-                }
-                setMessageText(e.target.value);
-              }}
-              onFocus={() => {
-                setMessageSeen();
-              }}
-            />
-          </span>
-          <span onClick={sendMessage} className="send-button-container">
+              }
+              setMessageText(e.target.value);
+            }}
+            onFocus={() => {
+              setMessageSeen();
+            }}
+          />
+
+          <button
+            onClick={sendMessage}
+            disabled={messageText ? false : true}
+            className="send-button"
+          >
             <PiNavigationArrowThin size={20} className="send-icon" />
-          </span>
+          </button>
         </>
       ) : (
         <span className="select-user-container">

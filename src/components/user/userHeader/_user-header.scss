@@ -3,6 +3,7 @@
 .user-header {
   display: flex;
   justify-content: space-around;
+  flex-direction: column;
   align-items: center;
   max-width: 200px;
   flex-wrap: wrap;

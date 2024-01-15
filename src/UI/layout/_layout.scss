@@ -8,6 +8,7 @@ $very-dark-purple: #2f2d52;
 $light-purple: #5d5b8d;
 $grey: #a5a5a5;
 $light-grey: #bebdbd;
+$light-grey-red: #bfadad;
 $gradient: linear-gradient(to left top, #6277bd, #b5b5e4);
 
 @mixin flicker($intervalTime, $mainColor, $secondaryColor) {

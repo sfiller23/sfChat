@@ -12,7 +12,7 @@ const ChatHeader = (props: Partial<ChatState>) => {
       <>
         {chat?.writing?.status && chat.writing.writerID !== user?.userId && (
           <span className="writing-gif-container">
-            <img src="../../assets/gifs/writing.gif" alt="Writing..." />
+            <img src="../../assets/writing.gif" alt="Writing..." />
           </span>
         )}
         {chat &&

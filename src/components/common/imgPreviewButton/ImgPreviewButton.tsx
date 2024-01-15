@@ -7,6 +7,7 @@ import { BaseSyntheticEvent, useContext, useState } from "react";
 import { AuthContext } from "../../../context/authContext/AuthContext";
 import { AppContext } from "../../../context/appContext/AppContext";
 import { AppStateActions, PreviewState } from "../../../constants/enums";
+import { useAppSelector } from "../../../redux/hooks/reduxHooks";
 
 interface imgPreviewButtonProps {
   action?: PreviewState;
@@ -16,6 +17,8 @@ interface imgPreviewButtonProps {
 const ImgPreviewButton = (props: imgPreviewButtonProps) => {
   const authContext = useContext(AuthContext);
   const appContext = useContext(AppContext);
+
+  const user = useAppSelector((state) => state.chatReducer.user);
 
   const { action = PreviewState.ADD, inForm = true } = props;
   const { picture, setPicture, imgData, handleImgPreview } = useHandleImgPick();
@@ -27,11 +30,13 @@ const ImgPreviewButton = (props: imgPreviewButtonProps) => {
         type: AppStateActions.SET_LOADING,
         payload: true,
       });
-      if (picture) {
+      if (picture && (authContext?.state.user?.userId || user?.userId)) {
         await uploadAvatar(
           e as Event,
           picture,
-          authContext?.state.user?.userId as string
+          authContext?.state.user?.userId
+            ? authContext?.state.user?.userId
+            : (user?.userId as string)
         );
       }
 

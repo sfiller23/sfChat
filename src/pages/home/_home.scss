@@ -3,19 +3,18 @@
 .chat-card {
   border: 1px solid white;
   border-radius: 10px;
-  width: 85%;
   min-width: 300px;
-  max-width: 600px;
   max-height: 800px;
   overflow: hidden;
 }
 
 .users-container {
-  min-width: 100px;
+  min-width: fit-content;
   background-color: $dark-purple;
 }
 
 .chat-container {
   width: 100%;
+  min-width: 315px;
   background-color: $very-light-purple;
 }
