@@ -35,10 +35,7 @@ const Auth = () => {
       let displayName: string = "";
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let credentials: any = {};
-      appContext?.dispatch({
-        type: AppStateActions.SET_LOADING,
-        payload: true,
-      });
+      appContext?.setLoadingState(true);
 
       if (location === "/login") {
         credentials = await login(email, password);
@@ -65,10 +62,7 @@ const Auth = () => {
     } catch (error) {
       alert(error);
     } finally {
-      appContext?.dispatch({
-        type: AppStateActions.SET_LOADING,
-        payload: false,
-      });
+      appContext?.setLoadingState(false);
     }
   };
 

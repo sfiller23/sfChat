@@ -26,10 +26,7 @@ const ImgPreviewButton = (props: imgPreviewButtonProps) => {
 
   const handleAvatarUpload = async (e: BaseSyntheticEvent | Event) => {
     try {
-      appContext?.dispatch({
-        type: AppStateActions.SET_LOADING,
-        payload: true,
-      });
+      appContext?.setLoadingState(true);
       if (picture && (authContext?.state.user?.userId || user?.userId)) {
         await uploadAvatar(
           e as Event,
@@ -42,14 +39,11 @@ const ImgPreviewButton = (props: imgPreviewButtonProps) => {
 
       setPicture(null);
       setIsPreview(false);
-      appContext?.dispatch({ type: AppStateActions.SET_IMAGE_PROFILE_CHANGE });
+      appContext?.setImageProfileChange();
     } catch (error) {
       alert(error);
     } finally {
-      appContext?.dispatch({
-        type: AppStateActions.SET_LOADING,
-        payload: false,
-      });
+      appContext?.setLoadingState(false);
     }
   };
 

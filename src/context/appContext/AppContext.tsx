@@ -31,7 +31,10 @@ export interface ReducerAction {
 
 interface ContextState {
   state: AppState;
-  dispatch: React.Dispatch<ReducerAction>;
+  //dispatch: React.Dispatch<ReducerAction>;
+  setLoadingState: (isLoading: boolean) => void;
+  setImageProfile: (imgUrl: string) => void;
+  setImageProfileChange: () => void;
 }
 
 export const AppContext = createContext<ContextState | null>(null);
@@ -63,36 +66,37 @@ export const AppProvider = ({ children }: ChildrenType): ReactElement => {
 
   const authContext = useContext(AuthContext);
 
+  const setLoadingState = (isLoading: boolean) => {
+    dispatch({
+      type: AppStateActions.SET_LOADING,
+      payload: isLoading,
+    });
+  };
+
+  const setImageProfile = (imgUrl: string) => {
+    dispatch({
+      type: AppStateActions.SET_IMAGE_PROFILE,
+      payload: imgUrl,
+    });
+  };
+
+  const setImageProfileChange = () => {
+    dispatch({ type: AppStateActions.SET_IMAGE_PROFILE_CHANGE });
+  };
+
   useEffect(() => {
     let imgUrl: string | undefined = "";
     const getProfileUrl = async () => {
       try {
-        dispatch({
-          type: AppStateActions.SET_LOADING,
-          payload: true,
-        });
         if (userId) {
+          setLoadingState(true);
           imgUrl = await getAvatar(userId);
-
-          dispatch({
-            type: AppStateActions.SET_IMAGE_PROFILE,
-            payload: imgUrl,
-          });
-        } else {
-          dispatch({
-            type: AppStateActions.SET_IMAGE_PROFILE,
-            payload: "",
-          });
-        }
-      } catch (error) {
-        if (imgUrl) {
-          alert(error);
+          if (imgUrl) {
+            setImageProfile(imgUrl);
+          }
         }
       } finally {
-        dispatch({
-          type: AppStateActions.SET_LOADING,
-          payload: false,
-        });
+        setLoadingState(false);
       }
     };
     getProfileUrl();
@@ -100,7 +104,9 @@ export const AppProvider = ({ children }: ChildrenType): ReactElement => {
   }, [authContext?.state.loggedIn, state.imgProfileChange, userId]);
 
   return (
-    <AppContext.Provider value={{ state, dispatch }}>
+    <AppContext.Provider
+      value={{ state, setLoadingState, setImageProfile, setImageProfileChange }}
+    >
       {children}
     </AppContext.Provider>
   );
