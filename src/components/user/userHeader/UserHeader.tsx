@@ -38,23 +38,28 @@ const UserHeader = (props: Partial<ChatState>) => {
       {appContext?.state.isLoading ? (
         <Loader className="profile-image-loader" />
       ) : (
-        <span className="user-img-container">
-          {!!appContext?.state.imgProfileUrl && (
-            <img
-              className="user-img"
-              src={appContext?.state.imgProfileUrl}
-              alt="Profile Image"
+        <>
+          <div className="display-name-container">
+            <h3>{user?.displayName}</h3>
+          </div>
+          <span className="user-img-container">
+            {!!appContext?.state.imgProfileUrl && (
+              <img
+                className="user-img"
+                src={appContext?.state.imgProfileUrl}
+                alt="Profile Image"
+              />
+            )}
+            <ImgPreviewButton
+              action={
+                !!appContext?.state.imgProfileUrl
+                  ? PreviewState.EDIT
+                  : PreviewState.ADD
+              }
+              inForm={false}
             />
-          )}
-          <ImgPreviewButton
-            action={
-              !!appContext?.state.imgProfileUrl
-                ? PreviewState.EDIT
-                : PreviewState.ADD
-            }
-            inForm={false}
-          />
-        </span>
+          </span>
+        </>
       )}
 
       <span>
@@ -62,9 +67,6 @@ const UserHeader = (props: Partial<ChatState>) => {
           Logout
         </button>
       </span>
-      <div className="display-name-container">
-        <h3>{user?.displayName}</h3>
-      </div>
     </div>
   );
 };
