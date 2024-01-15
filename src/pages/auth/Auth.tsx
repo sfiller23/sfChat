@@ -51,14 +51,7 @@ const Auth = () => {
           await uploadAvatar(e as Event, file, userId);
         }
       }
-      authContext?.dispatch({
-        type: AuthStateActions.LOGIN,
-        payload: {
-          ...credentials.user,
-          displayName: displayName,
-          loggedIn: true,
-        },
-      });
+      authContext?.logIn({ ...credentials.user, displayName });
     } catch (error) {
       alert(error);
     } finally {

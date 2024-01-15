@@ -35,7 +35,8 @@ export interface ReducerAction {
 
 interface ContextState {
   state: AuthState;
-  dispatch: React.Dispatch<ReducerAction>;
+  logIn: (credentials: any, displayName: string) => void;
+  logOut: ({}) => void;
 }
 
 export const AuthContext = createContext<ContextState | null>(null);
@@ -97,6 +98,19 @@ export const AuthProvider = ({ children }: ChildrenType): ReactElement => {
 
   const token = JSON.parse(localStorage.getItem("accessToken") as string);
 
+  const logIn = (payload: object) => {
+    dispatch({
+      type: AuthStateActions.LOGIN,
+      payload: {
+        ...payload,
+      },
+    });
+  };
+
+  const logOut = () => {
+    dispatch({ type: AuthStateActions.LOGOUT });
+  };
+
   useLayoutEffect(() => {
     if (userId) {
       chatSliceDispatch(getUserById(userId));
@@ -108,7 +122,7 @@ export const AuthProvider = ({ children }: ChildrenType): ReactElement => {
   }, [token]);
 
   return (
-    <AuthContext.Provider value={{ state, dispatch }}>
+    <AuthContext.Provider value={{ state, logIn, logOut }}>
       {children}
     </AuthContext.Provider>
   );

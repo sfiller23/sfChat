@@ -21,7 +21,7 @@ const UserHeader = (props: Partial<ChatState>) => {
     try {
       if (user) {
         await setLoggedInState(false, user.userId);
-        authContext?.dispatch({ type: AuthStateActions.LOGOUT });
+        authContext?.logOut();
         dispatch(clearChat());
       }
     } catch (error) {

@@ -31,7 +31,6 @@ export interface ReducerAction {
 
 interface ContextState {
   state: AppState;
-  //dispatch: React.Dispatch<ReducerAction>;
   setLoadingState: (isLoading: boolean) => void;
   setImageProfile: (imgUrl: string) => void;
   setImageProfileChange: () => void;
