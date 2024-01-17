@@ -4,7 +4,7 @@
   width: 50%;
   height: fit-content;
   background-color: #5d5b8d;
-  padding: 1rem;
+  padding: 0.8rem;
   margin: 0.5rem;
 
   &.reciever {
@@ -13,8 +13,13 @@
   }
 
   .message-text-container {
-    color: white;
     margin-bottom: 0.3rem;
+    p {
+      white-space: pre-line;
+      color: white;
+      font-size: 0.8rem;
+      margin: 0.3rem 0.3rem;
+    }
   }
 
   .message-date-time-container {
@@ -22,9 +27,12 @@
     color: rgb(224, 220, 220);
     display: flex;
     justify-content: flex-end;
+    align-items: center;
 
-    > span {
-      margin-right: 0.3rem;
+    p {
+      color: white;
+      margin: 0.1rem 0.1rem;
+      font-size: 0.6rem;
     }
   }
 }

@@ -10,9 +10,12 @@ import {
   ChatState,
   setCurrentChatMessage,
 } from "../../../redux/chat/chatSlice";
-import { Message as MessageProps } from "../../../interfaces/chat";
+import { ChatObj, Message as MessageProps } from "../../../interfaces/chat";
 import { MessageStatus } from "../../../constants/enums";
 import "./_chat-footer.scss";
+import { ThunkDispatch, UnknownAction } from "@reduxjs/toolkit";
+import { setMessageSeen } from "../../../utils/common-functions";
+import { User } from "../../../interfaces/auth";
 
 const ChatFooter = (props: Partial<ChatState>) => {
   const { currentChat: chat, user } = props;
@@ -38,16 +41,6 @@ const ChatFooter = (props: Partial<ChatState>) => {
           writerID: user?.userId,
         })
       );
-    }
-  };
-
-  const setMessageSeen = () => {
-    if (chat) {
-      if (chat.messages.length !== 0) {
-        if (chat?.messages[chat?.messages.length - 1].userId !== user?.userId) {
-          dispatch(setMessageSeenReq(chat.chatId));
-        }
-      }
     }
   };
 
@@ -93,7 +86,7 @@ const ChatFooter = (props: Partial<ChatState>) => {
               setMessageText(e.target.value);
             }}
             onFocus={() => {
-              setMessageSeen();
+              setMessageSeen(chat as ChatObj, dispatch, user as User);
             }}
           />
 

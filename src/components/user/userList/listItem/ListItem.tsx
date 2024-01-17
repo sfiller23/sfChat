@@ -6,7 +6,7 @@ import "./_list-item.scss";
 
 interface ListItemProps extends Partial<ChatState> {
   currentUser: User;
-  startChat: (sender: User, receiver: User) => void;
+  openChat: (sender: User, receiver: User) => void;
   setUserActive: (userId: string) => void;
   isNewMessage: (
     user: User,
@@ -21,7 +21,7 @@ const ListItem = (props: ListItemProps) => {
     currentUser,
     user,
     chats,
-    startChat,
+    openChat,
     setUserActive,
     isNewMessage,
     listItemActiveUid,
@@ -30,7 +30,7 @@ const ListItem = (props: ListItemProps) => {
   return (
     <li
       onClick={() => {
-        startChat(currentUser, user as User);
+        openChat(currentUser, user as User);
         setUserActive(user?.userId as string);
       }}
       className={`list-item ${

@@ -13,6 +13,7 @@ import { db } from "../../../App";
 import { collection, onSnapshot } from "firebase/firestore";
 import { MessageStatus } from "../../../constants/enums";
 import ListItem from "./listItem/ListItem";
+import { setMessageSeen } from "../../../utils/common-functions";
 
 export const UserList = (props: Partial<ChatState>) => {
   const { user: currentUser, users } = props;
@@ -51,13 +52,14 @@ export const UserList = (props: Partial<ChatState>) => {
     updateUserList();
   }, []);
 
-  const startChat = (sender: User, receiver: User) => {
+  const openChat = (sender: User, receiver: User) => {
     if (sender.chatIds) {
       for (const key in sender.chatIds) {
         if (receiver.chatIds) {
           if (receiver.chatIds[key]) {
             dispatch(getChatById(key));
             localStorage.setItem("chatId", key);
+            setMessageSeen(chats[key], dispatch, sender);
             return;
           }
         }
@@ -79,6 +81,7 @@ export const UserList = (props: Partial<ChatState>) => {
       messages: [],
     };
     dispatch(initChat(chatObj));
+    setMessageSeen(chats[chatId], dispatch, sender);
   };
 
   const setUserActive = (uid: string) => {
@@ -152,7 +155,7 @@ export const UserList = (props: Partial<ChatState>) => {
                 currentUser={currentUser}
                 user={user}
                 chats={chats}
-                startChat={startChat}
+                openChat={openChat}
                 setUserActive={setUserActive}
                 isNewMessage={isNewMessage}
                 listItemActiveUid={listItemActiveUid}

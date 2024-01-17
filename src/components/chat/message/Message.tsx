@@ -32,9 +32,12 @@ const Message = (props: Partial<MessageProps>) => {
         userId === user?.userId ? "sender" : "reciever"
       }`}
     >
-      <div className="message-text-container">{text}</div>
+      <div className="message-text-container">
+        <p>{text}</p>
+      </div>
       <div className="message-date-time-container">
-        <span>{new Date(sentTime as number).toLocaleString()}</span>
+        <p>{new Date(sentTime as number).toLocaleString()}</p>
+
         {userId === user?.userId && (
           <span>
             {status === MessageStatus.SENT && (

@@ -3,6 +3,8 @@
 .chat-card {
   border: 1px solid white;
   border-radius: 10px;
+  max-width: 600px;
+  width: 70%;
   min-width: 300px;
   max-height: 800px;
   overflow: hidden;
@@ -15,6 +17,6 @@
 
 .chat-container {
   width: 100%;
-  min-width: 315px;
+  min-width: 250px;
   background-color: $very-light-purple;
 }
