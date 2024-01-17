@@ -1,11 +1,23 @@
+@import "../../UI/layout/layout";
+
 .chat-message-board-container {
   max-height: 430px;
   overflow-y: scroll;
+
+  @media screen and (max-width: $medium) {
+    display: flex;
+    max-height: unset;
+    height: 100%;
+  }
 
   .chat-message-board {
     display: flex;
     justify-content: flex-end;
     flex-direction: column;
     min-height: 500px;
+
+    @media screen and (max-width: $medium) {
+      width: 100%;
+    }
   }
 }

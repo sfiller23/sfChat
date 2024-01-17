@@ -15,8 +15,11 @@ $light-grey: #bebdbd;
 $light-grey-red: #bfadad;
 $gradient: linear-gradient(to left top, #6277bd, #b5b5e4);
 
+$medium: 560px;
+$small: 450px;
+
 @mixin flicker($intervalTime, $mainColor, $secondaryColor) {
-  @keyframes flickerAnimation {
+  @keyframes infiniteAnimation {
     0% {
       background-color: $mainColor;
     }
@@ -27,7 +30,7 @@ $gradient: linear-gradient(to left top, #6277bd, #b5b5e4);
       background-color: $mainColor;
     }
   }
-  @-o-keyframes flickerAnimation {
+  @-o-keyframes infiniteAnimation {
     0% {
       background-color: $mainColor;
     }
@@ -38,7 +41,7 @@ $gradient: linear-gradient(to left top, #6277bd, #b5b5e4);
       background-color: $mainColor;
     }
   }
-  @-moz-keyframes flickerAnimation {
+  @-moz-keyframes infiniteAnimation {
     0% {
       background-color: $mainColor;
     }
@@ -49,7 +52,7 @@ $gradient: linear-gradient(to left top, #6277bd, #b5b5e4);
       background-color: $mainColor;
     }
   }
-  @-webkit-keyframes flickerAnimation {
+  @-webkit-keyframes infiniteAnimation {
     0% {
       background-color: $mainColor;
     }
@@ -61,10 +64,116 @@ $gradient: linear-gradient(to left top, #6277bd, #b5b5e4);
     }
   }
   &.new-message {
-    -webkit-animation: flickerAnimation $intervalTime infinite;
-    -moz-animation: flickerAnimation $intervalTime infinite;
-    -o-animation: flickerAnimation $intervalTime infinite;
-    animation: flickerAnimation $intervalTime infinite;
+    -webkit-animation: infiniteAnimation $intervalTime infinite;
+    -moz-animation: infiniteAnimation $intervalTime infinite;
+    -o-animation: infiniteAnimation $intervalTime infinite;
+    animation: infiniteAnimation $intervalTime infinite;
+  }
+}
+
+@mixin dancerLeft($intervalTime, $firstPosition, $secondPosition) {
+  @keyframes infiniteDancerLeft {
+    0% {
+      margin-left: $firstPosition;
+    }
+    50% {
+      margin-left: $secondPosition;
+    }
+    100% {
+      margin-left: $firstPosition;
+    }
+  }
+  @-o-keyframes infiniteDancerLeft {
+    0% {
+      margin-left: $firstPosition;
+    }
+    50% {
+      margin-left: $secondPosition;
+    }
+    100% {
+      margin-left: $firstPosition;
+    }
+  }
+  @-moz-keyframes infiniteDancerLeft {
+    0% {
+      margin-left: $firstPosition;
+    }
+    50% {
+      margin-left: $secondPosition;
+    }
+    100% {
+      margin-left: $firstPosition;
+    }
+  }
+  @-webkit-keyframes infiniteDancerLeft {
+    0% {
+      margin-left: $firstPosition;
+    }
+    50% {
+      margin-left: $secondPosition;
+    }
+    100% {
+      margin-left: $firstPosition;
+    }
+  }
+  &.collapse-icon {
+    -webkit-animation: infiniteDancerLeft $intervalTime infinite;
+    -moz-animation: infiniteDancerLeft $intervalTime infinite;
+    -o-animation: infiniteDancerLeft $intervalTime infinite;
+    animation: infiniteDancerLeft $intervalTime infinite;
+  }
+}
+
+@mixin dancerRight($intervalTime, $firstPosition, $secondPosition) {
+  @keyframes infiniteDancerRight {
+    0% {
+      margin-right: $firstPosition;
+    }
+    50% {
+      margin-right: $secondPosition;
+    }
+    100% {
+      margin-right: $firstPosition;
+    }
+  }
+  @-o-keyframes infiniteDancerRight {
+    0% {
+      margin-right: $firstPosition;
+    }
+    50% {
+      margin-right: $secondPosition;
+    }
+    100% {
+      margin-right: $firstPosition;
+    }
+  }
+  @-moz-keyframes infiniteDancerRight {
+    0% {
+      margin-right: $firstPosition;
+    }
+    50% {
+      margin-right: $secondPosition;
+    }
+    100% {
+      margin-right: $firstPosition;
+    }
+  }
+  @-webkit-keyframes infiniteDancerRight {
+    0% {
+      margin-right: $firstPosition;
+    }
+    50% {
+      margin-right: $secondPosition;
+    }
+    100% {
+      margin-right: $firstPosition;
+    }
+  }
+  &.collapse-icon {
+    -webkit-animation: infiniteDancerRight $intervalTime infinite;
+    -moz-animation: infiniteDancerRight $intervalTime infinite;
+    -o-animation: infiniteDancerRight $intervalTime infinite;
+    animation: infiniteDancerRight $intervalTime infinite;
   }
 }
 

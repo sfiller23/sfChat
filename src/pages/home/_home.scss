@@ -8,15 +8,80 @@
   min-width: 300px;
   max-height: 800px;
   overflow: hidden;
+
+  .collapse-button-container {
+    display: none;
+    position: absolute;
+    top: 45%;
+    left: 30%;
+    transition: transform 1s, left 1s;
+    &.open {
+      transform: rotate(180deg);
+      left: 0%;
+    }
+
+    .collapse-icon {
+      width: 30px;
+      height: 30px;
+      padding-top: 3px;
+
+      &.open {
+        @include dancerRight(0.8s, 0px, 10px);
+        //padding-top: 2px;
+      }
+
+      &.close {
+        @include dancerLeft(0.8s, 0px, 10px);
+      }
+    }
+
+    @media screen and (max-width: $small) {
+      display: flex;
+      // display: flex;
+      // align-items: center;
+      // justify-content: center;
+    }
+  }
+
+  @media screen and (max-width: $medium) {
+    width: 100%;
+    height: 100%;
+    max-width: unset;
+    min-width: unset;
+    max-height: unset;
+    border-radius: unset;
+  }
 }
 
 .users-container {
   min-width: fit-content;
   background-color: $dark-purple;
+  @media screen and (max-width: $small) {
+    position: absolute;
+    height: 100%;
+    min-width: unset;
+    width: 35%;
+    opacity: 1;
+    transition: width 1s, opacity 1s;
+
+    &.open {
+      width: 0%;
+      opacity: 0;
+    }
+    &.close {
+      width: 35%;
+      opacity: 1;
+    }
+  }
 }
 
 .chat-container {
   width: 100%;
   min-width: 250px;
   background-color: $very-light-purple;
+  @media screen and (max-width: $medium) {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
 }

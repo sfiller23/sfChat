@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from "../../redux/hooks/reduxHooks";
 import { getChats } from "../../redux/chat/chatAPI";
 import UserHeader from "../../components/user/userHeader/UserHeader";
 import { User } from "../../interfaces/auth";
+import { TbLayoutSidebarLeftCollapseFilled } from "react-icons/tb";
 
 const Home = () => {
   const dispatch = useAppDispatch();
@@ -17,6 +18,7 @@ const Home = () => {
   const users = useAppSelector((state) => state.chatReducer.users);
 
   const [user, setUser] = useState<User>();
+  const [toggleCollapseButton, setToggleCollapseButton] = useState(false);
 
   useEffect(() => {
     dispatch(getChats());
@@ -30,10 +32,26 @@ const Home = () => {
 
   return (
     <Card classNames={["chat-card"]}>
-      <span className="users-container">
+      <span
+        className={`users-container ${toggleCollapseButton ? "open" : "close"}`}
+      >
         <UserHeader user={user} />
         <UserSearch />
         <UserList user={user} users={users} />
+      </span>
+      <span
+        className={`collapse-button-container ${
+          toggleCollapseButton && "open"
+        }`}
+      >
+        <button
+          onClick={() => setToggleCollapseButton((s) => !s)}
+          className="collapse-button"
+        >
+          <TbLayoutSidebarLeftCollapseFilled
+            class={`collapse-icon ${toggleCollapseButton ? "open" : "close"}`}
+          />
+        </button>
       </span>
       <span className="chat-container">
         <Chat user={user} />
