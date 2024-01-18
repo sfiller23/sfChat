@@ -2,17 +2,13 @@ import LoggedInIcon from "../../../../UI/loggedInIcon/loggedInIcon";
 import { User } from "../../../../interfaces/auth";
 import { Chats } from "../../../../interfaces/chat";
 import { ChatState } from "../../../../redux/chat/chatSlice";
+import { isNewMessage } from "../../../../utils/common-functions";
 import "./_list-item.scss";
 
 interface ListItemProps extends Partial<ChatState> {
   currentUser: User;
   openChat: (sender: User, receiver: User) => void;
   setUserActive: (userId: string) => void;
-  isNewMessage: (
-    user: User,
-    currentUser: User,
-    chats: Chats
-  ) => string | undefined;
   listItemActiveUid: string;
 }
 
@@ -23,7 +19,6 @@ const ListItem = (props: ListItemProps) => {
     chats,
     openChat,
     setUserActive,
-    isNewMessage,
     listItemActiveUid,
   } = props;
   const activeUid = localStorage.getItem("activeUid");

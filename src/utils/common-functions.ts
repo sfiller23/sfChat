@@ -1,8 +1,9 @@
 import { ThunkDispatch, UnknownAction } from "@reduxjs/toolkit";
-import { ChatObj } from "../interfaces/chat";
+import { ChatObj, Chats } from "../interfaces/chat";
 import { ChatState } from "../redux/chat/chatSlice";
 import { setMessageSeenReq } from "../redux/chat/chatAPI";
 import { User } from "../interfaces/auth";
+import { MessageStatus } from "../constants/enums";
 
 export const setMessageSeen = (
   chat: ChatObj,
@@ -13,6 +14,48 @@ export const setMessageSeen = (
     if (chat.messages.length !== 0) {
       if (chat?.messages[chat?.messages.length - 1].userId !== user?.userId) {
         dispatch(setMessageSeenReq(chat.chatId));
+      }
+    }
+  }
+};
+
+export const isNewMessage = (
+  user: User,
+  currentUser: User,
+  chats: Chats
+): string | undefined => {
+  if (user && currentUser) {
+    for (const chatId in user.chatIds) {
+      if (chats[chatId]) {
+        if (currentUser.userId === chats[chatId].firstUser.userId) {
+          if (
+            chats[chatId].messages &&
+            chats[chatId].messages.length !== 0 &&
+            chats[chatId].messages[chats[chatId].messages.length - 1][
+              "status"
+            ] &&
+            chats[chatId].messages[chats[chatId].messages.length - 1].userId !==
+              chats[chatId].firstUser.userId &&
+            chats[chatId].messages[chats[chatId].messages.length - 1].status ===
+              MessageStatus.ARRIVED
+          ) {
+            return chats[chatId].secondUser.userId;
+          }
+        } else if (currentUser.userId === chats[chatId].secondUser.userId) {
+          if (
+            chats[chatId].messages &&
+            chats[chatId].messages.length !== 0 &&
+            chats[chatId].messages[chats[chatId].messages.length - 1][
+              "status"
+            ] &&
+            chats[chatId].messages[chats[chatId].messages.length - 1].userId !==
+              chats[chatId].secondUser.userId &&
+            chats[chatId].messages[chats[chatId].messages.length - 1].status ===
+              MessageStatus.ARRIVED
+          ) {
+            return chats[chatId].firstUser.userId;
+          }
+        }
       }
     }
   }

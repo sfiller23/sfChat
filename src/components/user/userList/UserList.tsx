@@ -5,13 +5,12 @@ import {
 } from "../../../redux/hooks/reduxHooks";
 import { getChatById, getUsers, initChat } from "../../../redux/chat/chatAPI";
 import "./_user-list.scss";
-import { ChatObj, Chats } from "../../../interfaces/chat";
+import { ChatObj } from "../../../interfaces/chat";
 import { User } from "../../../interfaces/auth";
 import { v4 as uuid } from "uuid";
 import { ChatState, updateUser } from "../../../redux/chat/chatSlice";
 import { db } from "../../../App";
 import { collection, onSnapshot } from "firebase/firestore";
-import { MessageStatus } from "../../../constants/enums";
 import ListItem from "./listItem/ListItem";
 import { setMessageSeen } from "../../../utils/common-functions";
 
@@ -89,46 +88,6 @@ export const UserList = (props: Partial<ChatState>) => {
     localStorage.setItem("activeUid", uid);
   };
 
-  const isNewMessage = (
-    user: User,
-    currentUser: User,
-    chats: Chats
-  ): string | undefined => {
-    for (const chatId in user.chatIds) {
-      if (chats[chatId]) {
-        if (currentUser.userId === chats[chatId].firstUser.userId) {
-          if (
-            chats[chatId].messages &&
-            chats[chatId].messages.length !== 0 &&
-            chats[chatId].messages[chats[chatId].messages.length - 1][
-              "status"
-            ] &&
-            chats[chatId].messages[chats[chatId].messages.length - 1].userId !==
-              chats[chatId].firstUser.userId &&
-            chats[chatId].messages[chats[chatId].messages.length - 1].status ===
-              MessageStatus.ARRIVED
-          ) {
-            return chats[chatId].secondUser.userId;
-          }
-        } else if (currentUser.userId === chats[chatId].secondUser.userId) {
-          if (
-            chats[chatId].messages &&
-            chats[chatId].messages.length !== 0 &&
-            chats[chatId].messages[chats[chatId].messages.length - 1][
-              "status"
-            ] &&
-            chats[chatId].messages[chats[chatId].messages.length - 1].userId !==
-              chats[chatId].secondUser.userId &&
-            chats[chatId].messages[chats[chatId].messages.length - 1].status ===
-              MessageStatus.ARRIVED
-          ) {
-            return chats[chatId].firstUser.userId;
-          }
-        }
-      }
-    }
-  };
-
   return (
     <div className="user-list-container">
       <ul className="user-list">
@@ -142,7 +101,6 @@ export const UserList = (props: Partial<ChatState>) => {
                 chats={chats}
                 openChat={openChat}
                 setUserActive={setUserActive}
-                isNewMessage={isNewMessage}
                 listItemActiveUid={listItemActiveUid}
               />
             );
