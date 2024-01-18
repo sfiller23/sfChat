@@ -20,26 +20,25 @@
       left: 0%;
     }
 
+    .collapse-button {
+      border: 2px solid black;
+      border-radius: 5px;
+      background-color: $dark-purple;
+    }
+
     .collapse-icon {
       width: 30px;
       height: 30px;
       padding-top: 3px;
-
-      &.open {
-        @include dancerRight(0.8s, 0px, 10px);
-        //padding-top: 2px;
-      }
+      color: $purple;
 
       &.close {
-        @include dancerLeft(0.8s, 0px, 10px);
+        @include dancer(0.8s, 0px, 10px);
       }
     }
 
     @media screen and (max-width: $small) {
       display: flex;
-      // display: flex;
-      // align-items: center;
-      // justify-content: center;
     }
   }
 

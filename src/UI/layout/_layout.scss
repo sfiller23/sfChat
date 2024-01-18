@@ -2,6 +2,8 @@
   font-family: "Times New Roman", Times, serif;
 }
 
+$app-font: "Times New Roman", Times, serif;
+
 $very-light-blue: #a7bcff;
 $light-blue: #8da4f1;
 $blue: #7b96ec;
@@ -71,8 +73,8 @@ $small: 450px;
   }
 }
 
-@mixin dancerLeft($intervalTime, $firstPosition, $secondPosition) {
-  @keyframes infiniteDancerLeft {
+@mixin dancer($intervalTime, $firstPosition, $secondPosition) {
+  @keyframes infiniteDancer {
     0% {
       margin-left: $firstPosition;
     }
@@ -83,7 +85,7 @@ $small: 450px;
       margin-left: $firstPosition;
     }
   }
-  @-o-keyframes infiniteDancerLeft {
+  @-o-keyframes infiniteDancer {
     0% {
       margin-left: $firstPosition;
     }
@@ -94,7 +96,7 @@ $small: 450px;
       margin-left: $firstPosition;
     }
   }
-  @-moz-keyframes infiniteDancerLeft {
+  @-moz-keyframes infiniteDancer {
     0% {
       margin-left: $firstPosition;
     }
@@ -105,7 +107,7 @@ $small: 450px;
       margin-left: $firstPosition;
     }
   }
-  @-webkit-keyframes infiniteDancerLeft {
+  @-webkit-keyframes infiniteDancer {
     0% {
       margin-left: $firstPosition;
     }
@@ -117,63 +119,10 @@ $small: 450px;
     }
   }
   &.collapse-icon {
-    -webkit-animation: infiniteDancerLeft $intervalTime infinite;
-    -moz-animation: infiniteDancerLeft $intervalTime infinite;
-    -o-animation: infiniteDancerLeft $intervalTime infinite;
-    animation: infiniteDancerLeft $intervalTime infinite;
-  }
-}
-
-@mixin dancerRight($intervalTime, $firstPosition, $secondPosition) {
-  @keyframes infiniteDancerRight {
-    0% {
-      margin-right: $firstPosition;
-    }
-    50% {
-      margin-right: $secondPosition;
-    }
-    100% {
-      margin-right: $firstPosition;
-    }
-  }
-  @-o-keyframes infiniteDancerRight {
-    0% {
-      margin-right: $firstPosition;
-    }
-    50% {
-      margin-right: $secondPosition;
-    }
-    100% {
-      margin-right: $firstPosition;
-    }
-  }
-  @-moz-keyframes infiniteDancerRight {
-    0% {
-      margin-right: $firstPosition;
-    }
-    50% {
-      margin-right: $secondPosition;
-    }
-    100% {
-      margin-right: $firstPosition;
-    }
-  }
-  @-webkit-keyframes infiniteDancerRight {
-    0% {
-      margin-right: $firstPosition;
-    }
-    50% {
-      margin-right: $secondPosition;
-    }
-    100% {
-      margin-right: $firstPosition;
-    }
-  }
-  &.collapse-icon {
-    -webkit-animation: infiniteDancerRight $intervalTime infinite;
-    -moz-animation: infiniteDancerRight $intervalTime infinite;
-    -o-animation: infiniteDancerRight $intervalTime infinite;
-    animation: infiniteDancerRight $intervalTime infinite;
+    -webkit-animation: infiniteDancer $intervalTime infinite;
+    -moz-animation: infiniteDancer $intervalTime infinite;
+    -o-animation: infiniteDancer $intervalTime infinite;
+    animation: infiniteDancer $intervalTime infinite;
   }
 }
 
