@@ -6,7 +6,7 @@ import { uploadAvatar } from "../../../api/firebase/api";
 import { BaseSyntheticEvent, useContext, useState } from "react";
 import { AuthContext } from "../../../context/authContext/AuthContext";
 import { AppContext } from "../../../context/appContext/AppContext";
-import { AppStateActions, PreviewState } from "../../../constants/enums";
+import { PreviewState } from "../../../constants/enums";
 import { useAppSelector } from "../../../redux/hooks/reduxHooks";
 
 interface imgPreviewButtonProps {

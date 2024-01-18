@@ -42,8 +42,10 @@
     color: $very-light-purple;
     border: none;
   }
-  .display-name-container h3 {
-    margin: 0px;
+  .display-name-container {
+    h3 {
+      margin: 5px 0px;
+    }
   }
 }
 

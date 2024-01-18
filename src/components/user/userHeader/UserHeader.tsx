@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import Loader from "../../../UI/loader/Loader";
-import { AuthStateActions, PreviewState } from "../../../constants/enums";
+import { PreviewState } from "../../../constants/enums";
 import ImgPreviewButton from "../../common/imgPreviewButton/ImgPreviewButton";
 import { AuthContext } from "../../../context/authContext/AuthContext";
 import { AppContext } from "../../../context/appContext/AppContext";

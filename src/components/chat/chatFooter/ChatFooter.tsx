@@ -1,11 +1,7 @@
 import { useEffect, useState } from "react";
 import { PiNavigationArrowThin } from "react-icons/pi";
 import { useAppDispatch } from "../../../redux/hooks/reduxHooks";
-import {
-  setMessageSeenReq,
-  setWritingState,
-  updateChat,
-} from "../../../redux/chat/chatAPI";
+import { setWritingState, updateChat } from "../../../redux/chat/chatAPI";
 import {
   ChatState,
   setCurrentChatMessage,
@@ -13,7 +9,6 @@ import {
 import { ChatObj, Message as MessageProps } from "../../../interfaces/chat";
 import { MessageStatus } from "../../../constants/enums";
 import "./_chat-footer.scss";
-import { ThunkDispatch, UnknownAction } from "@reduxjs/toolkit";
 import { setMessageSeen } from "../../../utils/common-functions";
 import { User } from "../../../interfaces/auth";
 

@@ -48,12 +48,17 @@
   }
 
   .select-user-container {
+    @media screen and (max-width: $small) {
+      display: flex;
+      justify-content: flex-end;
+      width: 100%;
+    }
     h3 {
       margin: 5px;
       color: $light-purple;
       @media screen and (max-width: $small) {
         font-size: 1.1rem;
-        margin-left: 46%;
+        max-width: 14rem;
       }
     }
   }

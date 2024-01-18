@@ -7,7 +7,6 @@ import Loader from "../../UI/loader/Loader";
 import { AuthContext } from "../../context/authContext/AuthContext";
 import { AppContext } from "../../context/appContext/AppContext";
 import ImgPreviewButton from "../../components/common/imgPreviewButton/ImgPreviewButton";
-import { AppStateActions, AuthStateActions } from "../../constants/enums";
 
 const Auth = () => {
   const authContext = useContext(AuthContext);

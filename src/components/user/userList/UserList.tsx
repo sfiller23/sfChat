@@ -96,22 +96,8 @@ export const UserList = (props: Partial<ChatState>) => {
   ): string | undefined => {
     for (const chatId in user.chatIds) {
       if (chats[chatId]) {
-        // if (
-        //   chats[chatId].messages &&
-        //   chats[chatId].messages.length !== 0 &&
-        //   chats[chatId].messages[chats[chatId].messages.length - 1]["status"] &&
-        //   chats[chatId].messages[chats[chatId].messages.length - 1].status ===
-        //     MessageStatus.ARRIVED &&
-        //   chats[chatId].writing?.writerID !== currentUser.userId
-        // ) {
-        //   return chats[chatId].secondUser.userId;
-        // } else {
-        //   return chats[chatId].firstUser.userId;
-        // }
-
         if (currentUser.userId === chats[chatId].firstUser.userId) {
           if (
-            //chats[chatId].secondUser.userId === user.userId &&
             chats[chatId].messages &&
             chats[chatId].messages.length !== 0 &&
             chats[chatId].messages[chats[chatId].messages.length - 1][
@@ -126,7 +112,6 @@ export const UserList = (props: Partial<ChatState>) => {
           }
         } else if (currentUser.userId === chats[chatId].secondUser.userId) {
           if (
-            //chats[chatId].firstUser.userId === user.userId &&
             chats[chatId].messages &&
             chats[chatId].messages.length !== 0 &&
             chats[chatId].messages[chats[chatId].messages.length - 1][

@@ -35,8 +35,8 @@ export interface ReducerAction {
 
 interface ContextState {
   state: AuthState;
-  logIn: (credentials: any, displayName: string) => void;
-  logOut: ({}) => void;
+  logIn: ({}) => void;
+  logOut: () => void;
 }
 
 export const AuthContext = createContext<ContextState | null>(null);
