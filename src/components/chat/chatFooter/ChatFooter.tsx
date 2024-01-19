@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { PiNavigationArrowThin } from "react-icons/pi";
 import { useAppDispatch } from "../../../redux/hooks/reduxHooks";
 import { setWritingState, updateChat } from "../../../redux/chat/chatAPI";
@@ -16,8 +16,13 @@ const ChatFooter = (props: Partial<ChatState>) => {
   const { currentChat: chat, user } = props;
 
   const [messageText, setMessageText] = useState("");
-
   const [isChatActive, setIsChatActive] = useState(false);
+
+  const bottomRef = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView();
+  }, [bottomRef.current]);
 
   const dispatch = useAppDispatch();
 
@@ -94,7 +99,7 @@ const ChatFooter = (props: Partial<ChatState>) => {
           </button>
         </>
       ) : (
-        <span className="select-user-container">
+        <span ref={bottomRef} className="select-user-container">
           <h3>Please select a user to start messaging</h3>
         </span>
       )}

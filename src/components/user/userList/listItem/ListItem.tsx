@@ -40,7 +40,7 @@ const ListItem = (props: ListItemProps) => {
            }`}
     >
       <LoggedInIcon loggedIn={user?.loggedIn} />
-      {user?.displayName}
+      <h5>{user?.displayName}</h5>
     </li>
   );
 };

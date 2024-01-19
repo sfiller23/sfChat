@@ -59,7 +59,9 @@ const Home = () => {
           }`}
         >
           <TbLayoutSidebarLeftCollapseFilled
-            class={`collapse-icon ${toggleCollapseButton ? "open" : "close"}`}
+            className={`collapse-icon ${
+              toggleCollapseButton ? "open" : "close"
+            }`}
           />
         </button>
       </span>

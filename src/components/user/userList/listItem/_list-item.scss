@@ -1,7 +1,15 @@
 .list-item {
   display: flex;
+  align-items: center;
   gap: 5px;
   padding: 3px 5px;
   list-style-type: none;
   color: white;
+
+  h5 {
+    margin: 0px;
+    &::first-letter {
+      text-transform: capitalize;
+    }
+  }
 }

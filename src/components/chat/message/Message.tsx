@@ -8,7 +8,7 @@ import { FaCheckDouble } from "react-icons/fa6";
 
 const Message = (props: Partial<MessageProps>) => {
   const user = useAppSelector((state) => state.chatReducer.user);
-  const chats = useAppSelector((state) => state.chatReducer.chats);
+  //const chats = useAppSelector((state) => state.chatReducer.chats);
 
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -17,13 +17,13 @@ const Message = (props: Partial<MessageProps>) => {
     sentTime,
     status = MessageStatus.SENT,
     userId,
-    index,
-    chatId,
+    //index,
+    //chatId,
   } = props;
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView();
-  }, [chatId, chats[chatId as string], index, bottomRef.current]);
+  }, [bottomRef.current]);
 
   return (
     <div
