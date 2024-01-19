@@ -9,7 +9,7 @@ import { ChatObj } from "../../../interfaces/chat";
 import { User } from "../../../interfaces/auth";
 import { v4 as uuid } from "uuid";
 import { ChatState, updateUser } from "../../../redux/chat/chatSlice";
-import { db } from "../../../App";
+import { db } from "../../../../firebase";
 import { collection, onSnapshot } from "firebase/firestore";
 import ListItem from "./listItem/ListItem";
 import { setMessageSeen } from "../../../utils/common-functions";

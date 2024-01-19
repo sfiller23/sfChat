@@ -6,7 +6,7 @@ import {
   useEffect,
   useLayoutEffect,
 } from "react";
-import { auth } from "../../App";
+import { auth } from "../../../firebase";
 import { useNavigate } from "react-router-dom";
 import { User } from "../../interfaces/auth";
 import { useAppDispatch } from "../../redux/hooks/reduxHooks";

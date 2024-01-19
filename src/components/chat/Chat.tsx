@@ -5,7 +5,7 @@ import { getChatById, getChats, getUsers } from "../../redux/chat/chatAPI";
 import { ChatObj } from "../../interfaces/chat";
 import { ChatState, updateCurrentChat } from "../../redux/chat/chatSlice";
 import { collection, onSnapshot } from "firebase/firestore";
-import { db } from "../../App";
+import { db } from "../../../firebase";
 import Message from "./message/Message";
 import { useLocation } from "react-router-dom";
 import ChatHeader from "./chatHeader/ChatHeader";

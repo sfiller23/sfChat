@@ -1,5 +1,5 @@
 import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
-import { auth, db, storage } from "../../App";
+import { auth, db, storage } from "../../../firebase";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,

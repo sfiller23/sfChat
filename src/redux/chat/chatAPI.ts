@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { db } from "../../App";
+import { db } from "../../../firebase";
 import {
   arrayUnion,
   collection,

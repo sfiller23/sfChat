@@ -4,15 +4,19 @@
   max-height: 430px;
   overflow-y: scroll;
 
+  @media screen and (max-width: $small) {
+    max-height: unset;
+  }
+
   .user-list {
     padding: 0;
 
     ul {
-      @media screen and (max-widht: $small) {
-        position: absolute;
-        bottom: 0px;
-        max-height: 77%;
-        overflow: scroll;
+      @media screen and (max-width: $small) {
+        // position: absolute;
+        // bottom: 0px;
+        // height: 100%;
+        // overflow: scroll;
       }
     }
 
