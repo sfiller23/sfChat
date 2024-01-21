@@ -27,20 +27,9 @@ const chatSlice = createSlice({
   name: "Chat",
   initialState,
   reducers: {
-    // addChatId: (state, action) => {
-    //   if (state.user) {
-    //     state.user.chatIds = {
-    //       ...state.user?.chatIds,
-    //       [action.payload]: { active: true },
-    //     };
-    //   }
-    // },
     updateCurrentChat: (state, action) => {
       state.chats[action.payload.chatId] = action.payload;
     },
-    // addUser: (state, action) => {
-    //   state.users.push(action.payload);
-    // },
     updateUser: (state, action) => {
       const userIndex = state.users
         .map((user) => user.userId)
@@ -58,9 +47,6 @@ const chatSlice = createSlice({
         user.displayName.startsWith(action.payload)
       );
     },
-    // setCurrentChat: (state, action) => {
-    //   state.currentChat = action.payload;
-    // },
     clearChat: (state) => {
       state.user = null;
       state.users = [];
@@ -92,13 +78,10 @@ const chatSlice = createSlice({
 export const {
   searchUser,
   setAuthenticatedUser,
-  //setCurrentChat,
   setCurrentChatMessage,
-  //addUser,
   updateUser,
   clearChat,
   updateCurrentChat,
-  //addChatId,
 } = chatSlice.actions;
 
 export default chatSlice.reducer;

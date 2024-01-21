@@ -22,6 +22,7 @@ const UserHeader = (props: Partial<ChatState>) => {
       if (user) {
         await setLoggedInState(false, user.userId);
         authContext?.logOut();
+        appContext?.clearAppState();
         dispatch(clearChat());
       }
     } catch (error) {
@@ -32,7 +33,7 @@ const UserHeader = (props: Partial<ChatState>) => {
   return (
     <div
       className={`user-header ${
-        !!appContext?.state.imgProfileUrl && "no-image"
+        !!appContext?.state.imgProfileUrl ? "no-image" : ""
       }`}
     >
       {appContext?.state.isLoading ? (

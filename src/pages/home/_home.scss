@@ -60,7 +60,7 @@
 
 .users-container {
   min-width: fit-content;
-  background-color: $dark-purple;
+  background-color: $very-dark-purple;
   @media screen and (max-width: $medium) {
     height: 100vh;
   }
@@ -86,9 +86,7 @@
   width: 100%;
   min-width: 250px;
   background-color: $very-light-purple;
-  @media screen and (max-width: $medium) {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }

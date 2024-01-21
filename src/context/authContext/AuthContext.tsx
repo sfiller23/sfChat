@@ -57,7 +57,6 @@ const reducer = (state: AuthState, action: ReducerAction): AuthState => {
           email: action.payload.email,
           loggedIn: true,
         },
-        loggedIn: true,
         accessToken: action.payload?.accessToken,
       };
 

@@ -1,25 +1,14 @@
 import { useEffect, useRef } from "react";
 import { MessageStatus } from "../../../constants/enums";
 import { Message as MessageProps } from "../../../interfaces/chat";
-import { useAppSelector } from "../../../redux/hooks/reduxHooks";
 import "./_message.scss";
 import { FaCheck } from "react-icons/fa6";
 import { FaCheckDouble } from "react-icons/fa6";
 
 const Message = (props: Partial<MessageProps>) => {
-  const user = useAppSelector((state) => state.chatReducer.user);
-  //const chats = useAppSelector((state) => state.chatReducer.chats);
-
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  const {
-    text,
-    sentTime,
-    status = MessageStatus.SENT,
-    userId,
-    //index,
-    //chatId,
-  } = props;
+  const { text, sentTime, status = MessageStatus.SENT, userId, user } = props;
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView();

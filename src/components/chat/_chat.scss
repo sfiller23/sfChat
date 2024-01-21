@@ -5,10 +5,7 @@
   overflow-y: scroll;
 
   @media screen and (max-width: $medium) {
-    //// display: flex;
-    //align-items: flex-end;
     max-height: unset;
-    //height: 100%;
   }
 
   .chat-message-board {

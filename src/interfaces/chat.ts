@@ -9,6 +9,7 @@ export interface Message {
   status?: MessageStatus;
   index?: number;
   chatId?: string;
+  user?: User;
 }
 
 export interface Chats {

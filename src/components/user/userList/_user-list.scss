@@ -5,25 +5,13 @@
   margin-top: 10px;
   overflow-y: scroll;
 
-  @media screen and (max-width: $medium) {
-    max-height: unset;
-  }
-
   @media screen and (max-width: $small) {
     max-height: 400px;
   }
 
   .user-list {
     padding: 0;
-
-    // ul {
-    //   @media screen and (max-width: $small) {
-    //     position: absolute;
-    //     bottom: 0px;
-    //     height: 100%;
-    //     overflow: scroll;
-    //   }
-    // }
+    background-color: $dark-purple;
 
     li {
       cursor: pointer;

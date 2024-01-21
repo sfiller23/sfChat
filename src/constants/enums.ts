@@ -1,9 +1,8 @@
 export enum AppStateActions {
   SET_IMAGE_PROFILE,
   SET_IMAGE_PROFILE_CHANGE,
-  SET_USERS,
-  SET_ERROR,
   SET_LOADING,
+  CLEAR,
 }
 
 export enum AuthStateActions {

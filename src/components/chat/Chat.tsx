@@ -10,6 +10,7 @@ import Message from "./message/Message";
 import { useLocation } from "react-router-dom";
 import ChatHeader from "./chatHeader/ChatHeader";
 import ChatFooter from "./chatFooter/ChatFooter";
+import { User } from "../../interfaces/auth";
 
 const Chat = (props: Partial<ChatState>) => {
   const { user } = props;
@@ -64,7 +65,7 @@ const Chat = (props: Partial<ChatState>) => {
         <div className="chat-message-board">
           {chat &&
             chat.messages.length !== 0 &&
-            chat.messages.map((message, index) => {
+            chat.messages.map((message) => {
               return (
                 <Message
                   key={message.sentTime}
@@ -72,8 +73,7 @@ const Chat = (props: Partial<ChatState>) => {
                   sentTime={message.sentTime}
                   userId={message.userId}
                   status={message.status}
-                  index={index}
-                  chatId={chat.chatId}
+                  user={user as User}
                 />
               );
             })}

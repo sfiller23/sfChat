@@ -8,19 +8,18 @@ import {
 import { AuthContext } from "../authContext/AuthContext";
 import { AppStateActions } from "../../constants/enums";
 import { getAvatar } from "../../api/firebase/api";
+import { useLocation } from "react-router-dom";
 
 export interface AppState {
   imgProfileUrl: string;
   imgProfileChange: boolean;
   isLoading: boolean;
-  error: string;
 }
 
 const initialState: AppState = {
   imgProfileUrl: "",
   imgProfileChange: false,
   isLoading: false,
-  error: "",
 };
 
 export interface ReducerAction {
@@ -34,6 +33,7 @@ interface ContextState {
   setLoadingState: (isLoading: boolean) => void;
   setImageProfile: (imgUrl: string) => void;
   setImageProfileChange: () => void;
+  clearAppState: () => void;
 }
 
 export const AppContext = createContext<ContextState | null>(null);
@@ -44,18 +44,17 @@ const reducer = (state: AppState, action: ReducerAction): AppState => {
       return { ...state, imgProfileUrl: action.payload };
     case AppStateActions.SET_IMAGE_PROFILE_CHANGE:
       return { ...state, imgProfileChange: !state.imgProfileChange };
-    case AppStateActions.SET_ERROR:
-      return { ...state };
-      break;
     case AppStateActions.SET_LOADING:
       return { ...state, isLoading: action.payload };
+    case AppStateActions.CLEAR:
+      return { ...state, ...initialState };
     default:
       throw new Error("Unknown action");
   }
 };
 
 type ChildrenType = {
-  children?: ReactElement | ReactElement[] | undefined;
+  children?: string | ReactElement | ReactElement[] | undefined;
 };
 
 export const AppProvider = ({ children }: ChildrenType): ReactElement => {
@@ -64,6 +63,12 @@ export const AppProvider = ({ children }: ChildrenType): ReactElement => {
   const userId = JSON.parse(localStorage.getItem("userId") as string);
 
   const authContext = useContext(AuthContext);
+
+  const location = useLocation();
+
+  const clearAppState = () => {
+    dispatch({ type: AppStateActions.CLEAR });
+  };
 
   const setLoadingState = (isLoading: boolean) => {
     dispatch({
@@ -84,12 +89,14 @@ export const AppProvider = ({ children }: ChildrenType): ReactElement => {
   };
 
   useEffect(() => {
+    console.log(userId, "getting the img");
     let imgUrl: string | undefined = "";
     const getProfileUrl = async () => {
       try {
         if (userId) {
           setLoadingState(true);
           imgUrl = await getAvatar(userId);
+          console.log(imgUrl);
           if (imgUrl) {
             setImageProfile(imgUrl);
           }
@@ -100,11 +107,22 @@ export const AppProvider = ({ children }: ChildrenType): ReactElement => {
     };
     getProfileUrl();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [authContext?.state.loggedIn, state.imgProfileChange, userId]);
+  }, [
+    authContext?.state.user?.loggedIn,
+    location.pathname,
+    state.imgProfileChange,
+    userId,
+  ]);
 
   return (
     <AppContext.Provider
-      value={{ state, setLoadingState, setImageProfile, setImageProfileChange }}
+      value={{
+        state,
+        setLoadingState,
+        setImageProfile,
+        setImageProfileChange,
+        clearAppState,
+      }}
     >
       {children}
     </AppContext.Provider>
