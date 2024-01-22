@@ -69,11 +69,11 @@ export const UserList = (props: Partial<ChatState>) => {
     localStorage.setItem("chatId", chatId);
     const chatObj: ChatObj = {
       chatId: chatId,
-      firstUser: {
+      sender: {
         ...sender,
         chatIds: { ...sender.chatIds, [chatId]: { active: true } },
       },
-      secondUser: {
+      receiver: {
         ...receiver,
         chatIds: { ...receiver.chatIds, [chatId]: { active: true } },
       },

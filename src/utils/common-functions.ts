@@ -27,7 +27,7 @@ export const isNewMessage = (
   if (user && currentUser) {
     for (const chatId in user.chatIds) {
       if (chats[chatId]) {
-        if (currentUser.userId === chats[chatId].firstUser.userId) {
+        if (currentUser.userId === chats[chatId].sender.userId) {
           if (
             chats[chatId].messages &&
             chats[chatId].messages.length !== 0 &&
@@ -35,13 +35,13 @@ export const isNewMessage = (
               "status"
             ] &&
             chats[chatId].messages[chats[chatId].messages.length - 1].userId !==
-              chats[chatId].firstUser.userId &&
+              chats[chatId].sender.userId &&
             chats[chatId].messages[chats[chatId].messages.length - 1].status ===
               MessageStatus.ARRIVED
           ) {
-            return chats[chatId].secondUser.userId;
+            return chats[chatId].receiver.userId;
           }
-        } else if (currentUser.userId === chats[chatId].secondUser.userId) {
+        } else if (currentUser.userId === chats[chatId].receiver.userId) {
           if (
             chats[chatId].messages &&
             chats[chatId].messages.length !== 0 &&
@@ -49,11 +49,11 @@ export const isNewMessage = (
               "status"
             ] &&
             chats[chatId].messages[chats[chatId].messages.length - 1].userId !==
-              chats[chatId].secondUser.userId &&
+              chats[chatId].receiver.userId &&
             chats[chatId].messages[chats[chatId].messages.length - 1].status ===
               MessageStatus.ARRIVED
           ) {
-            return chats[chatId].firstUser.userId;
+            return chats[chatId].sender.userId;
           }
         }
       }

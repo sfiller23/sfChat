@@ -16,19 +16,19 @@ const ChatHeader = (props: Partial<ChatState>) => {
           </span>
         )}
         {chat &&
-          (chat.firstUser.userId !== user?.userId ? (
+          (chat.sender.userId !== user?.userId ? (
             <>
               <span className="logged-in-icon-container">
                 {" "}
                 <LoggedInIcon
                   loggedIn={
-                    users.find((user) => user.userId === chat.firstUser.userId)
+                    users.find((user) => user.userId === chat.sender.userId)
                       ?.loggedIn
                   }
                 />
               </span>
               <span>
-                <h3>{chat.firstUser.displayName}</h3>
+                <h3>{chat.sender.displayName}</h3>
               </span>
             </>
           ) : (
@@ -36,13 +36,13 @@ const ChatHeader = (props: Partial<ChatState>) => {
               <span className="logged-in-icon-container">
                 <LoggedInIcon
                   loggedIn={
-                    users.find((user) => user.userId === chat.secondUser.userId)
+                    users.find((user) => user.userId === chat.receiver.userId)
                       ?.loggedIn
                   }
                 />
               </span>
               <span>
-                <h3>{chat.secondUser.displayName}</h3>
+                <h3>{chat.receiver.displayName}</h3>
               </span>
             </>
           ))}

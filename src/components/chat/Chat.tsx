@@ -45,6 +45,10 @@ const Chat = (props: Partial<ChatState>) => {
     const updateChat = () => {
       const unSub = onSnapshot(collection(db, "chats"), (doc) => {
         doc.docChanges().forEach((change) => {
+          console.log(change.type, "change type");
+          console.log(change.newIndex, "change new index");
+          console.log(change.oldIndex, "change new index");
+          console.log(change.doc.data(), "data");
           dispatch(getChats());
           dispatch(getUsers());
           dispatch(updateCurrentChat(change.doc.data()));

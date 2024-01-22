@@ -23,15 +23,6 @@ export const setWritingState = createAsyncThunk(
   }
 );
 
-// export const setNewMessageState = createAsyncThunk(
-//   "setNewMessageState",
-//   async (args: { userId: string; state: boolean }) => {
-//     await updateDoc(doc(db, "users", args.userId), {
-//       newMessage: args.state,
-//     });
-//   }
-// );
-
 export const setMessageSeenReq = createAsyncThunk(
   "setMessageSeen",
   async (chatId: string) => {
@@ -136,18 +127,18 @@ export const initChat = createAsyncThunk(
     try {
       await setDoc(doc(db, "chats", chatObj.chatId), {
         chatId: chatObj.chatId,
-        firstUser: chatObj.firstUser,
-        secondUser: chatObj.secondUser,
+        sender: chatObj.sender,
+        receiver: chatObj.receiver,
         messages: chatObj.messages,
       });
-      await updateDoc(doc(db, "users", chatObj.firstUser.userId), {
-        chatIds: chatObj.firstUser.chatIds,
+      await updateDoc(doc(db, "users", chatObj.sender.userId), {
+        chatIds: chatObj.sender.chatIds,
       });
-      await updateDoc(doc(db, "users", chatObj.secondUser.userId), {
-        chatIds: chatObj.secondUser.chatIds,
+      await updateDoc(doc(db, "users", chatObj.receiver.userId), {
+        chatIds: chatObj.receiver.chatIds,
       });
       thunkApi.dispatch(getUsers());
-      thunkApi.dispatch(getUserById(chatObj.firstUser.userId));
+      thunkApi.dispatch(getUserById(chatObj.sender.userId));
       return chatObj;
     } catch (error) {
       alert(`${error} In initChat`);

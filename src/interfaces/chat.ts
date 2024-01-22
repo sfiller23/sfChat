@@ -18,8 +18,8 @@ export interface Chats {
 
 export interface ChatObj {
   chatId: string;
-  firstUser: User;
-  secondUser: User;
+  sender: User;
+  receiver: User;
   messages: Message[];
   writing?: { status: boolean; writerID: string };
 }
