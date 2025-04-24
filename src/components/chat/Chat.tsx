@@ -1,16 +1,16 @@
-import "./_chat.scss";
-import { useEffect, useRef, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../redux/hooks/reduxHooks";
-import { getChatById, getChats, getUsers } from "../../redux/chat/chatAPI";
-import { ChatObj } from "../../interfaces/chat";
-import { ChatState, updateCurrentChat } from "../../redux/chat/chatSlice";
 import { collection, onSnapshot } from "firebase/firestore";
-import { db } from "../../../firebase";
-import Message from "./message/Message";
+import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
-import ChatHeader from "./chatHeader/ChatHeader";
-import ChatFooter from "./chatFooter/ChatFooter";
+import { db } from "../../../firebase";
 import { User } from "../../interfaces/auth";
+import { ChatObj } from "../../interfaces/chat";
+import { getChatById, getChats, getUsers } from "../../redux/chat/chatAPI";
+import { ChatState, updateCurrentChat } from "../../redux/chat/chatSlice";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks/reduxHooks";
+import "./_chat.scss";
+import ChatFooter from "./chatFooter/ChatFooter";
+import ChatHeader from "./chatHeader/ChatHeader";
+import Message from "./message/Message";
 
 const Chat = (props: Partial<ChatState>) => {
   const { user } = props;
@@ -45,10 +45,6 @@ const Chat = (props: Partial<ChatState>) => {
     const updateChat = () => {
       const unSub = onSnapshot(collection(db, "chats"), (doc) => {
         doc.docChanges().forEach((change) => {
-          console.log(change.type, "change type");
-          console.log(change.newIndex, "change new index");
-          console.log(change.oldIndex, "change new index");
-          console.log(change.doc.data(), "data");
           dispatch(getChats());
           dispatch(getUsers());
           dispatch(updateCurrentChat(change.doc.data()));

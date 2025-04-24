@@ -1,14 +1,14 @@
 import {
   createContext,
-  useReducer,
   ReactElement,
-  useEffect,
   useContext,
+  useEffect,
+  useReducer,
 } from "react";
-import { AuthContext } from "../authContext/AuthContext";
-import { AppStateActions } from "../../constants/enums";
-import { getAvatar } from "../../api/firebase/api";
 import { useLocation } from "react-router-dom";
+import { getAvatar } from "../../api/firebase/api";
+import { AppStateActions } from "../../constants/enums";
+import { AuthContext } from "../authContext/AuthContext";
 
 export interface AppState {
   imgProfileUrl: string;
@@ -89,14 +89,12 @@ export const AppProvider = ({ children }: ChildrenType): ReactElement => {
   };
 
   useEffect(() => {
-    console.log(userId, "getting the img");
     let imgUrl: string | undefined = "";
     const getProfileUrl = async () => {
       try {
         if (userId) {
           setLoadingState(true);
           imgUrl = await getAvatar(userId);
-          console.log(imgUrl);
           if (imgUrl) {
             setImageProfile(imgUrl);
           }
