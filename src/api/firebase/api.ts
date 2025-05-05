@@ -1,11 +1,18 @@
-import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
-import { auth, db, storage } from "../../../firebase";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { doc, setDoc, updateDoc } from "firebase/firestore";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { auth, db, storage } from "../../../firebase";
 
+/**
+ * Uploads a user's avatar to Firebase Storage.
+ *
+ * @param e - The event object to prevent default behavior.
+ * @param file - The file or blob to be uploaded.
+ * @param userId - The ID of the user uploading the avatar.
+ */
 export async function uploadAvatar(
   e: Event,
   file: File | Blob,
@@ -17,12 +24,17 @@ export async function uploadAvatar(
   const storageRef = ref(storage, `profileImages/${userId}`);
 
   try {
-    await uploadBytes(storageRef, file);
+    await uploadBytes(storageRef, file); // Upload the file to Firebase Storage
   } catch (error) {
     alert(error);
   }
 }
-
+/**
+ * Updates the logged-in state of a user in Firestore.
+ *
+ * @param loggedInStatus - The new logged-in status (true or false).
+ * @param userId - The ID of the user whose status is being updated.
+ */
 export async function setLoggedInState(
   loggedInStatus: boolean,
   userId: string

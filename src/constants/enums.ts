@@ -6,13 +6,13 @@ export enum AppStateActions {
 }
 
 export enum AuthStateActions {
-  LOGIN,
+  AUTHENTICATE,
   LOGOUT,
   REFRESH,
   SET_DISPLAY_NAME,
 }
 
-export enum PreviewState {
+export enum ImagePreviewState {
   ADD = "Add",
   EDIT = "Edit",
 }

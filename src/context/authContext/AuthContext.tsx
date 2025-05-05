@@ -1,18 +1,24 @@
 import { signOut } from "firebase/auth";
 import {
   createContext,
-  useReducer,
-  ReactElement,
+  ReactNode,
   useEffect,
   useLayoutEffect,
+  useReducer,
 } from "react";
-import { auth } from "../../../firebase";
 import { useNavigate } from "react-router-dom";
-import { User } from "../../interfaces/auth";
-import { useAppDispatch } from "../../redux/hooks/reduxHooks";
-import { getUserById } from "../../redux/chat/chatAPI";
+import { auth } from "../../../firebase";
 import { AuthStateActions } from "../../constants/enums";
+import { User } from "../../interfaces/auth";
+import { getUserById } from "../../redux/chat/chatAPI";
+import { useAppDispatch } from "../../redux/hooks/reduxHooks";
 
+/**
+ * AuthState Interface
+ *
+ * Represents the authentication state, including the current user, login status,
+ * access token, and any error messages.
+ */
 export interface AuthState {
   user: User | null;
   loggedIn: boolean;
@@ -35,7 +41,7 @@ export interface ReducerAction {
 
 interface ContextState {
   state: AuthState;
-  logIn: ({}) => void;
+  authenticate: ({}) => void;
   logOut: () => void;
 }
 
@@ -43,7 +49,7 @@ export const AuthContext = createContext<ContextState | null>(null);
 
 const reducer = (state: AuthState, action: ReducerAction): AuthState => {
   switch (action.type) {
-    case AuthStateActions.LOGIN:
+    case AuthStateActions.AUTHENTICATE:
       localStorage.setItem(
         "accessToken",
         JSON.stringify(action.payload?.accessToken)
@@ -82,11 +88,7 @@ const reducer = (state: AuthState, action: ReducerAction): AuthState => {
   }
 };
 
-type ChildrenType = {
-  children?: ReactElement | ReactElement[] | undefined;
-};
-
-export const AuthProvider = ({ children }: ChildrenType): ReactElement => {
+export const AuthProvider = (children: ReactNode) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const navigate = useNavigate();
@@ -97,9 +99,9 @@ export const AuthProvider = ({ children }: ChildrenType): ReactElement => {
 
   const token = JSON.parse(localStorage.getItem("accessToken") as string);
 
-  const logIn = (payload: object) => {
+  const authenticate = (payload: object) => {
     dispatch({
-      type: AuthStateActions.LOGIN,
+      type: AuthStateActions.AUTHENTICATE,
       payload: {
         ...payload,
       },
@@ -121,7 +123,7 @@ export const AuthProvider = ({ children }: ChildrenType): ReactElement => {
   }, [token]);
 
   return (
-    <AuthContext.Provider value={{ state, logIn, logOut }}>
+    <AuthContext.Provider value={{ state, authenticate, logOut }}>
       {children}
     </AuthContext.Provider>
   );

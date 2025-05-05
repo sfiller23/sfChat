@@ -1,5 +1,5 @@
 import { collection, onSnapshot } from "firebase/firestore";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { db } from "../../../firebase";
 import { User } from "../../interfaces/auth";
@@ -12,6 +12,16 @@ import ChatFooter from "./chatFooter/ChatFooter";
 import ChatHeader from "./chatHeader/ChatHeader";
 import Message from "./message/Message";
 
+/**
+ * Chat Component
+ *
+ * This component represents the main chat interface. It displays the chat header,
+ * the list of messages, and the chat footer for sending new messages. It also handles
+ * real-time updates to the chat using Firestore listeners.
+ *
+ * Props:
+ * - `user`: The current user object.
+ */
 const Chat = (props: Partial<ChatState>) => {
   const { user } = props;
 
@@ -25,22 +35,21 @@ const Chat = (props: Partial<ChatState>) => {
 
   const location = useLocation();
 
-  const scrollRef = useRef<HTMLDivElement>(null);
-
   const chatId = localStorage.getItem("chatId");
-
+  // Fetch the chat by ID when the component mounts or the location changes
   useEffect(() => {
     if (chatId) {
       dispatch(getChatById(chatId));
     }
   }, [location.pathname]);
-
+  // Update the local chat state when the current chat or chats change
   useEffect(() => {
     if (currentChat) {
       setChat(chats[currentChat.chatId]);
     }
   }, [chats, currentChat]);
 
+  // Set up a Firestore listener to update the chat in real-time
   useEffect(() => {
     const updateChat = () => {
       const unSub = onSnapshot(collection(db, "chats"), (doc) => {
@@ -60,8 +69,9 @@ const Chat = (props: Partial<ChatState>) => {
 
   return (
     <>
+      {/* Chat header displaying the participant's name and status */}
       <ChatHeader currentChat={chat} user={user} />
-      <div ref={scrollRef} className="chat-message-board-container">
+      <div className="chat-message-board-container">
         <div className="chat-message-board">
           {chat &&
             chat.messages.length !== 0 &&

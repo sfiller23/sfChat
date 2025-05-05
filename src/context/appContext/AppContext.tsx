@@ -1,6 +1,6 @@
 import {
   createContext,
-  ReactElement,
+  ReactNode,
   useContext,
   useEffect,
   useReducer,
@@ -10,6 +10,12 @@ import { getAvatar } from "../../api/firebase/api";
 import { AppStateActions } from "../../constants/enums";
 import { AuthContext } from "../authContext/AuthContext";
 
+/**
+ * AppState Interface
+ *
+ * Represents the state of the application, including profile image URL,
+ * loading state, and profile image change status.
+ */
 export interface AppState {
   imgProfileUrl: string;
   imgProfileChange: boolean;
@@ -25,7 +31,7 @@ const initialState: AppState = {
 export interface ReducerAction {
   type: AppStateActions;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  payload?: any;
+  payload?: any; // Optional payload for the action
 }
 
 interface ContextState {
@@ -53,11 +59,7 @@ const reducer = (state: AppState, action: ReducerAction): AppState => {
   }
 };
 
-type ChildrenType = {
-  children?: string | ReactElement | ReactElement[] | undefined;
-};
-
-export const AppProvider = ({ children }: ChildrenType): ReactElement => {
+export const AppProvider = (children: ReactNode) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const userId = JSON.parse(localStorage.getItem("userId") as string);
@@ -88,6 +90,7 @@ export const AppProvider = ({ children }: ChildrenType): ReactElement => {
     dispatch({ type: AppStateActions.SET_IMAGE_PROFILE_CHANGE });
   };
 
+  // Fetch the user's profile image URL when the component mounts or dependencies change
   useEffect(() => {
     let imgUrl: string | undefined = "";
     const getProfileUrl = async () => {
@@ -104,7 +107,7 @@ export const AppProvider = ({ children }: ChildrenType): ReactElement => {
       }
     };
     getProfileUrl();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     authContext?.state.user?.loggedIn,
     location.pathname,

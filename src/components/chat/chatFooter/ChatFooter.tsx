@@ -1,37 +1,54 @@
 import { useEffect, useRef, useState } from "react";
 import { PiNavigationArrowThin } from "react-icons/pi";
-import { useAppDispatch } from "../../../redux/hooks/reduxHooks";
+import { MessageStatus } from "../../../constants/enums";
+import { User } from "../../../interfaces/auth";
+import { ChatObj, Message as MessageProps } from "../../../interfaces/chat";
 import { setWritingState, updateChat } from "../../../redux/chat/chatAPI";
 import {
   ChatState,
   setCurrentChatMessage,
 } from "../../../redux/chat/chatSlice";
-import { ChatObj, Message as MessageProps } from "../../../interfaces/chat";
-import { MessageStatus } from "../../../constants/enums";
-import "./_chat-footer.scss";
+import { useAppDispatch } from "../../../redux/hooks/reduxHooks";
 import { setMessageSeen } from "../../../utils/common-functions";
-import { User } from "../../../interfaces/auth";
+import "./_chat-footer.scss";
 
+/**
+ * ChatFooter Component
+ *
+ * This component provides the input area for sending messages in a chat.
+ * It handles user interactions such as typing, sending messages, and marking messages as seen.
+ *
+ * Props:
+ * - `currentChat`: The currently active chat object.
+ * - `user`: The current user object.
+ */
 const ChatFooter = (props: Partial<ChatState>) => {
   const { currentChat: chat, user } = props;
 
   const [messageText, setMessageText] = useState("");
   const [isChatActive, setIsChatActive] = useState(false);
 
-  const bottomRef = useRef<HTMLSpanElement>(null);
+  const bottomRef = useRef<HTMLSpanElement>(null); // Ref to scroll to the bottom of the chat
 
+  // Scroll to the bottom of the chat when the component mounts or updates (when getting a new message or opening other chat)
   useEffect(() => {
     bottomRef.current?.scrollIntoView();
   }, [bottomRef.current]);
 
   const dispatch = useAppDispatch();
 
+  // Set the chat as active if a chat object is provided
   useEffect(() => {
     if (chat) {
       setIsChatActive(true);
     }
   }, [chat]);
 
+  /**
+   * Updates the "writing" state in the chat.
+   *
+   * @param isWritingMode - Whether the user is currently typing.
+   */
   const setWriting = (isWritingMode: boolean) => {
     if (chat && user) {
       dispatch(
@@ -44,6 +61,11 @@ const ChatFooter = (props: Partial<ChatState>) => {
     }
   };
 
+  /**
+   * Sends a message in the chat.
+   * - Updates the "writing" state to false.
+   * - Dispatches the message to the Redux store and updates the chat in Firestore.
+   */
   const sendMessage = () => {
     setWriting(false);
     if (user) {

@@ -1,12 +1,12 @@
-import { Link, useLocation } from "react-router-dom";
-import Card from "../../UI/card/Card";
-import "./_auth.scss";
 import { BaseSyntheticEvent, useContext } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { login, register, uploadAvatar } from "../../api/firebase/api";
-import Loader from "../../UI/loader/Loader";
-import { AuthContext } from "../../context/authContext/AuthContext";
-import { AppContext } from "../../context/appContext/AppContext";
 import ImgPreviewButton from "../../components/common/imgPreviewButton/ImgPreviewButton";
+import { AppContext } from "../../context/appContext/AppContext";
+import { AuthContext } from "../../context/authContext/AuthContext";
+import Card from "../../UI/card/Card";
+import Loader from "../../UI/loader/Loader";
+import "./_auth.scss";
 
 const Auth = () => {
   const authContext = useContext(AuthContext);
@@ -50,7 +50,7 @@ const Auth = () => {
           await uploadAvatar(e as Event, file, userId);
         }
       }
-      authContext?.logIn({ ...credentials.user, displayName });
+      authContext?.authenticate({ ...credentials.user, displayName });
     } catch (error) {
       alert(error);
     } finally {

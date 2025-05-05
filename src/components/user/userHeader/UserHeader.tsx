@@ -1,13 +1,24 @@
 import { useContext } from "react";
 import Loader from "../../../UI/loader/Loader";
-import { PreviewState } from "../../../constants/enums";
-import ImgPreviewButton from "../../common/imgPreviewButton/ImgPreviewButton";
-import { AuthContext } from "../../../context/authContext/AuthContext";
+import { setLoggedInState } from "../../../api/firebase/api";
+import { ImagePreviewState } from "../../../constants/enums";
 import { AppContext } from "../../../context/appContext/AppContext";
+import { AuthContext } from "../../../context/authContext/AuthContext";
 import { ChatState, clearChat } from "../../../redux/chat/chatSlice";
 import { useAppDispatch } from "../../../redux/hooks/reduxHooks";
+import ImgPreviewButton from "../../common/imgPreviewButton/ImgPreviewButton";
 import "./_user-header.scss";
-import { setLoggedInState } from "../../../api/firebase/api";
+
+/**
+ * UserHeader Component
+ *
+ * This component displays the user's profile information, including their display name
+ * and profile image. It also provides functionality for logging out and managing the
+ * profile image (add/edit).
+ *
+ * Props:
+ * - `user`: Partial<ChatState> - Contains user-related information such as display name and user ID.
+ */
 
 const UserHeader = (props: Partial<ChatState>) => {
   const { user } = props;
@@ -17,10 +28,16 @@ const UserHeader = (props: Partial<ChatState>) => {
   const authContext = useContext(AuthContext);
   const appContext = useContext(AppContext);
 
+  /**
+   * Handles the logout process.
+   * - Updates the user's logged-in state in Firebase.
+   * - Clears authentication and application state.
+   * - Dispatches an action to clear the chat state.
+   */
   const logOutHandler = async () => {
     try {
       if (user) {
-        await setLoggedInState(false, user.userId);
+        await setLoggedInState(false, user.userId); // Update logged-in state in Firebase
         authContext?.logOut();
         appContext?.clearAppState();
         dispatch(clearChat());
@@ -54,8 +71,8 @@ const UserHeader = (props: Partial<ChatState>) => {
             <ImgPreviewButton
               action={
                 !!appContext?.state.imgProfileUrl
-                  ? PreviewState.EDIT
-                  : PreviewState.ADD
+                  ? ImagePreviewState.EDIT
+                  : ImagePreviewState.ADD
               }
               inForm={false}
             />
